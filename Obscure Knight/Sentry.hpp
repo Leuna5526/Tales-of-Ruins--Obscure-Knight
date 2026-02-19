@@ -279,7 +279,6 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
     default:
       break;
     }
-
     // ===== 4. ENTER ATTACK MODE =====
     if ((s->state == SENTRY_WALK_LEFT || s->state == SENTRY_WALK_RIGHT ||
          s->state == SENTRY_IDLE_STATE || s->state == SENTRY_RUN_LEFT ||

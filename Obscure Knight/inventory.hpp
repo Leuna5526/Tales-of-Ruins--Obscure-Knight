@@ -361,5 +361,4 @@ inline void renderInventoryUI(struct Player *player) {
                inventoryGainTex);
   }
 }
-
 #endif 

@@ -38,5 +38,4 @@ void renderHealthBar(struct Player *player) {
 
   iShowImage(UI_BAR_X, UI_BAR_Y, UI_BAR_WIDTH, UI_BAR_HEIGHT, healthBarTextures[imageIndex]);
 }
-
 #endif 

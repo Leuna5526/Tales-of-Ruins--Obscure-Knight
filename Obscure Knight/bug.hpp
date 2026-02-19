@@ -387,5 +387,4 @@ void renderSparkles(struct SparkleEffect sparkles[], struct Camera *camera) {
     }
   }
 }
-
 #endif 

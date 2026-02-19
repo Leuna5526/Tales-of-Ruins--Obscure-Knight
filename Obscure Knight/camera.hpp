@@ -30,5 +30,4 @@ float getScreenX(float worldX, struct Camera *camera) {
 float getScreenY(float worldY, struct Camera *camera) {
   return worldY - camera->y;
 }
-
 #endif 
