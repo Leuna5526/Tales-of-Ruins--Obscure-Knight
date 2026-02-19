@@ -1,0 +1,336 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\player.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\player.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\midground.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\midground.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\background.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\background.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\config.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\config.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\inventory.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\inventory.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\game.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\game.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\structs.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\structs.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\iMain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\iMain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\title.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\title.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\textures.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\textures.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\camera.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\camera.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\midground.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\player.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\game.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\camera.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\textures.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\config.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\current edit\\Obscure Knight\\Obscure Knight\\creatures.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "inventory.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\inventory.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\inventory.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\inventory.hpp",
+              "RelativeToolTip": "Obscure Knight\\inventory.hpp",
+              "ViewState": "AgIAANsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-16T18:53:08.843Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "background.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\background.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\background.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\background.hpp",
+              "RelativeToolTip": "Obscure Knight\\background.hpp",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACgAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-15T17:23:30.086Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "game.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\game.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\game.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\game.hpp",
+              "RelativeToolTip": "Obscure Knight\\game.hpp",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACAAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:37.978Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "config.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\config.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\config.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\config.hpp",
+              "RelativeToolTip": "Obscure Knight\\config.hpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:42.888Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "midground.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\midground.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\midground.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\midground.hpp",
+              "RelativeToolTip": "Obscure Knight\\midground.hpp",
+              "ViewState": "AgIAAKUAAAAAAAAAAAAAAL0AAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:31.521Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "player.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\player.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\player.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\player.hpp*",
+              "RelativeToolTip": "Obscure Knight\\player.hpp*",
+              "ViewState": "AgIAADMDAAAAAAAAAAAAAEEDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:27.019Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "structs.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\structs.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\structs.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\structs.hpp",
+              "RelativeToolTip": "Obscure Knight\\structs.hpp",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:19.716Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "textures.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\textures.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\textures.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\textures.hpp",
+              "RelativeToolTip": "Obscure Knight\\textures.hpp",
+              "ViewState": "AgIAANgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:07.922Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "iMain.cpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\iMain.cpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\iMain.cpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\iMain.cpp",
+              "RelativeToolTip": "Obscure Knight\\iMain.cpp",
+              "ViewState": "AgIAAIcAAAAAAAAAAAAAAAIAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-01-24T11:20:15.039Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "camera.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\camera.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\camera.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\camera.hpp",
+              "RelativeToolTip": "Obscure Knight\\camera.hpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:45.462Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "title.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\title.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\title.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\title.hpp",
+              "RelativeToolTip": "Obscure Knight\\title.hpp",
+              "ViewState": "AgIAANIAAAAAAAAAAAAAACEAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:10:57.105Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "creatures.hpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\current edit\\Obscure Knight\\Obscure Knight\\creatures.hpp",
+              "RelativeDocumentMoniker": "..\\current edit\\Obscure Knight\\Obscure Knight\\creatures.hpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\current edit\\Obscure Knight\\Obscure Knight\\creatures.hpp",
+              "RelativeToolTip": "..\\current edit\\Obscure Knight\\Obscure Knight\\creatures.hpp",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:40.618Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "midground.h",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\midground.h",
+              "RelativeDocumentMoniker": "..\\vs edit\\Obscure Knight\\Obscure Knight\\midground.h",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\midground.h",
+              "RelativeToolTip": "..\\vs edit\\Obscure Knight\\Obscure Knight\\midground.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-24T12:35:52.465Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "player.h",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\player.h",
+              "RelativeDocumentMoniker": "..\\vs edit\\Obscure Knight\\Obscure Knight\\player.h",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\player.h",
+              "RelativeToolTip": "..\\vs edit\\Obscure Knight\\Obscure Knight\\player.h",
+              "ViewState": "AgIAACYAAAAAAAAAAAAowEAAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-24T12:20:05.993Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "game.h",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\game.h",
+              "RelativeDocumentMoniker": "..\\vs edit\\Obscure Knight\\Obscure Knight\\game.h",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\game.h",
+              "RelativeToolTip": "..\\vs edit\\Obscure Knight\\Obscure Knight\\game.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-24T12:19:15.535Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "camera.h",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\camera.h",
+              "RelativeDocumentMoniker": "..\\vs edit\\Obscure Knight\\Obscure Knight\\camera.h",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\camera.h",
+              "RelativeToolTip": "..\\vs edit\\Obscure Knight\\Obscure Knight\\camera.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-24T12:18:44.056Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "title.cpp",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.cpp",
+              "RelativeDocumentMoniker": "..\\vs edit\\Obscure Knight\\Obscure Knight\\title.cpp",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.cpp",
+              "RelativeToolTip": "..\\vs edit\\Obscure Knight\\Obscure Knight\\title.cpp",
+              "ViewState": "AgIAALoAAAAAAAAAAAAowNQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-01-24T12:16:28.329Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "title.h",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.h",
+              "RelativeDocumentMoniker": "..\\vs edit\\Obscure Knight\\Obscure Knight\\title.h",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.h",
+              "RelativeToolTip": "..\\vs edit\\Obscure Knight\\Obscure Knight\\title.h",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAowBAAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-24T12:13:21.456Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "textures.h",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\textures.h",
+              "RelativeDocumentMoniker": "..\\vs edit\\Obscure Knight\\Obscure Knight\\textures.h",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\textures.h",
+              "RelativeToolTip": "..\\vs edit\\Obscure Knight\\Obscure Knight\\textures.h",
+              "ViewState": "AgIAACQAAAAAAAAAAAAowD4AAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-24T12:12:54.689Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "config.h",
+              "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\config.h",
+              "RelativeDocumentMoniker": "..\\vs edit\\Obscure Knight\\Obscure Knight\\config.h",
+              "ToolTip": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\config.h",
+              "RelativeToolTip": "..\\vs edit\\Obscure Knight\\Obscure Knight\\config.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFIAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-24T12:10:58.674Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
