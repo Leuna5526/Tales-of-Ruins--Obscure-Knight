@@ -82,8 +82,7 @@ void handleInput(struct Player *player) {
     player->onGround = 0;
     setPlayerState(player, JUMP);
     playJumpSound();
-  } else if (downKey && player->onGround &&
-             player->y > GROUND_Y) {
+  } else if (downKey && player->onGround && player->y > GROUND_Y) {
     player->vy = JUMP_DOWN_VELOCITY;
     player->onGround = 0;
   }
@@ -94,8 +93,7 @@ void handleInput(struct Player *player) {
       setPlayerState(player, DASHING);
       player->stateTimer = 0;
       player->stamina -= STAMINA_COST_DASH;
-      player->staminaRegenTimer =
-          0;
+      player->staminaRegenTimer = 0;
       if (player->stamina < 0)
         player->stamina = 0;
       playDashSound();
@@ -106,7 +104,6 @@ void handleInput(struct Player *player) {
   if (attackKey && canAttack) {
     setPlayerState(player, ATTACK_OVERHEAD_RECOVER);
     player->stateTimer = 0;
-    playAttackSound();
   }
 
   if (player->state == DOWNSTAB_PRE || player->state == DOWNSTAB_ACTIVE ||
@@ -243,6 +240,7 @@ void updatePhysicsWithMap(struct Player *player, struct Midground *mg,
 
       if (player->state == JUMP && player->vy <= 0) {
         setPlayerState(player, FALL);
+        playFallSound();
       }
 
       if (player->vy > 0) {
@@ -261,8 +259,7 @@ void updatePhysicsWithMap(struct Player *player, struct Midground *mg,
 
   if (onMidground) {
     if (player->vy <= 0) {
-      player->y = platformY -
-                  80;
+      player->y = platformY - 80;
       player->vy = 0;
 
       if (!player->onGround) {
@@ -451,6 +448,7 @@ void updatePlayerAnimation(struct Player *player, struct Midground *mg,
     if (player->stateTimer >= OVERHEAD_ATTACK_RECOVER_FRAMES * 4) {
       setPlayerState(player, ATTACK_OVERHEAD_SLASHING);
       player->stateTimer = 0;
+      playAttackSound();
     }
     break;
 
@@ -464,8 +462,7 @@ void updatePlayerAnimation(struct Player *player, struct Midground *mg,
   case ATTACK_OVERHEAD_SLASHWAVE:
     if (player->stateTimer >= OVERHEAD_ATTACK_SLASHWAVE_FRAMES * 6) {
 
-      player->invincibilityTimer =
-          POST_ATTACK_INVINCIBILITY_DURATION;
+      player->invincibilityTimer = POST_ATTACK_INVINCIBILITY_DURATION;
 
       if (player->onGround) {
         int right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
@@ -533,7 +530,7 @@ void updatePlayerAnimation(struct Player *player, struct Midground *mg,
     break;
 
   case LANDING:
-    if (player->stateTimer >= LAND_FRAMES * 8) {
+    if (player->stateTimer >= LAND_FRAMES * 3) {
       setPlayerState(player, IDLE);
     }
     break;
@@ -571,8 +568,7 @@ void updatePlayerAnimation(struct Player *player, struct Midground *mg,
     default:
       break;
     }
-  } else if (player->stateTimer % 8 ==
-             0) {
+  } else if (player->stateTimer % 8 == 0) {
     if (player->frame < 0)
       player->frame = 0;
 
