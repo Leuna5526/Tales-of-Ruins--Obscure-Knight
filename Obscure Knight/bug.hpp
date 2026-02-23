@@ -6,6 +6,7 @@
 #include "iGraphics.h"
 #include "inventory.hpp"
 #include "player.hpp"
+#include "sounds.hpp"
 #include "structs.hpp"
 #include "textures.hpp"
 #include <math.h>
@@ -221,6 +222,7 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
         player->state = DEATH;
         player->frame = 0;
         player->stateTimer = 0;
+        playDeathSound();
       }
     }
 
@@ -270,6 +272,7 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
           enemy->vx = 0;
           enemy->vy = 0;
           tryDropItem(pickups, enemy->x, enemy->y);
+          playEnemyKillSound();
         } else {
           enemy->damageAnimTimer = CREATURE_DAMAGE_FRAMES * 4;
           enemy->damageFrame = 0;

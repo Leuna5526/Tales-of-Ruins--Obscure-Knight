@@ -62,5 +62,8 @@
     <ClInclude Include="inventory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sounds.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

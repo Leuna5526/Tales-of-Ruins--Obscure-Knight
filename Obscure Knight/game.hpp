@@ -7,6 +7,7 @@
 #include "camera.hpp"
 #include "midground.hpp"
 #include "player.hpp"
+#include "sounds.hpp"
 
 void updateGame(struct Player *player, struct Creature creatures[],
                 struct Background *bg, struct Midground *mg,
@@ -48,6 +49,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
           bg->tunnelTransitionY = 0;
         } else {
           *gameState = LEVEL2_STATE;
+          restartBGMusic();
           player->y = 600;
           player->x = 200;
           player->vy = 0;

@@ -6,6 +6,7 @@
 #include "iGraphics.h"
 #include "inventory.hpp"
 #include "player.hpp"
+#include "sounds.hpp"
 #include "structs.hpp"
 #include "textures.hpp"
 #include <math.h>
@@ -397,6 +398,7 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
           player->state = DEATH;
           player->frame = 0;
           player->stateTimer = 0;
+          playDeathSound();
         }
       }
     }
@@ -451,6 +453,7 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
 
             // Dropped item logic
             tryDropItem(pickups, s->x, s->y);
+            playEnemyKillSound();
           } else {
             // Not dead - trigger damage overlay animation
             s->damageAnimTimer = SENTRY_DAMAGE_FRAMES * 4; // Fast overlay

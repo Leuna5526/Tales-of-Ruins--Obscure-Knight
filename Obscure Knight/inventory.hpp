@@ -4,6 +4,7 @@
 #include "camera.hpp"
 #include "config.hpp"
 #include "iGraphics.h"
+#include "sounds.hpp"
 #include "structs.hpp"
 #include "textures.hpp"
 #include <math.h>
@@ -96,6 +97,7 @@ inline void updatePickups(struct Pickup pickups[], struct Player *player) {
       }
       if (canPickup) {
         pickups[i].active = 0; 
+        playItemCollectSound();
       }
     }
   }

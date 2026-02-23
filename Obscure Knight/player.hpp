@@ -5,6 +5,7 @@
 #include "config.hpp"
 #include "iGraphics.h"
 #include "midground.hpp"
+#include "sounds.hpp"
 #include "structs.hpp"
 #include "textures.hpp"
 #include <windows.h>
@@ -80,6 +81,7 @@ void handleInput(struct Player *player) {
     player->vy = JUMP_V;
     player->onGround = 0;
     setPlayerState(player, JUMP);
+    playJumpSound();
   } else if (downKey && player->onGround &&
              player->y > GROUND_Y) {
     player->vy = JUMP_DOWN_VELOCITY;
@@ -96,6 +98,7 @@ void handleInput(struct Player *player) {
           0;
       if (player->stamina < 0)
         player->stamina = 0;
+      playDashSound();
     }
   }
   dashKeyWasPressed = dashKey;
@@ -103,6 +106,7 @@ void handleInput(struct Player *player) {
   if (attackKey && canAttack) {
     setPlayerState(player, ATTACK_OVERHEAD_RECOVER);
     player->stateTimer = 0;
+    playAttackSound();
   }
 
   if (player->state == DOWNSTAB_PRE || player->state == DOWNSTAB_ACTIVE ||
@@ -128,6 +132,7 @@ void handleInput(struct Player *player) {
       player->staminaRegenTimer = 0;
       if (player->stamina < 0)
         player->stamina = 0;
+      playDownslashSound();
     }
   }
   downKeyWasPressed = downKey;
@@ -266,6 +271,7 @@ void updatePhysicsWithMap(struct Player *player, struct Midground *mg,
         if (player->state == FALL) {
           setPlayerState(player, LANDING);
           player->stateTimer = 0;
+          playLandSound();
         } else if (player->state == JUMP) {
           setPlayerState(player, IDLE);
         }
@@ -292,6 +298,7 @@ void updatePhysicsWithMap(struct Player *player, struct Midground *mg,
         if (player->state == FALL) {
           setPlayerState(player, LANDING);
           player->stateTimer = 0;
+          playLandSound();
         } else if (player->state == JUMP) {
           setPlayerState(player, IDLE);
         }
@@ -327,6 +334,7 @@ void updatePhysicsWithMap(struct Player *player, struct Midground *mg,
 
   if (gameState == LEVEL2_STATE && player->y < -100 && player->state != DEATH) {
     setPlayerState(player, DEATH);
+    playDeathSound();
   }
 }
 

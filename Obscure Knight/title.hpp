@@ -3,6 +3,7 @@
 
 #include "glut.h"
 #include "iGraphics.h"
+#include "sounds.hpp"
 #include "structs.hpp"
 #include <cstdio>
 #include <stdlib.h>
@@ -209,26 +210,33 @@ void handleTitleMouseClick(struct TitleScreen *title, int button, int state,
 
   if (*gameState == TITLE_SCREEN_STATE) {
     if (mx >= 400 && mx <= 600 && my >= 200 && my <= 280) {
+      playStartButtonClickSound();
       *gameState = PLAYING_STATE;
+      restartBGMusic();
     }
 
     if (mx >= 400 && mx <= 600 && my >= 150 && my <= 190) {
+      playButtonClickSound();
       *gameState = CONTROLS_STATE;
     }
 
     if (mx >= 400 && mx <= 600 && my >= 100 && my <= 140) {
+      playButtonClickSound();
       *gameState = CREDITS_STATE;
     }
 
     if (mx >= 400 && mx <= 600 && my >= 40 && my <= 100) {
+      playButtonClickSound();
       exit(0);
     }
   } else if (*gameState == CREDITS_STATE) {
     if (mx >= 0 && mx <= SCREEN_W && my >= 0 && my <= SCREEN_H) {
+      playButtonClickSound();
       *gameState = TITLE_SCREEN_STATE;
     }
   } else if (*gameState == CONTROLS_STATE) {
     if (mx >= 0 && mx <= SCREEN_W && my >= 0 && my <= SCREEN_H) {
+      playButtonClickSound();
       *gameState = TITLE_SCREEN_STATE;
     }
   }

@@ -11,6 +11,7 @@
 #include "structs.hpp"
 #include "textures.hpp"
 #include "title.hpp"
+#include "sounds.hpp"
 #include <math.h>
 #include <time.h>
 
@@ -74,6 +75,8 @@ void animate() {
     updateItemEffects(&player);
     updateGlowProjectile(&glowProjectile, creatures, sentries);
     handleItemInput(&player, &glowProjectile, creatures, sentries, gameState);
+    updateFootstepSounds(&player, &mg, gameState);
+    updateHealthSound(&player);
   } else if (gameState == TUNNEL_STATE || gameState == LEVEL2_STATE) {
     updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups);
     if (gameState == LEVEL2_STATE) {
@@ -83,6 +86,8 @@ void animate() {
       updateItemEffects(&player);
       updateGlowProjectile(&glowProjectile, creatures, sentries);
       handleItemInput(&player, &glowProjectile, creatures, sentries, gameState);
+      updateFootstepSounds(&player, &mg, gameState);
+      updateHealthSound(&player);
     }
   }
 }
@@ -91,10 +96,13 @@ void iKeyboard(unsigned char key) {
   printf("Key pressed: %d\n", key);
   if (gameState == TITLE_SCREEN_STATE) {
     if (key == ' ' || key == 13) {
+      playStartButtonClickSound();
       gameState = PLAYING_STATE;
+      restartBGMusic();
     }
   } else if (gameState == CREDITS_STATE || gameState == CONTROLS_STATE) {
     if (key == 27 || key == '\b') {
+      playButtonClickSound();
       gameState = TITLE_SCREEN_STATE;
     }
   }
@@ -111,6 +119,9 @@ void iPassiveMouseMove(int mx, int my) {
   if (gameState == TITLE_SCREEN_STATE || gameState == CREDITS_STATE ||
       gameState == CONTROLS_STATE) {
     handleTitleMouseMove(&titleScreen, mx, my);
+  }
+  if (gameState == TITLE_SCREEN_STATE) {
+    updateButtonHoverSound(mx, my);
   }
 }
 
@@ -143,6 +154,8 @@ int main() {
   initPlayerInventory(&player);
   initPickups(pickups);
   initGlowProjectile(&glowProjectile);
+
+  initSounds();
 
   loadImages();
   loadTitleTextures(&titleScreen);
