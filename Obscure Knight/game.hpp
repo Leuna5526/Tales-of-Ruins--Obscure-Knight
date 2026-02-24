@@ -1,6 +1,7 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
+#include "cave.hpp"
 #include "Sentry.hpp"
 #include "background.hpp"
 #include "bug.hpp"
@@ -32,6 +33,22 @@ void updateGame(struct Player *player, struct Creature creatures[],
       camera->x = 0;
       camera->targetX = 0;
     }
+
+    if (*gameState == LEVEL2_STATE && player->y < -100) {
+      *gameState = CAVE_STATE;
+      player->x = CAVE_ENTRY_X;
+      player->y = CAVE_ENTRY_Y;
+      player->vy = 0;
+      player->onGround = 0;
+      player->state = FALL;
+      player->frame = 0;
+      player->stateTimer = 0;
+      camera->x = 0;
+      camera->targetX = 0;
+      mg->tileCount = 0;
+    }
+  } else if (*gameState == CAVE_STATE) {
+    updateCaveState(player, bg, mg, camera, gameState, pickups);
   } else if (*gameState == TUNNEL_STATE) {
     if (bg->x == 0 || bg->x == 1) {
       player->state = FALL;

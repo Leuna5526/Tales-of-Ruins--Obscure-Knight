@@ -328,11 +328,6 @@ void updatePhysicsWithMap(struct Player *player, struct Midground *mg,
       player->onGround = 1;
     }
   }
-
-  if (gameState == LEVEL2_STATE && player->y < -100 && player->state != DEATH) {
-    setPlayerState(player, DEATH);
-    playDeathSound();
-  }
 }
 
 void updatePlayerAnimation(struct Player *player, struct Midground *mg,

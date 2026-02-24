@@ -63,6 +63,12 @@ void iDraw() {
     renderInventoryUI(&player);
     renderGlowProjectile(&glowProjectile, &camera);
     renderPlayer(&player, &camera);
+  } else if (gameState == CAVE_STATE) {
+    renderCaveBackground();
+    renderStaminaBar(&player);
+    renderHealthBar(&player);
+    renderInventoryUI(&player);
+    renderPlayer(&player, &camera);
   }
 }
 
@@ -89,6 +95,10 @@ void animate() {
       updateFootstepSounds(&player, &mg, gameState);
       updateHealthSound(&player);
     }
+  } else if (gameState == CAVE_STATE) {
+    updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups);
+    updateFootstepSounds(&player, &mg, gameState);
+    updateHealthSound(&player);
   }
 }
 

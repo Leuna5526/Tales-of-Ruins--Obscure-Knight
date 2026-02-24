@@ -48,4 +48,10 @@ void renderTunnelBackground(int phase, int offset) {
   }
 }
 
+void renderCaveBackground() {
+  if (caveTexture != 0) {
+    iShowImage(0, 0, SCREEN_W, SCREEN_H, caveTexture);
+  }
+}
+
 #endif

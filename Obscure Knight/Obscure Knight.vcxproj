@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bug.hpp" />
+    <ClInclude Include="cave.hpp" />
     <ClInclude Include="healthbar.hpp" />
     <ClInclude Include="inventory.hpp" />
     <ClInclude Include="midground.hpp" />

@@ -91,6 +91,7 @@ unsigned int pickablePowerTex = 0;
 unsigned int inventoryGainTex = 0;
 unsigned int pickableGainTex = 0;
 unsigned int glowTextures[GLOW_FRAMES];
+unsigned int caveTexture = 0;
 
 void loadSet(unsigned int *arr, int n, const char *fmt) {
   char name[64];
@@ -238,6 +239,7 @@ void loadImages() {
   loadSparkleTextures();
   loadLevel2TileTextures();
   loadInventoryTextures();
+  caveTexture = iLoadImage("Assets/Level 2/bg/cave.png");
 }
 
 #endif

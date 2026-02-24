@@ -65,5 +65,8 @@
     <ClInclude Include="sounds.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cave.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

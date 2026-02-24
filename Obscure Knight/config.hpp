@@ -16,6 +16,7 @@
 #define LEVEL2_STATE 3
 #define CREDITS_STATE 4
 #define CONTROLS_STATE 5
+#define CAVE_STATE 6
 
 #define SCREEN_W 1000
 #define SCREEN_H 600
@@ -29,6 +30,12 @@
 #define LEVEL2_PIT_X_END 4210
 #define LEVEL2_RAISED_GROUND_X 4210
 #define LEVEL2_RAISED_GROUND_Y 150
+
+#define CAVE_ENTRY_X 710
+#define CAVE_ENTRY_Y 600
+#define CAVE_LAND_X 710
+#define CAVE_LAND_Y 10
+#define CAVE_GROUND_Y 10
 
 #define DASH_SPEED 6
 #define EVADE_SPEED 10
