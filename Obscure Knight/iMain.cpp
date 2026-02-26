@@ -26,6 +26,7 @@ struct SparkleEffect sparkles[MAX_SPARKLES];
 struct Camera camera;
 struct Pickup pickups[MAX_PICKUPS];
 struct GlowProjectile glowProjectile;
+struct NPC npc;
 
 void iDraw() {
   iClear();
@@ -68,7 +69,9 @@ void iDraw() {
     renderStaminaBar(&player);
     renderHealthBar(&player);
     renderInventoryUI(&player);
+    renderNPC(&npc, &camera);
     renderPlayer(&player, &camera);
+    renderDialogue(&npc);
   }
 }
 
@@ -97,6 +100,7 @@ void animate() {
     }
   } else if (gameState == CAVE_STATE) {
     updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups);
+    updateNPC(&npc, &player);
     updateFootstepSounds(&player, &mg, gameState);
     updateHealthSound(&player);
   }
@@ -115,6 +119,8 @@ void iKeyboard(unsigned char key) {
       playButtonClickSound();
       gameState = TITLE_SCREEN_STATE;
     }
+  } else if (gameState == CAVE_STATE) {
+    // Input is handled asynchronously in updateCaveState via GetAsyncKeyState
   }
 }
 

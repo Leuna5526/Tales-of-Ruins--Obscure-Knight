@@ -10,6 +10,8 @@
 #include "player.hpp"
 #include "sounds.hpp"
 
+extern struct NPC npc;
+
 void updateGame(struct Player *player, struct Creature creatures[],
                 struct Background *bg, struct Midground *mg,
                 struct Camera *camera, int *gameState,
@@ -46,6 +48,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
       camera->x = 0;
       camera->targetX = 0;
       mg->tileCount = 0;
+      initNPC(&npc);
     }
   } else if (*gameState == CAVE_STATE) {
     updateCaveState(player, bg, mg, camera, gameState, pickups);

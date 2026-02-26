@@ -93,6 +93,24 @@ unsigned int pickableGainTex = 0;
 unsigned int glowTextures[GLOW_FRAMES];
 unsigned int caveTexture = 0;
 
+#define NPC_APPROACH_FRAMES 12
+#define NPC_IDLE_LEFT_FRAMES 8
+#define NPC_IDLE_RIGHT_FRAMES 6
+#define NPC_TURN_FRAMES 2
+#define NPC_SUMMON_START_FRAMES 6
+#define NPC_SUMMONING_FRAMES 7
+#define NPC_RETREAT_FRAMES 13
+#define DIALOGUE_COUNT 3
+
+unsigned int npcApproach[NPC_APPROACH_FRAMES];
+unsigned int npcIdleLeft[NPC_IDLE_LEFT_FRAMES];
+unsigned int npcIdleRight[NPC_IDLE_RIGHT_FRAMES];
+unsigned int npcTurn[NPC_TURN_FRAMES];
+unsigned int npcSummonStart[NPC_SUMMON_START_FRAMES];
+unsigned int npcSummoning[NPC_SUMMONING_FRAMES];
+unsigned int npcRetreat[NPC_RETREAT_FRAMES];
+unsigned int dialogues[DIALOGUE_COUNT];
+
 void loadSet(unsigned int *arr, int n, const char *fmt) {
   char name[64];
   for (int i = 0; i < n; i++) {
@@ -171,6 +189,23 @@ void loadInventoryTextures() {
   loadSet(glowTextures, GLOW_FRAMES, "Assets/UI/Glow/glow (%d).png");
 }
 
+void loadNPCTextures() {
+  loadSet(npcApproach, NPC_APPROACH_FRAMES,
+          "Assets/Level 2/Npc/Approach/ (%d).png");
+  loadSet(npcIdleLeft, NPC_IDLE_LEFT_FRAMES,
+          "Assets/Level 2/Npc/Idle/IdleLeft/ (%d).png");
+  loadSet(npcIdleRight, NPC_IDLE_RIGHT_FRAMES,
+          "Assets/Level 2/Npc/Idle/IdleRight/ (%d).png");
+  loadSet(npcTurn, NPC_TURN_FRAMES, "Assets/Level 2/Npc/Turn/ (%d).png");
+  loadSet(npcSummonStart, NPC_SUMMON_START_FRAMES,
+          "Assets/Level 2/Npc/Summon/SummonStart/ (%d).png");
+  loadSet(npcSummoning, NPC_SUMMONING_FRAMES,
+          "Assets/Level 2/Npc/Summon/Summoning/ (%d).png");
+  loadSet(npcRetreat, NPC_RETREAT_FRAMES,
+          "Assets/Level 2/Npc/Retreat/ (%d).png");
+  loadSet(dialogues, DIALOGUE_COUNT, "Assets/Level 2/Dialogue/dialogue%d.png");
+}
+
 void loadImages() {
   loadSet(idle, IDLE_FRAMES, "Assets/mc/idle/%d.png");
   loadSet(walkLeft, WALK_FRAMES, "Assets/mc/walk/walk L/%d.png");
@@ -240,6 +275,7 @@ void loadImages() {
   loadLevel2TileTextures();
   loadInventoryTextures();
   caveTexture = iLoadImage("Assets/Level 2/bg/cave.png");
+  loadNPCTextures();
 }
 
 #endif

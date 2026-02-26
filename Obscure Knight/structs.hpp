@@ -214,4 +214,28 @@ struct GlowProjectile {
   int targetSentryIdx;
 };
 
+enum NPCState {
+  NPC_STILL,
+  NPC_APPROACHING,
+  NPC_IDLE_LEFT,
+  NPC_IDLE_RIGHT,
+  NPC_TURNING,
+  NPC_TALKING,
+  NPC_SUMMON_START,
+  NPC_SUMMONING,
+  NPC_RETREAT,
+  NPC_DONE
+};
+
+struct NPC {
+  int x, y;
+  int frame;
+  enum NPCState state;
+  int stateTimer;
+  int dialogueIndex;
+  int showPrompt;
+  int isInteracting;
+  int initialized;
+};
+
 #endif
