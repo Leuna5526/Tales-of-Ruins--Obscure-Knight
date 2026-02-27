@@ -191,6 +191,8 @@ struct TitleScreen {
   unsigned int creditsBgTexture;
   unsigned int backButtonTexture;
   unsigned int controlsBgTexture;
+  unsigned int loadingTexture;
+  int loadingTimer;
   int mouseX, mouseY;
 };
 

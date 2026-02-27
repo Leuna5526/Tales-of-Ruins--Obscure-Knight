@@ -25,6 +25,8 @@ void initTitleScreen(struct TitleScreen *title) {
   title->creditsBgTexture = 0;
   title->backButtonTexture = 0;
   title->controlsBgTexture = 0;
+  title->loadingTexture = 0;
+  title->loadingTimer = 0;
 }
 
 void loadTitleTextures(struct TitleScreen *title) {
@@ -68,6 +70,8 @@ void loadTitleTextures(struct TitleScreen *title) {
 
   title->controlsBgTexture =
       iLoadImage("Assets/Title Screen/Controls/controls.png");
+  title->loadingTexture =
+      iLoadImage("Assets/Title Screen/LoadingScreen/loading.png");
 }
 
 void updateTitleAnimation(struct TitleScreen *title) {
@@ -198,6 +202,24 @@ void renderControls(struct TitleScreen *title) {
   }
 }
 
+void renderLoadingScreen(struct TitleScreen *title) {
+  if (title->loadingTexture != 0) {
+    iShowImage(0, 0, SCREEN_W, SCREEN_H, title->loadingTexture);
+  } else {
+    iSetColor(0, 0, 0);
+    iFilledRectangle(0, 0, SCREEN_W, SCREEN_H);
+  }
+}
+
+void updateLoadingScreen(struct TitleScreen *title, int *gameState) {
+  title->loadingTimer++;
+  if (title->loadingTimer >= 250) {
+    *gameState = PLAYING_STATE;
+    restartBGMusic();
+    title->loadingTimer = 0;
+  }
+}
+
 void handleTitleMouseMove(struct TitleScreen *title, int mx, int my) {
   title->mouseX = mx;
   title->mouseY = my;
@@ -211,8 +233,8 @@ void handleTitleMouseClick(struct TitleScreen *title, int button, int state,
   if (*gameState == TITLE_SCREEN_STATE) {
     if (mx >= 400 && mx <= 600 && my >= 200 && my <= 280) {
       playStartButtonClickSound();
-      *gameState = PLAYING_STATE;
-      restartBGMusic();
+      *gameState = LOADING_STATE;
+      title->loadingTimer = 0;
     }
 
     if (mx >= 400 && mx <= 600 && my >= 150 && my <= 190) {

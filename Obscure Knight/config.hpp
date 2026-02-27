@@ -17,6 +17,7 @@
 #define CREDITS_STATE 4
 #define CONTROLS_STATE 5
 #define CAVE_STATE 6
+#define LOADING_STATE 7
 
 #define SCREEN_W 1000
 #define SCREEN_H 600

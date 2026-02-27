@@ -7,13 +7,14 @@
 #include "iGraphics.h"
 #include "midground.hpp"
 #include "player.hpp"
+#include "sounds.hpp"
 #include "staminabar.hpp"
 #include "structs.hpp"
 #include "textures.hpp"
 #include "title.hpp"
-#include "sounds.hpp"
 #include <math.h>
 #include <time.h>
+
 
 int gameState = TITLE_SCREEN_STATE;
 struct Player player;
@@ -37,6 +38,8 @@ void iDraw() {
     renderCredits(&titleScreen);
   } else if (gameState == CONTROLS_STATE) {
     renderControls(&titleScreen);
+  } else if (gameState == LOADING_STATE) {
+    renderLoadingScreen(&titleScreen);
   } else if (gameState == PLAYING_STATE) {
     renderBackgroundWithCamera(&camera, backgroundTextures);
     renderMidground(&mg, &camera, gameState);
@@ -80,6 +83,8 @@ void iDraw() {
 void animate() {
   if (gameState == TITLE_SCREEN_STATE) {
     updateTitleAnimation(&titleScreen);
+  } else if (gameState == LOADING_STATE) {
+    updateLoadingScreen(&titleScreen, &gameState);
   } else if (gameState == PLAYING_STATE) {
     updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups);
     updatePickups(pickups, &player);
@@ -116,8 +121,8 @@ void iKeyboard(unsigned char key) {
   if (gameState == TITLE_SCREEN_STATE) {
     if (key == ' ' || key == 13) {
       playStartButtonClickSound();
-      gameState = PLAYING_STATE;
-      restartBGMusic();
+      gameState = LOADING_STATE;
+      titleScreen.loadingTimer = 0;
     }
   } else if (gameState == CREDITS_STATE || gameState == CONTROLS_STATE) {
     if (key == 27 || key == '\b') {
@@ -153,8 +158,7 @@ void iMouse(int button, int state, int mx, int my) {
   }
 }
 
-void iSpecialKeyboard(unsigned char key) {
-}
+void iSpecialKeyboard(unsigned char key) {}
 
 int main() {
   srand(time(NULL));
