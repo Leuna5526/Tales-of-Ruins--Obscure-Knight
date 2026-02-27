@@ -167,8 +167,11 @@ void loadSentryTextures() {
 }
 
 void loadSparkleTextures() {
-  loadSet(sparkleTextures, SPARKLE_FRAMES,
-          "Assets/Level 2/Sparkle/sparkle (%d).png");
+  for (int i = 0; i < SPARKLE_FRAMES; i++) {
+    char name[128];
+    sprintf_s(name, "Assets/Level 2/Sparkle/sparkle (%d).png", i + 1);
+    sparkleTextures[i] = iLoadImage(name);
+  }
 }
 
 void loadLevel2TileTextures() {

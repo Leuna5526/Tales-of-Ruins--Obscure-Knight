@@ -15,7 +15,6 @@
 #include <math.h>
 #include <time.h>
 
-
 int gameState = TITLE_SCREEN_STATE;
 struct Player player;
 struct TitleScreen titleScreen;
@@ -86,7 +85,8 @@ void animate() {
   } else if (gameState == LOADING_STATE) {
     updateLoadingScreen(&titleScreen, &gameState);
   } else if (gameState == PLAYING_STATE) {
-    updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups);
+    updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups,
+               sparkles);
     updatePickups(pickups, &player);
     updateItemEffects(&player);
     updateGlowProjectile(&glowProjectile, creatures, sentries);
@@ -94,7 +94,8 @@ void animate() {
     updateFootstepSounds(&player, &mg, gameState);
     updateHealthSound(&player);
   } else if (gameState == TUNNEL_STATE || gameState == LEVEL2_STATE) {
-    updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups);
+    updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups,
+               sparkles);
     if (gameState == LEVEL2_STATE) {
       updateSentries(sentries, &player, pickups);
       updateSparkles(sparkles);
@@ -106,7 +107,8 @@ void animate() {
       updateHealthSound(&player);
     }
   } else if (gameState == CAVE_STATE) {
-    updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups);
+    updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups,
+               sparkles);
     updateNPC(&npc, &player);
     updatePickups(pickups, &player);
     updateItemEffects(&player);

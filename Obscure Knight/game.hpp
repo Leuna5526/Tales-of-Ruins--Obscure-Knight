@@ -10,13 +10,12 @@
 #include "player.hpp"
 #include "sounds.hpp"
 
-
 extern struct NPC npc;
 
 void updateGame(struct Player *player, struct Creature creatures[],
                 struct Background *bg, struct Midground *mg,
-                struct Camera *camera, int *gameState,
-                struct Pickup pickups[]) {
+                struct Camera *camera, int *gameState, struct Pickup pickups[],
+                struct SparkleEffect sparkles[]) {
 
   if (*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE) {
     updatePlayerAnimation(player, mg, *gameState);
@@ -71,6 +70,14 @@ void updateGame(struct Player *player, struct Creature creatures[],
           *gameState = LEVEL2_STATE;
           restartBGMusic();
           initCreatures(creatures);
+
+          initSparkles(sparkles);
+          spawnSparkle(sparkles, SPARKLE_1_X, SPARKLE_1_Y);
+          spawnSparkle(sparkles, SPARKLE_2_X, SPARKLE_2_Y);
+          spawnSparkle(sparkles, SPARKLE_3_X, SPARKLE_3_Y);
+          spawnSparkle(sparkles, SPARKLE_4_X, SPARKLE_4_Y);
+          spawnSparkle(sparkles, SPARKLE_5_X, SPARKLE_5_Y);
+
           player->y = 600;
           player->x = 200;
           player->vy = 0;
@@ -146,4 +153,4 @@ void updateGame(struct Player *player, struct Creature creatures[],
   }
 }
 
-#endif 
+#endif

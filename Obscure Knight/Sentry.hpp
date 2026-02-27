@@ -343,7 +343,6 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
           int invincibilityDuration = (damagePercent >= DAMAGE_PLAYER_TAKES) ? 60 : 10;
           player->invincibilityTimer = invincibilityDuration;
         }
-        // Check for death
         if (player->health <= 0) {
           player->state = DEATH;
           player->frame = 0;

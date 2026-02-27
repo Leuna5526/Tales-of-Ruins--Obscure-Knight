@@ -64,7 +64,7 @@ void updateCreatures(struct Creature creatures[], struct Player *player,
           spawnY = LEVEL2_GROUND_Y;
         } else if (i == 1) {
           spawnX = 4325;
-          spawnY = LEVEL2_GROUND_Y + 190;
+          spawnY = LEVEL2_GROUND_Y + 300;
         }
       }
 
@@ -401,7 +401,7 @@ void updateSparkles(struct SparkleEffect sparkles[]) {
       sparkles[i].animationTimer = 0;
       sparkles[i].frame++;
       if (sparkles[i].frame >= SPARKLE_FRAMES) {
-        sparkles[i].active = 0;
+        sparkles[i].frame = 0;
       }
     }
   }
@@ -419,4 +419,4 @@ void renderSparkles(struct SparkleEffect sparkles[], struct Camera *camera) {
     }
   }
 }
-#endif 
+#endif
