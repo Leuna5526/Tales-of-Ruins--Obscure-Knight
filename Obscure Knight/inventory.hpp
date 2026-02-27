@@ -68,36 +68,25 @@ inline void updatePickups(struct Pickup pickups[], struct Player *player) {
     float dist = sqrt((double)(dx * dx + dy * dy));
 
     if (dist < 60) { 
-      int canPickup = 0;
+      int canPickup = 1;
       switch (pickups[i].type) {
       case ITEM_HEART:
-        if (!player->hasHeart) {
           player->hasHeart = 1;
-          canPickup = 1;
-        }
         break;
       case ITEM_POTION:
-        if (!player->hasPotion) {
           player->hasPotion = 1;
-          canPickup = 1;
-        }
         break;
       case ITEM_POWER:
-        if (!player->hasPower) {
           player->hasPower = 1;
-          canPickup = 1;
-        }
         break;
       case ITEM_GAIN:
-        if (!player->hasGain) {
           player->hasGain = 1;
-          canPickup = 1;
-        }
         break;
       }
       if (canPickup) {
         pickups[i].active = 0; 
         playItemCollectSound();
+        printf("Item collected: %d\n", pickups[i].type);
       }
     }
   }
@@ -129,7 +118,7 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow, 
     int targetCreatureIdx = -1;
     int targetSentryIdx = -1;
 
-    if (gameState == PLAYING_STATE) {
+    if (gameState == LEVEL2_STATE || gameState == PLAYING_STATE) {
       for (int i = 0; i < MAX_CREATURES; i++) {
         if (!creatures[i].active || creatures[i].state == CREATURE_DEAD)
           continue;

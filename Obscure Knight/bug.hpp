@@ -43,23 +43,39 @@ int checkCollision(int x1, int y1, int w1, int h1, int x2, int y2, int w2,
 }
 
 void updateCreatures(struct Creature creatures[], struct Player *player,
-                     struct Pickup pickups[]) {
+                     struct Pickup pickups[], int gameState) {
 
   int spriteW = SPRITE_SIZE * SCALE;
   for (int i = 0; i < MAX_CREATURES; i++) {
     if (!creatures[i].active && creatures[i].state == CREATURE_INACTIVE) {
-      int spawnX = SPAWN_POINT_1_X;
-      if (i == 1)
-        spawnX = SPAWN_POINT_2_X;
-      else if (i == 2)
-        spawnX = SPAWN_POINT_3_X;
+      int spawnX = -1;
+      int spawnY = SPAWN_POINT_Y;
 
-      int dx = player->x - spawnX;
-      int dy = player->y - SPAWN_POINT_Y;
-      float spawnDistance = sqrt((double)(dx * dx + dy * dy));
+      if (gameState == PLAYING_STATE) {
+        if (i == 0)
+          spawnX = SPAWN_POINT_1_X;
+        else if (i == 1)
+          spawnX = SPAWN_POINT_2_X;
+        else if (i == 2)
+          spawnX = SPAWN_POINT_3_X;
+      } else if (gameState == LEVEL2_STATE) {
+        if (i == 0) {
+          spawnX = 2000;
+          spawnY = LEVEL2_GROUND_Y;
+        } else if (i == 1) {
+          spawnX = 4325;
+          spawnY = LEVEL2_GROUND_Y + 190;
+        }
+      }
 
-      if (spawnDistance <= CREATURE_SPAWN_TRIGGER) {
-        spawnCreature(&creatures[i], spawnX, SPAWN_POINT_Y);
+      if (spawnX != -1) {
+        int dx = player->x - spawnX;
+        int dy = player->y - spawnY;
+        float spawnDistance = sqrt((double)(dx * dx + dy * dy));
+
+        if (spawnDistance <= CREATURE_SPAWN_TRIGGER) {
+          spawnCreature(&creatures[i], spawnX, spawnY);
+        }
       }
     }
   }

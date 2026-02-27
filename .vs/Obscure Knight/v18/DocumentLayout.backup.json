@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\config.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\inventory.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\inventory.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\cave.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\cave.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -21,14 +29,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\background.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\background.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\config.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\inventory.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\inventory.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\structs.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -83,36 +83,35 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "cave.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\cave.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\cave.hpp",
               "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\cave.hpp",
               "RelativeToolTip": "Obscure Knight\\cave.hpp",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-02-26T17:41:59.829Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-26T17:41:59.829Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
               "Title": "inventory.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\inventory.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\inventory.hpp",
               "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\inventory.hpp",
               "RelativeToolTip": "Obscure Knight\\inventory.hpp",
-              "ViewState": "AgIAANsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-02-16T18:53:08.843Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "background.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\background.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\background.hpp",
@@ -124,7 +123,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "game.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\game.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\game.hpp",
@@ -136,19 +135,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 0,
               "Title": "config.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\config.hpp",
               "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp",
               "RelativeToolTip": "Obscure Knight\\config.hpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAAKgAAAAAAAAAAAAAACUAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-02-11T09:11:42.888Z"
+              "WhenOpened": "2026-02-11T09:11:42.888Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "midground.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\midground.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\midground.hpp",
@@ -160,7 +160,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "player.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\player.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\player.hpp",

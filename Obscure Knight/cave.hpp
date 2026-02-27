@@ -6,6 +6,7 @@
 #include "sounds.hpp"
 #include "player.hpp"
 #include "midground.hpp"
+#include <stdlib.h>
 
 // Cave Coordinate Defines
 #define CAVE_P1_Y 10
@@ -18,6 +19,34 @@
 #define CAVE_P2_X_MAX 650
 #define CAVE_P3_X_MIN 0
 #define CAVE_P3_X_MAX 335
+
+void spawnCaveItems(struct Pickup pickups[]) {
+    // Clear existing pickups 
+    for (int i = 0; i < MAX_PICKUPS; i++) pickups[i].active = 0;
+
+    int numItems = 2 + (rand() % 2); // random 2 or 3 items
+    
+    for (int i = 0; i < numItems; i++) {
+        for (int j = 0; j < MAX_PICKUPS; j++) {
+            if (!pickups[j].active) {
+                pickups[j].active = 1;
+                // Random item type among the 4
+                pickups[j].type = (enum ItemType)(rand() % 4);
+                
+                // Pick a random platform
+                int pIdx = rand() % 3;
+                int xMin, xMax, y;
+                if (pIdx == 0) { xMin = CAVE_P1_X_MIN; xMax = CAVE_P1_X_MAX; y = CAVE_P1_Y; }
+                else if (pIdx == 1) { xMin = CAVE_P2_X_MIN; xMax = CAVE_P2_X_MAX; y = CAVE_P2_Y; }
+                else { xMin = CAVE_P3_X_MIN; xMax = CAVE_P3_X_MAX; y = CAVE_P3_Y; }
+                
+                pickups[j].x = xMin + (rand() % (xMax - xMin - PICKUP_SIZE));
+                pickups[j].y = y + 10; // Slightly above ground
+                break;
+            }
+        }
+    }
+}
 
 // Scripted Jump Zones
 #define CAVE_JUMP_P1_TO_P2_MIN 300

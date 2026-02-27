@@ -20,9 +20,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
 
   if (*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE) {
     updatePlayerAnimation(player, mg, *gameState);
-    if (*gameState == PLAYING_STATE) {
-      updateCreatures(creatures, player, pickups);
-    }
+    updateCreatures(creatures, player, pickups, *gameState);
 
     updateBackground(bg, player);
     updateCamera(camera, player);
@@ -50,6 +48,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
       camera->targetX = 0;
       mg->tileCount = 0;
       initNPC(&npc);
+      spawnCaveItems(pickups);
     }
   } else if (*gameState == CAVE_STATE) {
     updateCaveState(player, bg, mg, camera, gameState, pickups);
@@ -71,6 +70,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
         } else {
           *gameState = LEVEL2_STATE;
           restartBGMusic();
+          initCreatures(creatures);
           player->y = 600;
           player->x = 200;
           player->vy = 0;

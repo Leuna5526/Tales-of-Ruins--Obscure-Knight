@@ -56,6 +56,7 @@ void iDraw() {
   } else if (gameState == LEVEL2_STATE) {
     renderBackgroundWithCamera(&camera, level2BackgroundTextures);
     renderMidground(&mg, &camera, gameState);
+    renderCreatures(creatures, &camera);
     renderSentries(sentries, &camera);
     renderSparkles(sparkles, &camera);
     renderStaminaBar(&player);
@@ -70,6 +71,7 @@ void iDraw() {
     renderHealthBar(&player);
     renderInventoryUI(&player);
     renderNPC(&npc, &camera);
+    renderPickups(pickups, &camera);
     renderPlayer(&player, &camera);
     renderDialogue(&npc);
   }
@@ -101,6 +103,9 @@ void animate() {
   } else if (gameState == CAVE_STATE) {
     updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups);
     updateNPC(&npc, &player);
+    updatePickups(pickups, &player);
+    updateItemEffects(&player);
+    handleItemInput(&player, &glowProjectile, creatures, sentries, gameState);
     updateFootstepSounds(&player, &mg, gameState);
     updateHealthSound(&player);
   }
