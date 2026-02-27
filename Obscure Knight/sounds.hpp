@@ -34,6 +34,8 @@ struct WavSound {
   WAVEFORMATEX fmt;
   BYTE *pcm;
   DWORD pcmSize;
+  HWAVEOUT hWave;
+  WAVEHDR hdr;
 };
 
 // Parse a WAV file from disk into a WavSound. Called once at startup.
@@ -74,47 +76,28 @@ static void loadWavSound(const char *path, WavSound *snd) {
     pos += 8 + ((chunkSize + 1) & ~1u); // chunks are word-aligned
   }
   HeapFree(GetProcessHeap(), 0, buf);
-}
 
-// Thread arg: immutable pointers into the pre-loaded WavSound
-struct PlayWaveArgs {
-  WAVEFORMATEX fmt;
-  BYTE *pcm;
-  DWORD pcmSize;
-};
-
-// Thread proc — pure Win32, no CRT functions
-static DWORD WINAPI PlayWaveThreadProc(LPVOID p) {
-  PlayWaveArgs *a = (PlayWaveArgs *)p;
-  HWAVEOUT hWave;
-  if (waveOutOpen(&hWave, WAVE_MAPPER, &a->fmt, 0, 0, CALLBACK_NULL) ==
-      MMSYSERR_NOERROR) {
-    WAVEHDR hdr;
-    ZeroMemory(&hdr, sizeof(hdr));
-    hdr.lpData = (LPSTR)a->pcm;
-    hdr.dwBufferLength = a->pcmSize;
-    waveOutPrepareHeader(hWave, &hdr, sizeof(hdr));
-    waveOutWrite(hWave, &hdr, sizeof(hdr));
-    while (!(hdr.dwFlags & WHDR_DONE))
-      Sleep(5);
-    waveOutUnprepareHeader(hWave, &hdr, sizeof(hdr));
-    waveOutClose(hWave);
+  if (snd->pcm) {
+    if (waveOutOpen(&snd->hWave, WAVE_MAPPER, &snd->fmt, 0, 0, CALLBACK_NULL) ==
+        MMSYSERR_NOERROR) {
+      ZeroMemory(&snd->hdr, sizeof(WAVEHDR));
+      snd->hdr.lpData = (LPSTR)snd->pcm;
+      snd->hdr.dwBufferLength = snd->pcmSize;
+      waveOutPrepareHeader(snd->hWave, &snd->hdr, sizeof(WAVEHDR));
+      // Mark as done initially so first play succeeds and reset logic works
+      snd->hdr.dwFlags |= WHDR_DONE;
+    }
   }
-  HeapFree(GetProcessHeap(), 0, p);
-  return 0;
 }
 
 static void playWavSound(WavSound *snd) {
-  if (!snd || !snd->pcm)
+  if (!snd || !snd->hWave)
     return;
-  PlayWaveArgs *a = (PlayWaveArgs *)HeapAlloc(
-      GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(PlayWaveArgs));
-  if (!a)
-    return;
-  a->fmt = snd->fmt;
-  a->pcm = snd->pcm;
-  a->pcmSize = snd->pcmSize;
-  CloseHandle(CreateThread(NULL, 0, PlayWaveThreadProc, a, 0, NULL));
+  // If currently playing in the queue, reset it to stop and mark as done
+  if (!(snd->hdr.dwFlags & WHDR_DONE)) {
+    waveOutReset(snd->hWave);
+  }
+  waveOutWrite(snd->hWave, &snd->hdr, sizeof(WAVEHDR));
 }
 
 // -----------------------------------------------------------------------
@@ -124,30 +107,82 @@ static WavSound g_sndJump, g_sndFall, g_sndLand, g_sndDash;
 static WavSound g_sndAttack, g_sndDownslash, g_sndDeath, g_sndEnemyKill;
 static WavSound g_sndOnButton, g_sndButtonClick, g_sndStartClick;
 static WavSound g_sndItemCollect, g_sndLoseLife;
+static WavSound g_sndBg;
 static WavSound g_sndFootL1[FOOTSTEP_LEVEL1_COUNT];
 static WavSound g_sndFootL2[FOOTSTEP_LEVEL2_COUNT];
 static WavSound g_sndFootTile[FOOTSTEP_TILE_COUNT];
 
 // -----------------------------------------------------------------------
-// MCI — kept only for background music (needs looping)
+// Background music setup using waveOut thread
 // -----------------------------------------------------------------------
-inline void mciOpen(const char *path, const char *alias) {
-  char cmd[256];
-  sprintf_s(cmd, "open \"%s\" type waveaudio alias %s", path, alias);
-  mciSendString(cmd, NULL, 0, NULL);
+
+void applyVolume(WavSound *snd, float volumeFact) {
+  if (!snd || !snd->pcm)
+    return;
+  if (snd->fmt.wBitsPerSample == 16) {
+    short *samples = (short *)snd->pcm;
+    DWORD count = snd->pcmSize / 2;
+    for (DWORD i = 0; i < count; i++) {
+      float val = samples[i] * volumeFact;
+      if (val > 32767.0f)
+        val = 32767.0f;
+      if (val < -32768.0f)
+        val = -32768.0f;
+      samples[i] = (short)val;
+    }
+  } else if (snd->fmt.wBitsPerSample == 8) {
+    BYTE *samples = snd->pcm;
+    for (DWORD i = 0; i < snd->pcmSize; i++) {
+      float val = (samples[i] - 128) * volumeFact;
+      val += 128.0f;
+      if (val > 255.0f)
+        val = 255.0f;
+      if (val < 0.0f)
+        val = 0.0f;
+      samples[i] = (BYTE)val;
+    }
+  }
+}
+
+static HANDLE hBgThread = NULL;
+static volatile int g_stopBgThread = 0;
+
+static DWORD WINAPI BgMusicThreadProc(LPVOID p) {
+  if (!g_sndBg.hWave)
+    return 0;
+
+  while (!g_stopBgThread) {
+    // If it's done playing or never played, queue it again
+    if (g_sndBg.hdr.dwFlags & WHDR_DONE) {
+      waveOutWrite(g_sndBg.hWave, &g_sndBg.hdr, sizeof(WAVEHDR));
+    }
+    Sleep(10);
+  }
+  return 0;
 }
 
 void playBGMusic() {
-  mciSendString("close bgmusic", NULL, 0, NULL);
-  mciOpen("Audios/Background/bg.wav", "bgmusic");
-  mciSendString("play bgmusic repeat", NULL, 0, NULL);
+  if (hBgThread)
+    return;
+  if (!g_sndBg.pcm)
+    return;
+
+  g_stopBgThread = 0;
+  hBgThread = CreateThread(NULL, 0, BgMusicThreadProc, NULL, 0, NULL);
   g_bgMusicPlaying = 1;
 }
+
 void stopBGMusic() {
-  mciSendString("stop bgmusic", NULL, 0, NULL);
-  mciSendString("close bgmusic", NULL, 0, NULL);
+  if (hBgThread) {
+    g_stopBgThread = 1;
+    waveOutReset(g_sndBg.hWave);
+    WaitForSingleObject(hBgThread, INFINITE);
+    CloseHandle(hBgThread);
+    hBgThread = NULL;
+  }
   g_bgMusicPlaying = 0;
 }
+
 void restartBGMusic() {
   stopBGMusic();
   playBGMusic();
@@ -170,6 +205,9 @@ void initSounds() {
   loadWavSound("Audios/movements/move/downslash.wav", &g_sndDownslash);
   loadWavSound("Audios/movements/move/death.wav", &g_sndDeath);
   loadWavSound("Audios/movements/move/enemykill.wav", &g_sndEnemyKill);
+
+  loadWavSound("Audios/Background/bg.wav", &g_sndBg);
+  applyVolume(&g_sndBg, 0.6f);
 
   loadWavSound("Audios/UI/on_button.wav", &g_sndOnButton);
   loadWavSound("Audios/UI/button_click.wav", &g_sndButtonClick);
@@ -195,8 +233,6 @@ void initSounds() {
               i + 1);
     loadWavSound(path, &g_sndFootTile[i]);
   }
-
-  playBGMusic();
 }
 
 // -----------------------------------------------------------------------
