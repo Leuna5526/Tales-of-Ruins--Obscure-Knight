@@ -180,10 +180,8 @@ struct TitleScreen {
   int bgPhaseRepeat;
   unsigned int skyTextures[TITLE_SKY_FRAMES];
   unsigned int fireTextures[TITLE_FIRE_FRAMES];
-  unsigned int
-      fireTransTextures[TITLE_TRANSITION_FRAMES];
-  unsigned int
-      skyTransTextures[TITLE_TRANSITION_FRAMES];
+  unsigned int fireTransTextures[TITLE_TRANSITION_FRAMES];
+  unsigned int skyTransTextures[TITLE_TRANSITION_FRAMES];
   unsigned int titleTexture;
   unsigned int startTexture;
   unsigned int achievementsTexture;

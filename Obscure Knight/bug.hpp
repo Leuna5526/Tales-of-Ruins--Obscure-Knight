@@ -13,23 +13,23 @@
 
 void initCreatures(struct Creature creatures[]) {
   for (int i = 0; i < MAX_CREATURES; i++) {
-    creatures[i].active = 0;                
-    creatures[i].state = CREATURE_INACTIVE; 
+    creatures[i].active = 0;
+    creatures[i].state = CREATURE_INACTIVE;
   }
 }
 
 void spawnCreature(struct Creature *creature, int x, int y) {
   creature->x = x;
   creature->y = y;
-  creature->vx = 0; 
-  creature->vy = 0; 
+  creature->vx = 0;
+  creature->vy = 0;
   creature->frame = 0;
-  creature->active = 1; 
-  creature->state = CREATURE_LOADING; 
+  creature->active = 1;
+  creature->state = CREATURE_LOADING;
   creature->patrolStartX = x;
   creature->subStateTimer = 0;
   creature->animationTimer = 0;
-  creature->facingRight = 1; 
+  creature->facingRight = 1;
   creature->maxHealth = BUG_MAX_HEALTH;
   creature->currentHealth = BUG_MAX_HEALTH;
   creature->invincibilityTimer = 0;
@@ -37,11 +37,13 @@ void spawnCreature(struct Creature *creature, int x, int y) {
   creature->damageFrame = 0;
 }
 
-int checkCollision(int x1, int y1, int w1, int h1, int x2, int y2, int w2,int h2) {
+int checkCollision(int x1, int y1, int w1, int h1, int x2, int y2, int w2,
+                   int h2) {
   return !(x1 + w1 < x2 || x2 + w2 < x1 || y1 + h1 < y2 || y2 + h2 < y1);
 }
 
-void updateCreatures(struct Creature creatures[], struct Player *player,struct Pickup pickups[]) {
+void updateCreatures(struct Creature creatures[], struct Player *player,
+                     struct Pickup pickups[]) {
 
   int spriteW = SPRITE_SIZE * SCALE;
   for (int i = 0; i < MAX_CREATURES; i++) {
@@ -78,24 +80,24 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
       if (enemy->subStateTimer >= CREATURE_NORMAL_FRAMES * 20) {
         enemy->state = CREATURE_RISING;
         enemy->subStateTimer = 0;
-        enemy->vy = -CREATURE_SPEED; 
+        enemy->vy = -CREATURE_SPEED;
       }
       break;
 
     case CREATURE_RISING:
       enemy->y += enemy->vy;
-      if (enemy->y <= 150) { 
+      if (enemy->y <= 150) {
         enemy->state = CREATURE_PATROL_RIGHT;
         enemy->subStateTimer = 0;
         enemy->vx = CREATURE_SPEED;
         enemy->vy = 0;
-        enemy->facingRight = 1; 
+        enemy->facingRight = 1;
       }
       break;
 
     case CREATURE_PATROL_RIGHT:
       enemy->x += enemy->vx;
-      enemy->y = 150; 
+      enemy->y = 150;
       if (enemy->x >= enemy->patrolStartX + CREATURE_PATROL_DISTANCE) {
         enemy->state = CREATURE_TURNING;
         enemy->subStateTimer = 0;
@@ -104,7 +106,7 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
 
     case CREATURE_PATROL_LEFT:
       enemy->x += enemy->vx;
-      enemy->y = 150; 
+      enemy->y = 150;
       if (enemy->x <= enemy->patrolStartX - CREATURE_PATROL_DISTANCE) {
         enemy->state = CREATURE_TURNING;
         enemy->subStateTimer = 0;
@@ -112,18 +114,18 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
       break;
 
     case CREATURE_TURNING:
-      enemy->vx = 0; 
+      enemy->vx = 0;
       enemy->vy = 0;
 
       if (enemy->subStateTimer >= CREATURE_TURN_FRAMES * 15) {
         if (enemy->facingRight) {
           enemy->state = CREATURE_PATROL_LEFT;
           enemy->vx = -CREATURE_SPEED;
-          enemy->facingRight = 0; 
+          enemy->facingRight = 0;
         } else {
           enemy->state = CREATURE_PATROL_RIGHT;
           enemy->vx = CREATURE_SPEED;
-          enemy->facingRight = 1; 
+          enemy->facingRight = 1;
         }
         enemy->subStateTimer = 0;
       }
@@ -145,7 +147,7 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
 
       enemy->x += enemy->vx;
       enemy->y += enemy->vy;
-      if (enemy->subStateTimer >= 60) { 
+      if (enemy->subStateTimer >= 60) {
         enemy->state =
             enemy->facingRight ? CREATURE_PATROL_RIGHT : CREATURE_PATROL_LEFT;
         enemy->subStateTimer = 0;
@@ -156,7 +158,7 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
 
     case CREATURE_DEAD:
       if (enemy->subStateTimer >= CREATURE_BURST_FRAMES * 20) {
-        enemy->active = 0; 
+        enemy->active = 0;
       }
       break;
 
@@ -202,9 +204,12 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
       }
     }
 
-    if (enemy->state != CREATURE_DEAD && player->state != DEATH &&player->invincibilityTimer == 0 &&checkCollision(player->x + 24, player->y + 24, 80,80, enemy->x + 16, enemy->y + 16, 32,32)) { 
+    if (enemy->state != CREATURE_DEAD && player->state != DEATH &&
+        player->invincibilityTimer == 0 &&
+        checkCollision(player->x + 24, player->y + 24, 80, 80, enemy->x + 16,
+                       enemy->y + 16, 32, 32)) {
 
-        if (player->invincibilityTimer == 0) {
+      if (player->invincibilityTimer == 0) {
         int damagePercent =
             (enemy->state == CREATURE_ATTACKING) ? DAMAGE_PLAYER_TAKES : 10;
         int damage = PLAYER_MAX_HEALTH * damagePercent / 100;
@@ -229,22 +234,22 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
     int attackHitboxX = player->x;
     int attackHitboxY = player->y;
     int attackHitboxW = 0;
-    int attackHitboxH = ATTACK_RANGE; 
+    int attackHitboxH = ATTACK_RANGE;
 
     if (player->state == ATTACK_OVERHEAD_SLASHWAVE) {
       attackHitboxW = SLASHWAVE_RANGE;
       if (player->facingRight) {
-        attackHitboxX = player->x + spriteW / 2; 
+        attackHitboxX = player->x + spriteW / 2;
       } else {
-        attackHitboxX = player->x - SLASHWAVE_RANGE; 
+        attackHitboxX = player->x - SLASHWAVE_RANGE;
       }
-    } else { 
+    } else {
       attackHitboxW = ATTACK_RANGE;
       if (player->facingRight) {
-        attackHitboxX = player->x + spriteW / 2; 
+        attackHitboxX = player->x + spriteW / 2;
       } else {
-        attackHitboxW = ATTACK_RANGE_LEFT; 
-        attackHitboxX = player->x - ATTACK_RANGE_LEFT; 
+        attackHitboxW = ATTACK_RANGE_LEFT;
+        attackHitboxX = player->x - ATTACK_RANGE_LEFT;
       }
     }
     int isPlayerAttacking_local =
@@ -255,11 +260,18 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
          player->state == DOWNSTAB_LAND);
 
     if (isPlayerAttacking_local &&
-        checkCollision(attackHitboxX, attackHitboxY, attackHitboxW, attackHitboxH, enemy->x, enemy->y, CREATURE_SIZE, CREATURE_SIZE) && enemy->state != CREATURE_DEAD) {
+        checkCollision(attackHitboxX, attackHitboxY, attackHitboxW,
+                       attackHitboxH, enemy->x, enemy->y, CREATURE_SIZE,
+                       CREATURE_SIZE) &&
+        enemy->state != CREATURE_DEAD) {
 
       if (enemy->invincibilityTimer == 0) {
-        int damagePercent = (player->state == DOWNSTAB_ACTIVE || player->state == DOWNSTAB_LAND) ? DAMAGE_DEALT_HEAVY : DAMAGE_DEALT_NORMAL;
-        int damage = (enemy->maxHealth * damagePercent / 100) * player->damageMultiplier;
+        int damagePercent =
+            (player->state == DOWNSTAB_ACTIVE || player->state == DOWNSTAB_LAND)
+                ? DAMAGE_DEALT_HEAVY
+                : DAMAGE_DEALT_NORMAL;
+        int damage =
+            (enemy->maxHealth * damagePercent / 100) * player->damageMultiplier;
         enemy->currentHealth -= damage;
         enemy->invincibilityTimer = 90;
 
@@ -286,7 +298,8 @@ void updateCreatures(struct Creature creatures[], struct Player *player,struct P
 
     if (enemy->damageAnimTimer > 0) {
       enemy->damageAnimTimer--;
-      if (enemy->damageAnimTimer % 4 == 0 && enemy->damageFrame < CREATURE_DAMAGE_FRAMES - 1) {
+      if (enemy->damageAnimTimer % 4 == 0 &&
+          enemy->damageFrame < CREATURE_DAMAGE_FRAMES - 1) {
         enemy->damageFrame++;
       }
     }
@@ -324,7 +337,7 @@ void renderCreatures(struct Creature creatures[], struct Camera *camera) {
       tex = creatureBurst[c->frame % CREATURE_BURST_FRAMES];
       break;
     default:
-      tex = creatureNormal[0]; 
+      tex = creatureNormal[0];
       break;
     }
 

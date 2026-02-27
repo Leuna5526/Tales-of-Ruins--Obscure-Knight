@@ -1,14 +1,15 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "cave.hpp"
 #include "Sentry.hpp"
 #include "background.hpp"
 #include "bug.hpp"
 #include "camera.hpp"
+#include "cave.hpp"
 #include "midground.hpp"
 #include "player.hpp"
 #include "sounds.hpp"
+
 
 extern struct NPC npc;
 
@@ -145,4 +146,4 @@ void updateGame(struct Player *player, struct Creature creatures[],
   }
 }
 
-#endif
+#endif 
