@@ -21,15 +21,6 @@ static int g_bgMusicPlaying = 0;
 static int g_lastHealthForSound = PLAYER_MAX_HEALTH;
 static int g_lastHoveredButton = -1;
 
-// -----------------------------------------------------------------------
-// waveOut-based one-shot sound system
-//   - WAV files loaded into RAM at startup (no disk I/O at play time)
-//   - Each play() call spawns a tiny thread that opens its own HWAVEOUT,
-//     writes the PCM buffer, waits for completion, then closes.
-//   - Only Win32 APIs used inside the thread (CreateThread-safe, no CRT).
-//   - Multiple threads run simultaneously => true sound overlap.
-// -----------------------------------------------------------------------
-
 struct WavSound {
   WAVEFORMATEX fmt;
   BYTE *pcm;
@@ -38,7 +29,6 @@ struct WavSound {
   WAVEHDR hdr;
 };
 
-// Parse a WAV file from disk into a WavSound. Called once at startup.
 static void loadWavSound(const char *path, WavSound *snd) {
   snd->pcm = NULL;
   snd->pcmSize = 0;
@@ -59,7 +49,6 @@ static void loadWavSound(const char *path, WavSound *snd) {
   ReadFile(hFile, buf, fileSize, &bytesRead, NULL);
   CloseHandle(hFile);
 
-  // Walk RIFF chunks starting after the 12-byte RIFF header
   DWORD pos = 12;
   while (pos + 8 <= fileSize) {
     DWORD chunkSize = *(DWORD *)(buf + pos + 4);
@@ -73,7 +62,7 @@ static void loadWavSound(const char *path, WavSound *snd) {
       if (snd->pcm)
         memcpy(snd->pcm, buf + pos + 8, chunkSize);
     }
-    pos += 8 + ((chunkSize + 1) & ~1u); // chunks are word-aligned
+    pos += 8 + ((chunkSize + 1) & ~1u); 
   }
   HeapFree(GetProcessHeap(), 0, buf);
 
@@ -84,7 +73,6 @@ static void loadWavSound(const char *path, WavSound *snd) {
       snd->hdr.lpData = (LPSTR)snd->pcm;
       snd->hdr.dwBufferLength = snd->pcmSize;
       waveOutPrepareHeader(snd->hWave, &snd->hdr, sizeof(WAVEHDR));
-      // Mark as done initially so first play succeeds and reset logic works
       snd->hdr.dwFlags |= WHDR_DONE;
     }
   }
@@ -93,16 +81,12 @@ static void loadWavSound(const char *path, WavSound *snd) {
 static void playWavSound(WavSound *snd) {
   if (!snd || !snd->hWave)
     return;
-  // If currently playing in the queue, reset it to stop and mark as done
   if (!(snd->hdr.dwFlags & WHDR_DONE)) {
     waveOutReset(snd->hWave);
   }
   waveOutWrite(snd->hWave, &snd->hdr, sizeof(WAVEHDR));
 }
 
-// -----------------------------------------------------------------------
-// Pre-loaded sound buffers
-// -----------------------------------------------------------------------
 static WavSound g_sndJump, g_sndFall, g_sndLand, g_sndDash;
 static WavSound g_sndAttack, g_sndDownslash, g_sndDeath, g_sndEnemyKill;
 static WavSound g_sndOnButton, g_sndButtonClick, g_sndStartClick;
@@ -112,9 +96,6 @@ static WavSound g_sndFootL1[FOOTSTEP_LEVEL1_COUNT];
 static WavSound g_sndFootL2[FOOTSTEP_LEVEL2_COUNT];
 static WavSound g_sndFootTile[FOOTSTEP_TILE_COUNT];
 
-// -----------------------------------------------------------------------
-// Background music setup using waveOut thread
-// -----------------------------------------------------------------------
 
 void applyVolume(WavSound *snd, float volumeFact) {
   if (!snd || !snd->pcm)
@@ -152,7 +133,6 @@ static DWORD WINAPI BgMusicThreadProc(LPVOID p) {
     return 0;
 
   while (!g_stopBgThread) {
-    // If it's done playing or never played, queue it again
     if (g_sndBg.hdr.dwFlags & WHDR_DONE) {
       waveOutWrite(g_sndBg.hWave, &g_sndBg.hdr, sizeof(WAVEHDR));
     }
@@ -188,17 +168,13 @@ void restartBGMusic() {
   playBGMusic();
 }
 
-// -----------------------------------------------------------------------
-// Init — load all WAVs into RAM
-// -----------------------------------------------------------------------
 void initSounds() {
   g_footstepTimer = 0;
   g_lastHealthForSound = PLAYER_MAX_HEALTH;
   g_lastHoveredButton = -1;
 
   loadWavSound("Audios/movements/move/jump.wav", &g_sndJump);
-  loadWavSound("Audios/movements/move/jump.wav",
-               &g_sndFall); // reuse until fall.wav exists
+  loadWavSound("Audios/movements/move/jump.wav", &g_sndFall); 
   loadWavSound("Audios/movements/move/land.wav", &g_sndLand);
   loadWavSound("Audios/movements/move/dash.wav", &g_sndDash);
   loadWavSound("Audios/movements/move/attack.wav", &g_sndAttack);
@@ -235,9 +211,6 @@ void initSounds() {
   }
 }
 
-// -----------------------------------------------------------------------
-// Play functions
-// -----------------------------------------------------------------------
 void playJumpSound() { playWavSound(&g_sndJump); }
 void playFallSound() { playWavSound(&g_sndFall); }
 void playLandSound() { playWavSound(&g_sndLand); }
@@ -262,9 +235,7 @@ void playFootstepTile() {
   playWavSound(&g_sndFootTile[rand() % FOOTSTEP_TILE_COUNT]);
 }
 
-// -----------------------------------------------------------------------
-// Helpers
-// -----------------------------------------------------------------------
+
 int isPlayerOnTile(struct Player *player, struct Midground *mg) {
   int spriteW = SPRITE_SIZE * (int)SCALE;
   int playerLeft = player->x;
@@ -285,8 +256,7 @@ int isPlayerOnTile(struct Player *player, struct Midground *mg) {
   return 0;
 }
 
-void updateFootstepSounds(struct Player *player, struct Midground *mg,
-                          int gameState) {
+void updateFootstepSounds(struct Player *player, struct Midground *mg, int gameState) {
   if (player->state != WALK || !player->onGround) {
     g_footstepTimer = FOOTSTEP_INTERVAL;
     return;

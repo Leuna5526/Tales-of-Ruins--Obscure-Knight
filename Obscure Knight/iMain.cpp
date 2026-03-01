@@ -132,8 +132,7 @@ void iKeyboard(unsigned char key) {
       gameState = TITLE_SCREEN_STATE;
     }
   } else if (gameState == CAVE_STATE) {
-    // Input is handled asynchronously in updateCaveState via GetAsyncKeyState
-  }
+	}
 }
 
 void iMouseMove(int mx, int my) {

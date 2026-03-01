@@ -8,7 +8,6 @@
 #include "midground.hpp"
 #include <stdlib.h>
 
-// Cave Coordinate Defines
 #define CAVE_P1_Y 10
 #define CAVE_P2_Y 260
 #define CAVE_P3_Y 450
@@ -21,19 +20,16 @@
 #define CAVE_P3_X_MAX 335
 
 void spawnCaveItems(struct Pickup pickups[]) {
-    // Clear existing pickups 
     for (int i = 0; i < MAX_PICKUPS; i++) pickups[i].active = 0;
 
-    int numItems = 2 + (rand() % 2); // random 2 or 3 items
+    int numItems = 2 + (rand() % 2); 
     
     for (int i = 0; i < numItems; i++) {
         for (int j = 0; j < MAX_PICKUPS; j++) {
             if (!pickups[j].active) {
                 pickups[j].active = 1;
-                // Random item type among the 4
                 pickups[j].type = (enum ItemType)(rand() % 4);
                 
-                // Pick a random platform
                 int pIdx = rand() % 3;
                 int xMin, xMax, y;
                 if (pIdx == 0) { xMin = CAVE_P1_X_MIN; xMax = CAVE_P1_X_MAX; y = CAVE_P1_Y; }
@@ -41,27 +37,23 @@ void spawnCaveItems(struct Pickup pickups[]) {
                 else { xMin = CAVE_P3_X_MIN; xMax = CAVE_P3_X_MAX; y = CAVE_P3_Y; }
                 
                 pickups[j].x = xMin + (rand() % (xMax - xMin - PICKUP_SIZE));
-                pickups[j].y = y + 10; // Slightly above ground
+                pickups[j].y = y + 10; 
                 break;
             }
         }
     }
 }
 
-// Scripted Jump Zones
 #define CAVE_JUMP_P1_TO_P2_MIN 300
 #define CAVE_JUMP_P1_TO_P2_MAX 380
 #define CAVE_JUMP_P2_TO_P3_MIN 380
 #define CAVE_JUMP_P2_TO_P3_MAX 450
 
-// Teleport Targets
 #define CAVE_P2_LAND_X 420
 #define CAVE_P3_LAND_X 250
 
-// Exit Condition
 #define CAVE_EXIT_X 20
 
-// NPC Coordinate Defines
 #define CAVE_NPC_X 275
 #define CAVE_NPC_Y 18
 
@@ -293,7 +285,7 @@ void updateCaveState(struct Player *player, struct Background *bg, struct Midgro
         }
 
         if (jumpKey && !caveJumpWas) {
-            player->vy = 25; // High jump for cave
+            player->vy = 25; 
             player->onGround = 0;
             setPlayerState(player, JUMP); 
             playJumpSound();
