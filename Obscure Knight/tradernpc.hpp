@@ -19,6 +19,7 @@ void initTraderNPC(struct TraderNPC *t) {
   t->facingRight = 0;
   t->active = 1;
   t->traded = 0;
+  t->initialX = TRADER_NPC_X;
 }
 
 void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
@@ -60,6 +61,12 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
       else
         t->frame = (t->frame + 1) % TRADER_WALK_L_FRAMES;
       break;
+    case TRADER_WALK_BACK:
+      if (t->facingRight)
+        t->frame = (t->frame + 1) % TRADER_WALK_R_FRAMES;
+      else
+        t->frame = (t->frame + 1) % TRADER_WALK_L_FRAMES;
+      break;
     default:
       break;
     }
@@ -68,6 +75,19 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
   // State logic
   switch (t->state) {
   case TRADER_IDLE_STATE:
+    // Check if player is out of range from NPC's initial position
+    {
+      float dxFromInit = (float)(player->x - t->initialX);
+      float distFromInit = (dxFromInit < 0) ? -dxFromInit : dxFromInit;
+      if (distFromInit > TRADER_DETECTION_RADIUS && t->x != t->initialX) {
+        // Player left — walk back to initial position
+        t->state = TRADER_WALK_BACK;
+        t->frame = 0;
+        t->stateTimer = 0;
+        t->facingRight = (t->initialX > t->x) ? 1 : 0;
+        break;
+      }
+    }
     // Detect player within radius
     if (distance <= TRADER_DETECTION_RADIUS) {
       t->state = TRADER_WALK_TO_PLAYER;
@@ -78,7 +98,19 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
     }
     break;
 
-  case TRADER_WALK_TO_PLAYER:
+  case TRADER_WALK_TO_PLAYER: {
+    // Check if player walked away during approach
+    float dxFromInit = (float)(player->x - t->initialX);
+    float distFromInit = (dxFromInit < 0) ? -dxFromInit : dxFromInit;
+    if (distFromInit > TRADER_DETECTION_RADIUS) {
+      // Player left — walk back to initial position
+      t->state = TRADER_WALK_BACK;
+      t->frame = 0;
+      t->stateTimer = 0;
+      t->facingRight = (t->initialX > t->x) ? 1 : 0;
+      break;
+    }
+
     // Walk towards player
     if (dx > 0) {
       t->x += TRADER_WALK_SPEED;
@@ -93,18 +125,27 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
       t->state = TRADER_PROMPT_INTERACT;
       t->frame = 0;
       t->stateTimer = 0;
-      // Stay idle animation while waiting for E
     }
     break;
+  }
 
-  case TRADER_PROMPT_INTERACT:
+  case TRADER_PROMPT_INTERACT: {
+    // Check if player walked away while waiting
+    float dxFromInit = (float)(player->x - t->initialX);
+    float distFromInit = (dxFromInit < 0) ? -dxFromInit : dxFromInit;
+    if (distFromInit > TRADER_DETECTION_RADIUS) {
+      t->state = TRADER_WALK_BACK;
+      t->frame = 0;
+      t->stateTimer = 0;
+      t->facingRight = (t->initialX > t->x) ? 1 : 0;
+      break;
+    }
     // Animate idle while waiting
-    // Input handled externally
-    // Keep facing the player
     if (t->animTimer == 0) {
       t->frame = (t->frame + 1) % TRADER_IDLE_FRAMES;
     }
     break;
+  }
 
   case TRADER_TURN_STATE:
     // Turning to face player
@@ -148,6 +189,25 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
     }
     break;
 
+  case TRADER_WALK_BACK:
+    // Walk back towards initial position
+    if (t->initialX > t->x) {
+      t->x += TRADER_WALK_SPEED;
+      t->facingRight = 1;
+    } else if (t->initialX < t->x) {
+      t->x -= TRADER_WALK_SPEED;
+      t->facingRight = 0;
+    }
+
+    // Reached initial position (within walking speed tolerance)
+    if (abs(t->x - t->initialX) <= TRADER_WALK_SPEED) {
+      t->x = t->initialX;
+      t->state = TRADER_IDLE_STATE;
+      t->frame = 0;
+      t->stateTimer = 0;
+    }
+    break;
+
   case TRADER_DONE:
     break;
   }
@@ -178,6 +238,7 @@ void renderTraderNPC(struct TraderNPC *t, struct Camera *camera) {
     tex = traderTrade[t->frame % TRADER_TRADE_FRAMES];
     break;
   case TRADER_WALK_AWAY:
+  case TRADER_WALK_BACK:
     if (t->facingRight)
       tex = traderWalkR[t->frame % TRADER_WALK_R_FRAMES];
     else

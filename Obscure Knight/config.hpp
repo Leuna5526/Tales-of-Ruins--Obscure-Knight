@@ -228,7 +228,7 @@
 // ============================================================
 // TRADER NPC (Level 3)
 // ============================================================
-#define TRADER_NPC_X 2100
+#define TRADER_NPC_X 2400
 #define TRADER_NPC_Y LEVEL3_GROUND_Y
 #define TRADER_IDLE_FRAMES 8
 #define TRADER_WALK_L_FRAMES 9
@@ -263,28 +263,36 @@
 #define GRIM_TELEPORT_IN_FRAMES 9
 #define GRIM_TELEPORT_OUT_FRAMES 6
 #define GRIM_TELEPORT_OUT_PILLAR_FRAMES 6
-#define GRIM_SIZE 230
+#define GRIM_SIZE 220
 #define GRIM_SPEED 4
 #define GRIM_DASH_SPEED 15
-#define GRIM_DETECTION_RANGE 600
+#define GRIM_DETECTION_RANGE 390
 #define GRIM_DASH_RANGE 200
-#define GRIM_ATTACK_RANGE 400
+#define GRIM_ATTACK_RANGE 300
 #define GRIM_FIREBALL_SPEED 12
-#define GRIM_FIREBALL_SIZE 288
+#define GRIM_FIREBALL_SIZE 188
 #define GRIM_ANIM_SPEED 4
 #define GRIM_TELEPORT_CHANCE 6
 #define GRIM_THROW_CHANCE 6
-#define GRIM_TELEPORT_RADIUS 300
+#define GRIM_TELEPORT_RADIUS 100
 #define GRIM_INVINCIBILITY_FRAMES 90
 #define GRIM_DAMAGE_FRAMES 3
 #define MAX_GRIMS 3
-#define GRIM_SPAWN_1_X 1100
-#define GRIM_SPAWN_2_X 2900
+#define GRIM_SPAWN_1_X 1000
+#define GRIM_SPAWN_2_X 3100
 #define GRIM_SPAWN_3_X 4100
 #define GRIM_SPAWN_Y_OFFSET 82
 #define GRIM_FIREBALL_DAMAGE 15
 #define GRIM_CONTACT_DAMAGE 10
 #define MAX_GRIM_FIREBALLS 6
+
+// Fireball spawn position offsets (relative to Grim's x,y)
+#define GRIM_FB_SPAWN_OFFSET_X_RIGHT 15  // X offset when facing right (center-front of grim)
+#define GRIM_FB_SPAWN_OFFSET_X_LEFT  15  // X offset when facing left (center-front of grim)
+#define GRIM_FB_SPAWN_OFFSET_Y       90  // Y offset from grim's y (staff height)
+// Fireball target offsets
+#define GRIM_FB_TARGET_PLAYER_OFFSET_X 16 // offset to center of player sprite
+#define GRIM_FB_TARGET_GROUND_OFFSET   200  // how far below ground level to target
 
 // ============================================================
 // FINAL BOSS CONFIGURATION

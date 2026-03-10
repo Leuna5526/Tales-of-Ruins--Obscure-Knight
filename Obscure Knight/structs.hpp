@@ -314,6 +314,7 @@ enum TraderState {
   TRADER_SHOW_KEY,
   TRADER_TRADING,
   TRADER_WALK_AWAY,
+  TRADER_WALK_BACK,
   TRADER_DONE
 };
 
@@ -326,6 +327,7 @@ struct TraderNPC {
   int facingRight;
   int active;
   int traded;
+  int initialX; // initial spawn X to return to
 };
 
 // ============================================================

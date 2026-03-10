@@ -123,12 +123,18 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
     float distFromSpawn = sqrt((double)(sdx * sdx + sdy * sdy));
 
     if (distFromSpawn > 600) {
-      if (g->state != GRIM_IDLE_STATE) {
-        g->state = GRIM_IDLE_STATE;
-        g->frame = 0;
-        g->stateTimer = 0;
-        g->subStateTimer = 0;
-      }
+      // Player left the range — move Grim back to initial spawn position
+      g->x = g->spawnX;
+      g->y = g->spawnY;
+      g->state = GRIM_IDLE_STATE;
+      g->frame = 0;
+      g->stateTimer = 0;
+      g->subStateTimer = 0;
+      g->facingRight = 0;
+      g->currentHealth = g->maxHealth; // reset health
+      g->invincibilityTimer = 0;
+      g->damageAnimTimer = 0;
+      g->damageFrame = 0;
       continue;
     }
 
@@ -219,85 +225,83 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
 
     // State logic
     switch (g->state) {
-    case GRIM_IDLE_STATE:
-      if (distance <= 500) {
-        // Face player
-        int shouldFaceRight = (dx > 0) ? 1 : 0;
-        if (shouldFaceRight != g->facingRight) {
-          g->state = GRIM_TURN_STATE;
+    case GRIM_IDLE_STATE: {
+      // Face player first
+      int shouldFaceRight = (dx > 0) ? 1 : 0;
+      if (shouldFaceRight != g->facingRight) {
+        g->state = GRIM_TURN_STATE;
+        g->frame = 0;
+        g->stateTimer = 0;
+        g->subStateTimer = 0;
+      } else if (distance <= 500) {
+        // Close combat range - pick an action
+        int choice = rand() % 100;
+        if (choice < 25) {
+          // Teleport from front to behind the player
+          g->state = GRIM_TELEPORT_OUT_STATE;
           g->frame = 0;
           g->stateTimer = 0;
           g->subStateTimer = 0;
-        } else if (distance > 160) {
+          // Grim is currently in front of player; teleport to behind player
+          // "behind" = the opposite side from where Grim currently is
+          if (g->x < player->x) {
+            // Grim is to the left (in front from left), teleport to right (behind)
+            g->teleportTargetX = player->x + GRIM_TELEPORT_RADIUS - (rand() % 80);
+          } else {
+            // Grim is to the right (in front from right), teleport to left (behind)
+            g->teleportTargetX = player->x - GRIM_TELEPORT_RADIUS + (rand() % 80);
+          }
+          if (g->teleportTargetX < 50)
+            g->teleportTargetX = 50;
+          if (g->teleportTargetX > TOTAL_BG_WIDTH - 100)
+            g->teleportTargetX = TOTAL_BG_WIDTH - 100;
+        } else if (choice < 50 && distance > 160) {
           // Dash towards player to get to ~150 radius
           g->state = GRIM_DASH_ANTICIPATE;
           g->frame = 0;
           g->stateTimer = 0;
           g->subStateTimer = 0;
-        } else if (distance < 140) {
-             // Too close, move away? Or just stay.
-             // User says "dashes to the player 150 radius and stays in that radius"
-             // I'll just dash away if too close or just stay.
-             // For now, let's keep it simple: stay and throw fireballs if near 150.
-             g->state = GRIM_THROW_ANTICIPATE;
-             g->frame = 0;
-             g->stateTimer = 0;
-             g->subStateTimer = 0;
         } else {
-             // approx 150, throw fireballs
-             g->state = GRIM_THROW_ANTICIPATE;
-             g->frame = 0;
-             g->stateTimer = 0;
-             g->subStateTimer = 0;
-        }
-      } else if (g->stateTimer > 10) { // Original detection logic for far away
-        // Decide what to do: turn to face player, then attack
-        int shouldFaceRight = (dx > 0) ? 1 : 0;
-        if (shouldFaceRight != g->facingRight) {
-          g->state = GRIM_TURN_STATE;
+          // Throw fireball
+          g->state = GRIM_THROW_ANTICIPATE;
           g->frame = 0;
           g->stateTimer = 0;
           g->subStateTimer = 0;
-        } else {
-          // Highly aggressive: dash or throw instantly
-          int choice = rand() % 100;
-          if (choice < 45 && distance <= GRIM_ATTACK_RANGE) {
-            // Dash attack
-            g->state = GRIM_DASH_ANTICIPATE;
-            g->frame = 0;
-            g->stateTimer = 0;
-            g->subStateTimer = 0;
-          } else if (choice < 85) {
-            // Throw fireball
-            g->state = GRIM_THROW_ANTICIPATE;
-            g->frame = 0;
-            g->stateTimer = 0;
-            g->subStateTimer = 0;
-          } else if (choice < 90) {
-            // Teleport
-            g->state = GRIM_TELEPORT_OUT_STATE;
-            g->frame = 0;
-            g->stateTimer = 0;
-            g->subStateTimer = 0;
-            // Set teleport target: behind the player
-            if (dx > 0) {
-              g->teleportTargetX =
-                  player->x - GRIM_TELEPORT_RADIUS + (rand() % 100);
-            } else {
-              g->teleportTargetX =
-                  player->x + GRIM_TELEPORT_RADIUS - (rand() % 100);
-            }
-            if (g->teleportTargetX < 50)
-              g->teleportTargetX = 50;
-            if (g->teleportTargetX > TOTAL_BG_WIDTH - 100)
-              g->teleportTargetX = TOTAL_BG_WIDTH - 100;
+        }
+      } else if (g->stateTimer > 10) {
+        // Far away - dash, throw, or teleport behind player
+        int choice = rand() % 100;
+        if (choice < 30 && distance <= GRIM_ATTACK_RANGE) {
+          g->state = GRIM_DASH_ANTICIPATE;
+          g->frame = 0;
+          g->stateTimer = 0;
+          g->subStateTimer = 0;
+        } else if (choice < 65) {
+          g->state = GRIM_THROW_ANTICIPATE;
+          g->frame = 0;
+          g->stateTimer = 0;
+          g->subStateTimer = 0;
+        } else if (choice < 85) {
+          // Teleport behind the player
+          g->state = GRIM_TELEPORT_OUT_STATE;
+          g->frame = 0;
+          g->stateTimer = 0;
+          g->subStateTimer = 0;
+          if (g->x < player->x) {
+            g->teleportTargetX = player->x + GRIM_TELEPORT_RADIUS - (rand() % 80);
           } else {
-            // Stay idle a bit more
-            g->stateTimer = 30;
+            g->teleportTargetX = player->x - GRIM_TELEPORT_RADIUS + (rand() % 80);
           }
+          if (g->teleportTargetX < 50)
+            g->teleportTargetX = 50;
+          if (g->teleportTargetX > TOTAL_BG_WIDTH - 100)
+            g->teleportTargetX = TOTAL_BG_WIDTH - 100;
+        } else {
+          g->stateTimer = 30;
         }
       }
       break;
+    }
 
     case GRIM_TURN_STATE: {
       int turnFrames = g->facingRight ? GRIM_TURN_R_FRAMES : GRIM_TURN_L_FRAMES;
@@ -349,13 +353,14 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
         g->frame = 0;
         g->stateTimer = 0;
         g->subStateTimer = 0;
-        // Spawn fireball from the Grim's stick (staff) position
-        // Stick is near the forward-center of the sprite, at upper-third height
-        int fbX = g->facingRight ? g->x + GRIM_SIZE - 40 : g->x + 40 - GRIM_FIREBALL_SIZE;
-        int fbY = g->y + (GRIM_SIZE * 2 / 3); // staff height (upper portion)
-        // Target: player's X coordinate, Y = level 3 ground
-        int targetFbX = player->x + (int)(64 * SCALE);
-        int targetFbY = LEVEL3_GROUND_Y;
+        // Spawn fireball from the Grim's current position
+        int fbX = g->facingRight
+                  ? g->x + GRIM_FB_SPAWN_OFFSET_X_RIGHT
+                  : g->x + GRIM_SIZE - GRIM_FB_SPAWN_OFFSET_X_LEFT - GRIM_FIREBALL_SIZE;
+        int fbY = g->y + GRIM_FB_SPAWN_OFFSET_Y;
+        // Target: player's current X, Y = ground - offset
+        int targetFbX = player->x + GRIM_FB_TARGET_PLAYER_OFFSET_X;
+        int targetFbY = LEVEL3_GROUND_Y - GRIM_FB_TARGET_GROUND_OFFSET;
         spawnGrimFireball(fireballs, fbX, fbY, targetFbX, targetFbY);
       }
       break;
@@ -406,7 +411,15 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
 
     case GRIM_TELEPORT_IN_STATE:
       if (g->subStateTimer >= GRIM_TELEPORT_IN_FRAMES * 2) { // Faster
-        g->state = GRIM_IDLE_STATE;
+        // After teleporting behind the player, immediately follow up with attack
+        int followUp = rand() % 100;
+        if (followUp < 60) {
+          // Throw fireball at player from behind
+          g->state = GRIM_THROW_ANTICIPATE;
+        } else {
+          // Dash attack from behind
+          g->state = GRIM_DASH_ANTICIPATE;
+        }
         g->frame = 0;
         g->stateTimer = 0;
         g->subStateTimer = 0;
@@ -571,9 +584,9 @@ void updateGrimFireballs(struct GrimFireball fireballs[],
     // Out of bounds or ground contact check
     if (fireballs[i].x < -100 || fireballs[i].x > TOTAL_BG_WIDTH + 100 ||
         fireballs[i].y < -100 || fireballs[i].y > 700 || 
-        fireballs[i].y <= LEVEL3_GROUND_Y + 10) {
+        fireballs[i].y <= LEVEL3_GROUND_Y - GRIM_FB_TARGET_GROUND_OFFSET + 10) {
       // Explode on ground
-      if (fireballs[i].y <= LEVEL3_GROUND_Y + 10) {
+      if (fireballs[i].y <= LEVEL3_GROUND_Y - GRIM_FB_TARGET_GROUND_OFFSET + 10) {
         fireballs[i].exploding = 1;
         fireballs[i].explodeFrame = 0;
         fireballs[i].explodeTimer = 0;
