@@ -84,6 +84,8 @@ struct Player {
   int hasGain;
   int gainTimer;
   int gainRegenTimer;
+  int hasKey;
+  int hasUsedKey;
 };
 
 struct Camera {
@@ -197,7 +199,7 @@ struct TitleScreen {
   int mouseX, mouseY;
 };
 
-enum ItemType { ITEM_HEART, ITEM_POTION, ITEM_POWER, ITEM_GAIN };
+enum ItemType { ITEM_HEART, ITEM_POTION, ITEM_POWER, ITEM_GAIN, ITEM_KEY };
 
 struct Pickup {
   int x, y;
@@ -299,6 +301,80 @@ struct BossHazard {
   int animTimer;
   int hasHit; // already damaged the player
   enum HazardType type;
+};
+
+// ============================================================
+// TRADER NPC (Level 3)
+// ============================================================
+enum TraderState {
+  TRADER_IDLE_STATE,
+  TRADER_WALK_TO_PLAYER,
+  TRADER_TURN_STATE,
+  TRADER_PROMPT_INTERACT,
+  TRADER_SHOW_KEY,
+  TRADER_TRADING,
+  TRADER_WALK_AWAY,
+  TRADER_DONE
+};
+
+struct TraderNPC {
+  int x, y;
+  int frame;
+  int animTimer;
+  enum TraderState state;
+  int stateTimer;
+  int facingRight;
+  int active;
+  int traded;
+};
+
+// ============================================================
+// GRIM MASTER (Level 3 enemy)
+// ============================================================
+enum GrimState {
+  GRIM_INACTIVE,
+  GRIM_IDLE_STATE,
+  GRIM_TURN_STATE,
+  GRIM_DASH_ANTICIPATE,
+  GRIM_DASHING,
+  GRIM_THROW_ANTICIPATE,
+  GRIM_THROWING,
+  GRIM_TELEPORT_OUT_STATE,
+  GRIM_TELEPORT_OUT_PILLAR,
+  GRIM_TELEPORT_IN_PILLAR,
+  GRIM_TELEPORT_IN_STATE,
+  GRIM_DYING,
+  GRIM_DEAD
+};
+
+struct GrimMaster {
+  int x, y;
+  int frame;
+  int animTimer;
+  int active;
+  int facingRight;
+  enum GrimState state;
+  int stateTimer;
+  int subStateTimer;
+  int currentHealth;
+  int maxHealth;
+  int invincibilityTimer;
+  int damageAnimTimer;
+  int damageFrame;
+  int teleportTargetX;
+  int spawnX, spawnY;
+};
+
+struct GrimFireball {
+  int x, y;
+  int targetX, targetY;
+  float vx, vy;
+  int active;
+  int frame;
+  int animTimer;
+  int exploding;
+  int explodeFrame;
+  int explodeTimer;
 };
 
 #endif

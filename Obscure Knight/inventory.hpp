@@ -21,6 +21,8 @@ inline void initPlayerInventory(struct Player *player) {
   player->heartRegenTimer = 0;
   player->gainTimer = 0;
   player->gainRegenTimer = 0;
+  player->hasKey = 0;
+  player->hasUsedKey = 0;
 }
 
 inline void initPickups(struct Pickup pickups[]) {
@@ -79,6 +81,9 @@ inline void updatePickups(struct Pickup pickups[], struct Player *player) {
         break;
       case ITEM_GAIN:
         player->hasGain = 1;
+        break;
+      case ITEM_KEY:
+        player->hasKey = 1;
         break;
       }
       if (canPickup) {
@@ -214,6 +219,17 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow,
     player->gainRegenTimer = 0;
   }
   key5WasPressed = key5;
+
+  static int key6WasPressed = 0;
+  int key6 = GetAsyncKeyState('6') & 0x8000;
+  // Key can only be used when player is at the end of level 3 background
+  if (key6 && !key6WasPressed && player->hasKey &&
+      gameState == LEVEL3_STATE && player->x >= LEVEL3_END_X - 200) {
+    player->hasKey = 0;
+    player->hasUsedKey = 1;
+    printf("Key used! You can now enter the boss area.\n");
+  }
+  key6WasPressed = key6;
 }
 
 inline void updateItemEffects(struct Player *player) {
@@ -344,6 +360,9 @@ inline void renderPickups(struct Pickup pickups[], struct Camera *camera) {
     case ITEM_GAIN:
       tex = pickableGainTex;
       break;
+    case ITEM_KEY:
+      tex = traderKeyTex;
+      break;
     }
 
     if (tex != 0) {
@@ -392,6 +411,12 @@ inline void renderInventoryUI(struct Player *player) {
   if (player->hasGain && inventoryGainTex != 0) {
     iShowImage(INVENTORY_X, INVENTORY_Y, INVENTORY_W, INVENTORY_H,
                inventoryGainTex);
+  }
+
+  if (player->hasKey && traderKeyTex != 0) {
+    // Render key in its own slot at original size
+    iShowImage(INVENTORY_X + 43, INVENTORY_Y + 41, 64, 64,
+               traderKeyTex);
   }
 }
 #endif

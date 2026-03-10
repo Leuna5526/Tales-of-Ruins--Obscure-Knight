@@ -86,6 +86,8 @@
     <ClInclude Include="structs.hpp" />
     <ClInclude Include="title.hpp" />
     <ClInclude Include="sounds.hpp" />
+    <ClInclude Include="grimmaster.hpp" />
+    <ClInclude Include="tradernpc.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,7 @@
 #include "bug.hpp"
 #include "camera.hpp"
 #include "game.hpp"
+#include "grimmaster.hpp"
 #include "healthbar.hpp"
 #include "iGraphics.h"
 #include "midground.hpp"
@@ -13,6 +14,7 @@
 #include "structs.hpp"
 #include "textures.hpp"
 #include "title.hpp"
+#include "tradernpc.hpp"
 #include <math.h>
 #include <time.h>
 
@@ -31,6 +33,9 @@ struct NPC npc;
 struct Boss boss;
 struct BossMinion bossMinions[MAX_BOSS_MINIONS];
 struct BossHazard bossHazards[MAX_BOSS_HAZARDS];
+struct TraderNPC traderNpc;
+struct GrimMaster grims[MAX_GRIMS];
+struct GrimFireball grimFireballs[MAX_GRIM_FIREBALLS];
 
 void iDraw() {
   iClear();
@@ -73,6 +78,9 @@ void iDraw() {
     renderPlayer(&player, &camera);
   } else if (gameState == LEVEL3_STATE) {
     renderBackgroundWithCamera(&camera, level3BackgroundTextures);
+    renderTraderNPC(&traderNpc, &camera);
+    renderGrims(grims, &camera);
+    renderGrimFireballs(grimFireballs, &camera);
     renderStaminaBar(&player);
     renderHealthBar(&player);
     renderPickups(pickups, &camera);
@@ -135,6 +143,48 @@ void animate() {
       updateFootstepSounds(&player, &mg, gameState);
       updateHealthSound(&player);
     }
+    if (gameState == LEVEL3_STATE) {
+      updateTraderNPC(&traderNpc, &player);
+      updateGrims(grims, grimFireballs, &player, pickups);
+      updateGrimFireballs(grimFireballs, &player);
+
+      // Trader NPC keyboard interaction
+      static int traderEKeyWas = 0;
+      int traderEKey = (GetAsyncKeyState('E') & 0x8000);
+      if (traderEKey && !traderEKeyWas &&
+          traderNpc.state == TRADER_PROMPT_INTERACT) {
+        traderNpc.state = TRADER_TURN_STATE;
+        traderNpc.frame = 0;
+        traderNpc.stateTimer = 0;
+      }
+      traderEKeyWas = traderEKey;
+
+      static int traderSpaceKeyWas = 0;
+      int traderSpaceKey = (GetAsyncKeyState(VK_SPACE) & 0x8000);
+      if (traderSpaceKey && !traderSpaceKeyWas &&
+          traderNpc.state == TRADER_SHOW_KEY) {
+        // Collect the key
+        player.hasKey = 1;
+        traderNpc.state = TRADER_TRADING;
+        traderNpc.frame = 0;
+        traderNpc.stateTimer = 0;
+      }
+      traderSpaceKeyWas = traderSpaceKey;
+
+      static int traderXKeyWas = 0;
+      int traderXKey = (GetAsyncKeyState('X') & 0x8000);
+      if (traderXKey && !traderXKeyWas &&
+          traderNpc.state == TRADER_SHOW_KEY) {
+        // Ignore - NPC walks away
+        traderNpc.state = TRADER_WALK_AWAY;
+        traderNpc.frame = 0;
+        traderNpc.stateTimer = 0;
+        // Walk away from player
+        float tdx = (float)(player.x - traderNpc.x);
+        traderNpc.facingRight = (tdx > 0) ? 0 : 1; // walk opposite to player
+      }
+      traderXKeyWas = traderXKey;
+    }
     if (gameState == BOSS_STATE) {
       updateBoss(&boss, &player, bossMinions, bossHazards);
       updateMinions(bossMinions, &player);
@@ -195,6 +245,9 @@ void iKeyboard(unsigned char key) {
     stopBGMusic();
     stopBossBGMusic();
     playBG2Music();
+    initTraderNPC(&traderNpc);
+    initGrims(grims);
+    initGrimFireballs(grimFireballs);
     return;
   } else if (key == '4') {
     gameState = BOSS_STATE;
@@ -242,6 +295,9 @@ void iKeyboard(unsigned char key) {
     stopBGMusic();
     stopBossBGMusic();
     playBG2Music();
+    initTraderNPC(&traderNpc);
+    initGrims(grims);
+    initGrimFireballs(grimFireballs);
   } else if (key == '4') {
     gameState = BOSS_STATE;
     player.x = 200;
@@ -310,6 +366,9 @@ int main() {
   initBoss(&boss);
   initMinions(bossMinions);
   initHazards(bossHazards);
+  initTraderNPC(&traderNpc);
+  initGrims(grims);
+  initGrimFireballs(grimFireballs);
 
   loadImages();
   loadTitleTextures(&titleScreen);

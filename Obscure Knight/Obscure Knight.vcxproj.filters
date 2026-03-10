@@ -71,5 +71,11 @@
     <ClInclude Include="boss.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="grimmaster.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tradernpc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

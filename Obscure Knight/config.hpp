@@ -226,6 +226,67 @@
 #define GAIN_REGEN_AMOUNT 20
 
 // ============================================================
+// TRADER NPC (Level 3)
+// ============================================================
+#define TRADER_NPC_X 2100
+#define TRADER_NPC_Y LEVEL3_GROUND_Y
+#define TRADER_IDLE_FRAMES 8
+#define TRADER_WALK_L_FRAMES 9
+#define TRADER_WALK_R_FRAMES 9
+#define TRADER_TURN_FRAMES 2
+#define TRADER_TRADE_FRAMES 4
+#define TRADER_DETECTION_RADIUS 300
+#define TRADER_STOP_RADIUS 70
+#define TRADER_WALK_SPEED 3
+#define TRADER_ANIM_SPEED 6
+#define TRADER_SIZE 128
+
+// ============================================================
+// GRIM MASTER (Level 3 enemy)
+// ============================================================
+#define GRIM_MAX_HEALTH 250
+#define GRIM_IDLE_FRAMES 10
+#define GRIM_TURN_L_FRAMES 3
+#define GRIM_TURN_R_FRAMES 3
+#define GRIM_DASH_ANTIC_L_FRAMES 8
+#define GRIM_DASH_ANTIC_R_FRAMES 8
+#define GRIM_DASH_L_FRAMES 5
+#define GRIM_DASH_R_FRAMES 5
+#define GRIM_DEATH_FRAMES 3
+#define GRIM_THROW_ANTIC_L_FRAMES 5
+#define GRIM_THROW_ANTIC_R_FRAMES 5
+#define GRIM_THROW_L_FRAMES 3
+#define GRIM_THROW_R_FRAMES 3
+#define GRIM_FIREBALL_FRAMES 8
+#define GRIM_FIREBALL_EXPLODE_FRAMES 4
+#define GRIM_TELEPORT_IN_PILLAR_FRAMES 6
+#define GRIM_TELEPORT_IN_FRAMES 9
+#define GRIM_TELEPORT_OUT_FRAMES 6
+#define GRIM_TELEPORT_OUT_PILLAR_FRAMES 6
+#define GRIM_SIZE 230
+#define GRIM_SPEED 4
+#define GRIM_DASH_SPEED 15
+#define GRIM_DETECTION_RANGE 600
+#define GRIM_DASH_RANGE 200
+#define GRIM_ATTACK_RANGE 400
+#define GRIM_FIREBALL_SPEED 12
+#define GRIM_FIREBALL_SIZE 288
+#define GRIM_ANIM_SPEED 4
+#define GRIM_TELEPORT_CHANCE 6
+#define GRIM_THROW_CHANCE 6
+#define GRIM_TELEPORT_RADIUS 300
+#define GRIM_INVINCIBILITY_FRAMES 90
+#define GRIM_DAMAGE_FRAMES 3
+#define MAX_GRIMS 3
+#define GRIM_SPAWN_1_X 1100
+#define GRIM_SPAWN_2_X 2900
+#define GRIM_SPAWN_3_X 4100
+#define GRIM_SPAWN_Y_OFFSET 82
+#define GRIM_FIREBALL_DAMAGE 15
+#define GRIM_CONTACT_DAMAGE 10
+#define MAX_GRIM_FIREBALLS 6
+
+// ============================================================
 // FINAL BOSS CONFIGURATION
 // ============================================================
 

@@ -114,11 +114,10 @@ unsigned int npcRetreat[NPC_RETREAT_FRAMES];
 unsigned int dialogues[DIALOGUE_COUNT];
 
 void loadBossEntityTextures(); // forward declaration
-
 void loadSet(unsigned int *arr, int n, const char *fmt) {
-  char name[64];
+  char name[128];
   for (int i = 0; i < n; i++) {
-    sprintf_s(name, fmt, i + 1);
+    sprintf_s(name, sizeof(name), fmt, i + 1);
     arr[i] = iLoadImage(name);
   }
 }
@@ -221,6 +220,143 @@ void loadNPCTextures() {
   loadSet(dialogues, DIALOGUE_COUNT, "Assets/Level 2/Dialogue/dialogue%d.png");
 }
 
+
+// ============================================================
+// BOSS ENTITY TEXTURES
+// ============================================================
+
+unsigned int bossIdle[BOSS_IDLE_FRAMES];
+unsigned int bossWalkL[BOSS_WALK_FRAMES];
+unsigned int bossWalkR[BOSS_WALK_FRAMES];
+unsigned int bossSlashL[BOSS_SLASH_FRAMES];
+unsigned int bossSlashR[BOSS_SLASH_FRAMES];
+unsigned int bossDashL[BOSS_DASH_FRAMES];
+unsigned int bossDashR[BOSS_DASH_FRAMES];
+unsigned int bossCastL[BOSS_CAST_FRAMES];
+unsigned int bossCastR[BOSS_CAST_FRAMES];
+unsigned int bossTeleportOut[BOSS_TELEPORT_FRAMES];
+unsigned int bossTeleportIn[BOSS_TELEPORT_FRAMES];
+unsigned int bossSpike[BOSS_SPIKE_FRAMES];
+unsigned int bossTrapIn[BOSS_TRAPIN_FRAMES];
+unsigned int bossTrapOut[BOSS_TRAPOUT_FRAMES];
+unsigned int bossDeath[BOSS_DEATH_FRAMES];
+
+unsigned int fireBatL[FIREBAT_FRAMES];
+unsigned int fireBatR[FIREBAT_FRAMES];
+unsigned int batL[BAT_FRAMES];
+unsigned int batR[BAT_FRAMES];
+unsigned int batDeath[BAT_DEATH_FRAMES];
+
+void loadBossEntityTextures() {
+  loadSet(bossIdle, BOSS_IDLE_FRAMES, "Assets/Boss/Idle/%d.png");
+  loadSet(bossWalkL, BOSS_WALK_FRAMES, "Assets/Boss/WalkL/%d.png");
+  loadSet(bossWalkR, BOSS_WALK_FRAMES, "Assets/Boss/WalkR/%d.png");
+  loadSet(bossSlashL, BOSS_SLASH_FRAMES, "Assets/Boss/SlashL/%d.png");
+  loadSet(bossSlashR, BOSS_SLASH_FRAMES, "Assets/Boss/SlashR/%d.png");
+  loadSet(bossDashL, BOSS_DASH_FRAMES, "Assets/Boss/DashL/%d.png");
+  loadSet(bossDashR, BOSS_DASH_FRAMES, "Assets/Boss/DashR/%d.png");
+  loadSet(bossCastL, BOSS_CAST_FRAMES, "Assets/Boss/CastL/%d.png");
+  loadSet(bossCastR, BOSS_CAST_FRAMES, "Assets/Boss/CastR/%d.png");
+  loadSet(bossTeleportOut, BOSS_TELEPORT_FRAMES,
+          "Assets/Boss/TeleportOut/%d.png");
+  loadSet(bossTeleportIn, BOSS_TELEPORT_FRAMES,
+          "Assets/Boss/TeleportIn/%d.png");
+  loadSet(bossSpike, BOSS_SPIKE_FRAMES, "Assets/Boss/Spike/%d.png");
+  loadSet(bossTrapIn, BOSS_TRAPIN_FRAMES, "Assets/Boss/TrapIn/%d.png");
+  loadSet(bossTrapOut, BOSS_TRAPOUT_FRAMES, "Assets/Boss/TrapOut/%d.png");
+  loadSet(bossDeath, BOSS_DEATH_FRAMES, "Assets/Boss/Death/%d.png");
+  loadSet(fireBatL, FIREBAT_FRAMES, "Assets/Boss/FireBatL/%d.png");
+  loadSet(fireBatR, FIREBAT_FRAMES, "Assets/Boss/FireBatR/%d.png");
+  loadSet(batL, BAT_FRAMES, "Assets/Boss/BatL/%d.png");
+  loadSet(batR, BAT_FRAMES, "Assets/Boss/BatR/%d.png");
+  loadSet(batDeath, BAT_DEATH_FRAMES, "Assets/Boss/BatDeath/%d.png");
+}
+
+// ============================================================
+// TRADER NPC TEXTURES (Level 3)
+// ============================================================
+unsigned int traderIdle[TRADER_IDLE_FRAMES];
+unsigned int traderWalkL[TRADER_WALK_L_FRAMES];
+unsigned int traderWalkR[TRADER_WALK_R_FRAMES];
+unsigned int traderTurn[TRADER_TURN_FRAMES];
+unsigned int traderTrade[TRADER_TRADE_FRAMES];
+unsigned int traderKeyTex = 0;
+
+void loadTraderNPCTextures() {
+  loadSet(traderIdle, TRADER_IDLE_FRAMES,
+          "Assets/Level 3/trader npc/idle/%d.png");
+  loadSet(traderWalkL, TRADER_WALK_L_FRAMES,
+          "Assets/Level 3/trader npc/walk/walk L/%d.png");
+  loadSet(traderWalkR, TRADER_WALK_R_FRAMES,
+          "Assets/Level 3/trader npc/walk/walk R/%d.png");
+  loadSet(traderTurn, TRADER_TURN_FRAMES,
+          "Assets/Level 3/trader npc/turn/%d.png");
+  loadSet(traderTrade, TRADER_TRADE_FRAMES,
+          "Assets/Level 3/trader npc/trade/%d.png");
+  traderKeyTex = iLoadImage("Assets/Level 3/trade item/Key.png");
+}
+
+// ============================================================
+// GRIM MASTER TEXTURES (Level 3)
+// ============================================================
+unsigned int grimIdle[GRIM_IDLE_FRAMES];
+unsigned int grimTurnL[GRIM_TURN_L_FRAMES];
+unsigned int grimTurnR[GRIM_TURN_R_FRAMES];
+unsigned int grimDashAnticL[GRIM_DASH_ANTIC_L_FRAMES];
+unsigned int grimDashAnticR[GRIM_DASH_ANTIC_R_FRAMES];
+unsigned int grimDashL[GRIM_DASH_L_FRAMES];
+unsigned int grimDashR[GRIM_DASH_R_FRAMES];
+unsigned int grimDeath[GRIM_DEATH_FRAMES];
+unsigned int grimThrowAnticL[GRIM_THROW_ANTIC_L_FRAMES];
+unsigned int grimThrowAnticR[GRIM_THROW_ANTIC_R_FRAMES];
+unsigned int grimThrowL[GRIM_THROW_L_FRAMES];
+unsigned int grimThrowR[GRIM_THROW_R_FRAMES];
+unsigned int grimFireball[GRIM_FIREBALL_FRAMES];
+unsigned int grimFireballExplode[GRIM_FIREBALL_EXPLODE_FRAMES];
+unsigned int grimTeleInPillar[GRIM_TELEPORT_IN_PILLAR_FRAMES];
+unsigned int grimTeleIn[GRIM_TELEPORT_IN_FRAMES];
+unsigned int grimTeleOut[GRIM_TELEPORT_OUT_FRAMES];
+unsigned int grimTeleOutPillar[GRIM_TELEPORT_OUT_PILLAR_FRAMES];
+
+void loadGrimMasterTextures() {
+  loadSet(grimIdle, GRIM_IDLE_FRAMES,
+          "Assets/Level 3/grim master/idle/%d.png");
+  loadSet(grimTurnL, GRIM_TURN_L_FRAMES,
+          "Assets/Level 3/grim master/turn/turn L/%d.png");
+  loadSet(grimTurnR, GRIM_TURN_R_FRAMES,
+          "Assets/Level 3/grim master/turn/turn R/%d.png");
+  loadSet(grimDashAnticL, GRIM_DASH_ANTIC_L_FRAMES,
+          "Assets/Level 3/grim master/dash/anticipate/anticipate L/%d.png");
+  loadSet(grimDashAnticR, GRIM_DASH_ANTIC_R_FRAMES,
+          "Assets/Level 3/grim master/dash/anticipate/anticipate R/%d.png");
+  loadSet(grimDashL, GRIM_DASH_L_FRAMES,
+          "Assets/Level 3/grim master/dash/dash/dash L/%d.png");
+  loadSet(grimDashR, GRIM_DASH_R_FRAMES,
+          "Assets/Level 3/grim master/dash/dash/dash R/%d.png");
+  loadSet(grimDeath, GRIM_DEATH_FRAMES,
+          "Assets/Level 3/grim master/death/%d.png");
+  loadSet(grimThrowAnticL, GRIM_THROW_ANTIC_L_FRAMES,
+          "Assets/Level 3/grim master/throw/anticipate/anticipate L/%d.png");
+  loadSet(grimThrowAnticR, GRIM_THROW_ANTIC_R_FRAMES,
+          "Assets/Level 3/grim master/throw/anticipate/anticipate R/%d.png");
+  loadSet(grimThrowL, GRIM_THROW_L_FRAMES,
+          "Assets/Level 3/grim master/throw/throws/throw L/%d.png");
+  loadSet(grimThrowR, GRIM_THROW_R_FRAMES,
+          "Assets/Level 3/grim master/throw/throws/throw R/%d.png");
+  loadSet(grimFireball, GRIM_FIREBALL_FRAMES,
+          "Assets/Level 3/grim master/fireball/fire balls/%d.png");
+  loadSet(grimFireballExplode, GRIM_FIREBALL_EXPLODE_FRAMES,
+          "Assets/Level 3/grim master/fireball/fire ball explode/%d.png");
+  loadSet(grimTeleInPillar, GRIM_TELEPORT_IN_PILLAR_FRAMES,
+          "Assets/Level 3/grim master/teleport/teleport in/pillar/%d.png");
+  loadSet(grimTeleIn, GRIM_TELEPORT_IN_FRAMES,
+          "Assets/Level 3/grim master/teleport/teleport in/%d.png");
+  loadSet(grimTeleOut, GRIM_TELEPORT_OUT_FRAMES,
+          "Assets/Level 3/grim master/teleport/teleport out/%d.png");
+  loadSet(grimTeleOutPillar, GRIM_TELEPORT_OUT_PILLAR_FRAMES,
+          "Assets/Level 3/grim master/teleport/teleport out/pillar/%d.png");
+}
+
 void loadImages() {
   loadSet(idle, IDLE_FRAMES, "Assets/mc/idle/%d.png");
   loadSet(walkLeft, WALK_FRAMES, "Assets/mc/walk/walk L/%d.png");
@@ -294,57 +430,8 @@ void loadImages() {
   caveTexture = iLoadImage("Assets/Level 2/bg/cave.png");
   loadNPCTextures();
   loadBossEntityTextures();
-}
-
-// ============================================================
-// BOSS ENTITY TEXTURES
-// ============================================================
-
-unsigned int bossIdle[BOSS_IDLE_FRAMES];
-unsigned int bossWalkL[BOSS_WALK_FRAMES];
-unsigned int bossWalkR[BOSS_WALK_FRAMES];
-unsigned int bossSlashL[BOSS_SLASH_FRAMES];
-unsigned int bossSlashR[BOSS_SLASH_FRAMES];
-unsigned int bossDashL[BOSS_DASH_FRAMES];
-unsigned int bossDashR[BOSS_DASH_FRAMES];
-unsigned int bossCastL[BOSS_CAST_FRAMES];
-unsigned int bossCastR[BOSS_CAST_FRAMES];
-unsigned int bossTeleportOut[BOSS_TELEPORT_FRAMES];
-unsigned int bossTeleportIn[BOSS_TELEPORT_FRAMES];
-unsigned int bossSpike[BOSS_SPIKE_FRAMES];
-unsigned int bossTrapIn[BOSS_TRAPIN_FRAMES];
-unsigned int bossTrapOut[BOSS_TRAPOUT_FRAMES];
-unsigned int bossDeath[BOSS_DEATH_FRAMES];
-
-unsigned int fireBatL[FIREBAT_FRAMES];
-unsigned int fireBatR[FIREBAT_FRAMES];
-unsigned int batL[BAT_FRAMES];
-unsigned int batR[BAT_FRAMES];
-unsigned int batDeath[BAT_DEATH_FRAMES];
-
-void loadBossEntityTextures() {
-  loadSet(bossIdle, BOSS_IDLE_FRAMES, "Assets/Boss/Idle/%d.png");
-  loadSet(bossWalkL, BOSS_WALK_FRAMES, "Assets/Boss/WalkL/%d.png");
-  loadSet(bossWalkR, BOSS_WALK_FRAMES, "Assets/Boss/WalkR/%d.png");
-  loadSet(bossSlashL, BOSS_SLASH_FRAMES, "Assets/Boss/SlashL/%d.png");
-  loadSet(bossSlashR, BOSS_SLASH_FRAMES, "Assets/Boss/SlashR/%d.png");
-  loadSet(bossDashL, BOSS_DASH_FRAMES, "Assets/Boss/DashL/%d.png");
-  loadSet(bossDashR, BOSS_DASH_FRAMES, "Assets/Boss/DashR/%d.png");
-  loadSet(bossCastL, BOSS_CAST_FRAMES, "Assets/Boss/CastL/%d.png");
-  loadSet(bossCastR, BOSS_CAST_FRAMES, "Assets/Boss/CastR/%d.png");
-  loadSet(bossTeleportOut, BOSS_TELEPORT_FRAMES,
-          "Assets/Boss/TeleportOut/%d.png");
-  loadSet(bossTeleportIn, BOSS_TELEPORT_FRAMES,
-          "Assets/Boss/TeleportIn/%d.png");
-  loadSet(bossSpike, BOSS_SPIKE_FRAMES, "Assets/Boss/Spike/%d.png");
-  loadSet(bossTrapIn, BOSS_TRAPIN_FRAMES, "Assets/Boss/TrapIn/%d.png");
-  loadSet(bossTrapOut, BOSS_TRAPOUT_FRAMES, "Assets/Boss/TrapOut/%d.png");
-  loadSet(bossDeath, BOSS_DEATH_FRAMES, "Assets/Boss/Death/%d.png");
-  loadSet(fireBatL, FIREBAT_FRAMES, "Assets/Boss/FireBatL/%d.png");
-  loadSet(fireBatR, FIREBAT_FRAMES, "Assets/Boss/FireBatR/%d.png");
-  loadSet(batL, BAT_FRAMES, "Assets/Boss/BatL/%d.png");
-  loadSet(batR, BAT_FRAMES, "Assets/Boss/BatR/%d.png");
-  loadSet(batDeath, BAT_DEATH_FRAMES, "Assets/Boss/BatDeath/%d.png");
+  loadTraderNPCTextures();
+  loadGrimMasterTextures();
 }
 
 #endif

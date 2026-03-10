@@ -7,6 +7,7 @@
 #include "bug.hpp"
 #include "camera.hpp"
 #include "cave.hpp"
+#include "grimmaster.hpp"
 #include "midground.hpp"
 #include "player.hpp"
 #include "sounds.hpp"
@@ -15,6 +16,9 @@ extern struct NPC npc;
 extern struct Boss boss;
 extern struct BossMinion bossMinions[MAX_BOSS_MINIONS];
 extern struct BossHazard bossHazards[MAX_BOSS_HAZARDS];
+extern struct TraderNPC traderNpc;
+extern struct GrimMaster grims[MAX_GRIMS];
+extern struct GrimFireball grimFireballs[MAX_GRIM_FIREBALLS];
 
 void updateGame(struct Player *player, struct Creature creatures[],
                 struct Background *bg, struct Midground *mg,
@@ -81,25 +85,45 @@ void updateGame(struct Player *player, struct Creature creatures[],
       camera->targetX = 0;
       bg->x = 0;
       mg->tileCount = 0;
+      // Initialize trader NPC
+      traderNpc.x = TRADER_NPC_X;
+      traderNpc.y = TRADER_NPC_Y;
+      traderNpc.frame = 0;
+      traderNpc.animTimer = 0;
+      traderNpc.state = TRADER_IDLE_STATE;
+      traderNpc.stateTimer = 0;
+      traderNpc.facingRight = 0;
+      traderNpc.active = 1;
+      traderNpc.traded = 0;
+      // Initialize grims
+      initGrims(grims);
+      initGrimFireballs(grimFireballs);
     }
 
     if (*gameState == LEVEL3_STATE && player->x >= LEVEL3_END_X) {
-      *gameState = BOSS_STATE;
-      player->x = 200;
-      player->y = BOSS_GROUND_Y;
-      player->vy = 0;
-      player->onGround = 1;
-      setPlayerState(player, IDLE);
-      player->stateTimer = 0;
-      camera->x = 0;
-      camera->targetX = 0;
-      // Re-initialize boss when entering boss level
-      initBoss(&boss);
-      initMinions(bossMinions);
-      initHazards(bossHazards);
-      // Switch music: stop bg2, play boss theme
-      stopBG2Music();
-      playBossBGMusic();
+      // Only allow entry to boss if player has used the key
+      if (player->hasUsedKey) {
+        player->hasUsedKey = 0; // consume the state
+        *gameState = BOSS_STATE;
+        player->x = 200;
+        player->y = BOSS_GROUND_Y;
+        player->vy = 0;
+        player->onGround = 1;
+        setPlayerState(player, IDLE);
+        player->stateTimer = 0;
+        camera->x = 0;
+        camera->targetX = 0;
+        // Re-initialize boss when entering boss level
+        initBoss(&boss);
+        initMinions(bossMinions);
+        initHazards(bossHazards);
+        // Switch music: stop bg2, play boss theme
+        stopBG2Music();
+        playBossBGMusic();
+      } else {
+        // Block player from going further
+        player->x = LEVEL3_END_X - 10;
+      }
     }
 
     // Player death check — health drops to 0
@@ -129,6 +153,9 @@ void updateGame(struct Player *player, struct Creature creatures[],
         *gameState = LEVEL3_STATE;
         player->x = 200;
         player->y = LEVEL3_GROUND_Y;
+        // Reset grims on respawn
+        initGrims(grims);
+        initGrimFireballs(grimFireballs);
       } else if (*gameState == BOSS_STATE) {
         *gameState = BOSS_STATE;
         player->x = 200;

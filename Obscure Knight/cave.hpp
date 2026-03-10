@@ -341,6 +341,10 @@ void updateCaveState(struct Player *player, struct Background *bg,
         player->stateTimer = 0;
       }
       if (player->x <= CAVE_EXIT_X && player->onGround) {
+        // Clear any remaining cave items so they don't appear outside
+        for (int ci = 0; ci < MAX_PICKUPS; ci++) {
+          pickups[ci].active = 0;
+        }
         *gameState = LEVEL2_STATE;
         player->x = LEVEL2_RAISED_GROUND_X + 30;
         player->y = LEVEL2_RAISED_GROUND_Y;
