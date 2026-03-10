@@ -69,6 +69,7 @@ struct Player {
   int invincibilityTimer;
 
   int isAttacking;
+  int isTrapped;
 
   int facingRight;
   int stateTimer;
@@ -236,6 +237,68 @@ struct NPC {
   int showPrompt;
   int isInteracting;
   int initialized;
+};
+
+// ============================================================
+// FINAL BOSS
+// ============================================================
+enum BossState {
+  BOSS_IDLE_STATE,
+  BOSS_WALK_STATE,
+  BOSS_SLASH_STATE,
+  BOSS_DASH_STATE,
+  BOSS_CAST_STATE,
+  BOSS_TELEPORT_OUT_STATE,
+  BOSS_TELEPORT_IN_STATE,
+  BOSS_SPIKE_STATE,
+  BOSS_TRAP_STATE,
+  BOSS_DEATH_RISE_STATE,
+  BOSS_DEATH_ANIM_STATE,
+  BOSS_WAIT_MINION_STATE // waiting for FireBat to die
+};
+
+struct Boss {
+  int x, y;
+  int frame;
+  int animTimer;
+  int active;
+  int facingRight;
+  enum BossState state;
+  int stateTimer;
+  int currentHealth;
+  int maxHealth;
+  int hasUsedTrap;
+  int teleportTargetX;
+  int phase; // 1 = full, 2 = <50% HP, 3 = <=25% HP
+  int riseY; // tracks how far boss has risen on death
+  int invincibilityTimer;
+  enum BossState intendedNextState;
+};
+
+enum MinionType { MINION_FIREBAT, MINION_BAT };
+
+struct BossMinion {
+  int x, y;
+  int active;
+  int frame;
+  int animTimer;
+  int facingRight;
+  int health;
+  int invincibilityTimer;
+  int isDying; // playing death animation
+  int deathTimer;
+  enum MinionType type;
+};
+
+enum HazardType { HAZARD_SPIKE, HAZARD_TRAP };
+
+struct BossHazard {
+  int x, y;
+  int active;
+  int frame;
+  int animTimer;
+  int hasHit; // already damaged the player
+  enum HazardType type;
 };
 
 #endif

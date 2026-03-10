@@ -18,6 +18,8 @@
 #define CONTROLS_STATE 5
 #define CAVE_STATE 6
 #define LOADING_STATE 7
+#define LEVEL3_STATE 8
+#define BOSS_STATE 9
 
 #define SCREEN_W 1000
 #define SCREEN_H 600
@@ -37,6 +39,11 @@
 #define CAVE_LAND_X 710
 #define CAVE_LAND_Y 10
 #define CAVE_GROUND_Y 10
+
+#define LEVEL3_GROUND_Y 55
+#define BOSS_GROUND_Y 63
+#define LEVEL2_END_X 4870
+#define LEVEL3_END_X 4870
 
 #define DASH_SPEED 6
 #define EVADE_SPEED 10
@@ -217,5 +224,78 @@
 #define GAIN_DURATION 600
 #define GAIN_REGEN_INTERVAL 180
 #define GAIN_REGEN_AMOUNT 20
+
+// ============================================================
+// FINAL BOSS CONFIGURATION
+// ============================================================
+
+// Boss health & hit values
+#define BOSS_MAX_HEALTH 100
+#define BOSS_NORMAL_HIT_DAMAGE 5     // % per X attack hit
+#define BOSS_SLASHWAVE_HIT_DAMAGE 7  // % per slashwave hit
+#define BOSS_INVINCIBILITY_FRAMES 30 // frames after being hit
+
+// Boss attack damage to player (in HP points, 20 = 1 heart)
+#define BOSS_SLASH_PLAYER_DAMAGE 20
+#define BOSS_DASH_PLAYER_DAMAGE 20
+#define BOSS_SPIKE_PLAYER_DAMAGE 20
+
+// Phase thresholds (% of max health)
+#define BOSS_PHASE2_THRESHOLD 50 // Spike unlocks below this
+#define BOSS_TRAP_THRESHOLD 25   // One-time Trap at this %
+
+// Boss positioning & movement
+#define BOSS_SPAWN_X                                                           \
+  700 // screen-space (BOSS_STATE has static bg, no scrolling)
+#define BOSS_RAND_TELEPORT_MIN 100 // leftmost random teleport x
+#define BOSS_RAND_TELEPORT_MAX 700 // rightmost random teleport x
+#define BOSS_SIZE_W 128
+#define BOSS_SIZE_H 128
+#define BOSS_WALK_SPEED 4
+#define BOSS_DASH_SPEED 10
+#define BOSS_DETECTION_RANGE 500 // Player proximity to activate
+#define BOSS_SLASH_RANGE 120     // Range to trigger slash
+
+// Boss timing (in animation ticks ~50fps)
+#define BOSS_IDLE_DURATION 50     // ~2 seconds idle between actions
+#define BOSS_POST_SPIKE_IDLE 50    // ~1 second after spikes
+#define BOSS_DEATH_RISE_HEIGHT 120 // px to float up before death anim
+#define BOSS_DEATH_RISE_SPEED 2    // px per frame rising
+#define BOSS_ANIM_SPEED 6          // frames per animation tick
+
+// Boss animation frame counts
+#define BOSS_IDLE_FRAMES 4
+#define BOSS_WALK_FRAMES 3
+#define BOSS_SLASH_FRAMES 8
+#define BOSS_DASH_FRAMES 6
+#define BOSS_CAST_FRAMES 6
+#define BOSS_TELEPORT_FRAMES 6
+#define BOSS_SPIKE_FRAMES 10
+#define BOSS_TRAPIN_FRAMES 3
+#define BOSS_TRAPOUT_FRAMES 3
+#define BOSS_DEATH_FRAMES 9
+
+// FireBat stats & animation
+#define FIREBAT_MAX_HEALTH 2 // hits to kill
+#define FIREBAT_SPEED 4
+#define FIREBAT_DAMAGE 10 // 0.5 heart
+#define FIREBAT_FRAMES 5
+#define FIREBAT_SIZE 64
+#define FIREBAT_ANIM_SPEED 6
+#define FIREBAT_INVINCIBILITY 20
+
+// Bat stats & animation (spawns after boss death)
+#define BAT_MAX_HEALTH 2 // hits to kill
+#define BAT_SPEED 3
+#define BAT_DAMAGE 10 // 0.5 heart
+#define BAT_FRAMES 3
+#define BAT_DEATH_FRAMES 2
+#define BAT_SIZE 48
+#define BAT_ANIM_SPEED 6
+#define BAT_INVINCIBILITY 20
+
+// Max entities
+#define MAX_BOSS_MINIONS 4
+#define MAX_BOSS_HAZARDS 4
 
 #endif

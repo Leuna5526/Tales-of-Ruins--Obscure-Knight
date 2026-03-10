@@ -102,26 +102,26 @@ int iSetTimer(int msec, void (*f)(void)) {
   iAnimPause[i] = 0;
 
   if (iAnimCount == 0)
-    SetTimer(0, 0, msec, iA0);
+    SetTimer(0, 0, msec, (TIMERPROC)iA0);
   if (iAnimCount == 1)
-    SetTimer(0, 0, msec, iA1);
+    SetTimer(0, 0, msec, (TIMERPROC)iA1);
   if (iAnimCount == 2)
-    SetTimer(0, 0, msec, iA2);
+    SetTimer(0, 0, msec, (TIMERPROC)iA2);
   if (iAnimCount == 3)
-    SetTimer(0, 0, msec, iA3);
+    SetTimer(0, 0, msec, (TIMERPROC)iA3);
   if (iAnimCount == 4)
-    SetTimer(0, 0, msec, iA4);
+    SetTimer(0, 0, msec, (TIMERPROC)iA4);
 
   if (iAnimCount == 5)
-    SetTimer(0, 0, msec, iA5);
+    SetTimer(0, 0, msec, (TIMERPROC)iA5);
   if (iAnimCount == 6)
-    SetTimer(0, 0, msec, iA6);
+    SetTimer(0, 0, msec, (TIMERPROC)iA6);
   if (iAnimCount == 7)
-    SetTimer(0, 0, msec, iA7);
+    SetTimer(0, 0, msec, (TIMERPROC)iA7);
   if (iAnimCount == 8)
-    SetTimer(0, 0, msec, iA8);
+    SetTimer(0, 0, msec, (TIMERPROC)iA8);
   if (iAnimCount == 9)
-    SetTimer(0, 0, msec, iA9);
+    SetTimer(0, 0, msec, (TIMERPROC)iA9);
   iAnimCount++;
 
   return iAnimCount - 1;
@@ -519,7 +519,7 @@ void mouseHandlerFF(int button, int state, int x, int y) {
 
 void iInitialize(int width = 500, int height = 500, char *title = "iGraphics",
                  int keyboardSamplingRate = 16) {
-  SetTimer(0, 0, keyboardSamplingRate, keypressHandler);
+  SetTimer(0, 0, keyboardSamplingRate, (TIMERPROC)keypressHandler);
 
   iScreenHeight = height;
   iScreenWidth = width;

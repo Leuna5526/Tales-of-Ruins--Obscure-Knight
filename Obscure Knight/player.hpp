@@ -27,6 +27,7 @@ void initPlayer(struct Player *player) {
   player->staminaRegenTimer = 0;
   player->invincibilityTimer = 0;
   player->isAttacking = 0;
+  player->isTrapped = 0;
 }
 
 void setPlayerState(struct Player *player, enum State s) {
@@ -41,7 +42,7 @@ void setPlayerState(struct Player *player, enum State s) {
   }
 }
 
-void handleInput(struct Player *player) {
+void handleInput(struct Player *player, int gameState) {
   int spriteW = SPRITE_SIZE * SCALE;
 
   int right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
@@ -64,18 +65,19 @@ void handleInput(struct Player *player) {
        player->state == ROAR_ACTIVE || player->state == ROAR_END ||
        player->state == DEATH);
 
-  int canMove = (!isIntroOrDeathAnimation &&
+  int canMove = (!player->isTrapped && !isIntroOrDeathAnimation &&
                  (player->state == IDLE || player->state == WALK ||
                   player->state == JUMP || player->state == FALL ||
                   player->state == LANDING || player->state == DASHING ||
                   player->state == ATTACK_OVERHEAD_RECOVER ||
                   player->state == ATTACK_OVERHEAD_SLASHING ||
                   player->state == ATTACK_OVERHEAD_SLASHWAVE));
-  int canJump = (player->onGround && canMove);
-  int canDash = (!isIntroOrDeathAnimation);
-  int canAttack = (!isIntroOrDeathAnimation);
-  int canEvade = (!isIntroOrDeathAnimation);
-  int canDownstab = (!isIntroOrDeathAnimation && !player->onGround);
+  int canJump = (!player->isTrapped && player->onGround && canMove);
+  int canDash = (!player->isTrapped && !isIntroOrDeathAnimation);
+  int canAttack = (!player->isTrapped && !isIntroOrDeathAnimation);
+  int canEvade = (!player->isTrapped && !isIntroOrDeathAnimation);
+  int canDownstab =
+      (!player->isTrapped && !isIntroOrDeathAnimation && !player->onGround);
 
   if (jumpKey && canJump) {
     player->vy = JUMP_V;
@@ -176,8 +178,14 @@ void handleInput(struct Player *player) {
 
   if (player->x < 0)
     player->x = 0;
-  if (player->x > TOTAL_BG_WIDTH - spriteW)
-    player->x = TOTAL_BG_WIDTH - spriteW;
+
+  int maxX = TOTAL_BG_WIDTH - spriteW;
+  if (gameState == BOSS_STATE) {
+    maxX = BG_WIDTH - spriteW;
+  }
+
+  if (player->x > maxX)
+    player->x = maxX;
 }
 
 void updatePhysics(struct Player *player) {
@@ -192,9 +200,16 @@ void updatePhysicsWithMap(struct Player *player, struct Midground *mg,
   int jumpDownActive =
       (GetAsyncKeyState(VK_DOWN) & 0x8000) || (GetAsyncKeyState('S') & 0x8000);
 
-  int currentGroundY = (gameState == LEVEL2_STATE) ? LEVEL2_GROUND_Y : GROUND_Y;
-  if (gameState == LEVEL2_STATE && player->x >= LEVEL2_RAISED_GROUND_X) {
-    currentGroundY = LEVEL2_RAISED_GROUND_Y;
+  int currentGroundY = GROUND_Y;
+  if (gameState == LEVEL2_STATE) {
+    currentGroundY = LEVEL2_GROUND_Y;
+    if (player->x >= LEVEL2_RAISED_GROUND_X) {
+      currentGroundY = LEVEL2_RAISED_GROUND_Y;
+    }
+  } else if (gameState == LEVEL3_STATE) {
+    currentGroundY = LEVEL3_GROUND_Y;
+  } else if (gameState == BOSS_STATE) {
+    currentGroundY = BOSS_GROUND_Y;
   }
 
   int inLevel2Pit =
@@ -338,7 +353,7 @@ void updatePlayerAnimation(struct Player *player, struct Midground *mg,
        player->state == ROAR_ACTIVE || player->state == ROAR_END ||
        player->state == DEATH);
 
-  handleInput(player);
+  handleInput(player, gameState);
 
   player->stateTimer++;
 
@@ -403,16 +418,7 @@ void updatePlayerAnimation(struct Player *player, struct Midground *mg,
     break;
   case DEATH:
     if (player->stateTimer >= DEATH_FRAMES * 8) {
-      if (gameState == LEVEL2_STATE) {
-        player->x = 200;
-        player->y = 600;
-      } else {
-        player->x = 200;
-        player->y = GROUND_Y;
-      }
-      player->vy = 0;
-      player->onGround = 1;
-
+      // Logic handled in game.hpp for respawn
       player->health = player->maxHealth;
       player->stamina = player->maxStamina;
       player->staminaRegenTimer = 0;

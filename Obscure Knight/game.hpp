@@ -3,6 +3,7 @@
 
 #include "Sentry.hpp"
 #include "background.hpp"
+#include "boss.hpp"
 #include "bug.hpp"
 #include "camera.hpp"
 #include "cave.hpp"
@@ -11,18 +12,37 @@
 #include "sounds.hpp"
 
 extern struct NPC npc;
+extern struct Boss boss;
+extern struct BossMinion bossMinions[MAX_BOSS_MINIONS];
+extern struct BossHazard bossHazards[MAX_BOSS_HAZARDS];
 
 void updateGame(struct Player *player, struct Creature creatures[],
                 struct Background *bg, struct Midground *mg,
                 struct Camera *camera, int *gameState, struct Pickup pickups[],
                 struct SparkleEffect sparkles[]) {
 
-  if (*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE) {
+  if (*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE ||
+      *gameState == LEVEL3_STATE || *gameState == BOSS_STATE) {
     updatePlayerAnimation(player, mg, *gameState);
-    updateCreatures(creatures, player, pickups, *gameState);
 
-    updateBackground(bg, player);
-    updateCamera(camera, player);
+    // Only update creatures for Playing and Level 2 right now.
+    // If you add Level 3 or Boss enemies later, add them here.
+    if (*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE) {
+      updateCreatures(creatures, player, pickups, *gameState);
+    }
+
+    // Only scroll background for scrolling levels
+    if (*gameState != BOSS_STATE) {
+      updateBackground(bg, player);
+    }
+
+    // Boss state has a fixed camera, so we only update camera for others
+    if (*gameState == BOSS_STATE) {
+      camera->x = 0;
+      camera->targetX = 0;
+    } else {
+      updateCamera(camera, player);
+    }
 
     if (*gameState == PLAYING_STATE && player->y < -100) {
       *gameState = TUNNEL_STATE;
@@ -48,6 +68,83 @@ void updateGame(struct Player *player, struct Creature creatures[],
       mg->tileCount = 0;
       initNPC(&npc);
       spawnCaveItems(pickups);
+    }
+    if (*gameState == LEVEL2_STATE && player->x >= LEVEL2_END_X) {
+      *gameState = LEVEL3_STATE;
+      player->x = 200;
+      player->y = LEVEL3_GROUND_Y;
+      player->vy = 0;
+      player->onGround = 1;
+      setPlayerState(player, IDLE);
+      player->stateTimer = 0;
+      camera->x = 0;
+      camera->targetX = 0;
+      bg->x = 0;
+      mg->tileCount = 0;
+    }
+
+    if (*gameState == LEVEL3_STATE && player->x >= LEVEL3_END_X) {
+      *gameState = BOSS_STATE;
+      player->x = 200;
+      player->y = BOSS_GROUND_Y;
+      player->vy = 0;
+      player->onGround = 1;
+      setPlayerState(player, IDLE);
+      player->stateTimer = 0;
+      camera->x = 0;
+      camera->targetX = 0;
+      // Re-initialize boss when entering boss level
+      initBoss(&boss);
+      initMinions(bossMinions);
+      initHazards(bossHazards);
+    }
+
+    // Player death check — health drops to 0
+    if ((*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE ||
+         *gameState == LEVEL3_STATE || *gameState == BOSS_STATE) &&
+        player->health <= 0 && player->state != DEATH) {
+      setPlayerState(player, DEATH);
+      player->stateTimer = 0;
+    }
+    // After death animation finishes, respawn at start of current level
+    if ((*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE ||
+         *gameState == LEVEL3_STATE || *gameState == BOSS_STATE) &&
+        player->state == DEATH &&
+        player->stateTimer > DEATH_ANIMATION_DURATION) {
+      // Respawn position depends on which level the player is in
+      if (*gameState == PLAYING_STATE) {
+        player->x = 200;
+        player->y = GROUND_Y;
+      } else if (*gameState == LEVEL2_STATE) {
+        player->x = 200;
+        player->y = LEVEL2_GROUND_Y;
+        camera->x = 0;
+        camera->targetX = 0;
+        bg->x = 0;
+        mg->tileCount = 0;
+      } else if (*gameState == LEVEL3_STATE) {
+        *gameState = LEVEL3_STATE;
+        player->x = 200;
+        player->y = LEVEL3_GROUND_Y;
+      } else if (*gameState == BOSS_STATE) {
+        *gameState = BOSS_STATE;
+        player->x = 200;
+        player->y = BOSS_GROUND_Y;
+        // Reset boss on death
+        initBoss(&boss);
+        initMinions(bossMinions);
+        initHazards(bossHazards);
+      }
+      player->health = player->maxHealth;
+      player->vy = 0;
+      player->onGround = 1;
+      player->invincibilityTimer = 60;
+      player->isTrapped = 0;
+      setPlayerState(player, IDLE);
+      player->stateTimer = 0;
+      camera->x = 0;
+      camera->targetX = 0;
+      bg->x = 0;
     }
   } else if (*gameState == CAVE_STATE) {
     updateCaveState(player, bg, mg, camera, gameState, pickups);

@@ -69,6 +69,7 @@
     <ClCompile Include="iMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="boss.hpp" />
     <ClInclude Include="bug.hpp" />
     <ClInclude Include="cave.hpp" />
     <ClInclude Include="healthbar.hpp" />

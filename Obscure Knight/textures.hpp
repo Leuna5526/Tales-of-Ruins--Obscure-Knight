@@ -50,6 +50,8 @@ unsigned int overheadAttackSlashwaveRight[OVERHEAD_ATTACK_SLASHWAVE_FRAMES];
 
 unsigned int backgroundTextures[BG_SEGMENTS];
 unsigned int level2BackgroundTextures[BG_SEGMENTS];
+unsigned int level3BackgroundTextures[BG_SEGMENTS];
+unsigned int bossBackgroundTexture = 0;
 unsigned int tunnelTextures[2];
 
 unsigned int creatureNormal[CREATURE_NORMAL_FRAMES];
@@ -110,6 +112,8 @@ unsigned int npcSummonStart[NPC_SUMMON_START_FRAMES];
 unsigned int npcSummoning[NPC_SUMMONING_FRAMES];
 unsigned int npcRetreat[NPC_RETREAT_FRAMES];
 unsigned int dialogues[DIALOGUE_COUNT];
+
+void loadBossEntityTextures(); // forward declaration
 
 void loadSet(unsigned int *arr, int n, const char *fmt) {
   char name[64];
@@ -177,6 +181,14 @@ void loadSparkleTextures() {
 void loadLevel2TileTextures() {
   level2TileFlat = iLoadImage("Assets/Level 2/bg/flattile.png");
   level2Tile1 = iLoadImage("Assets/Level 2/bg/tile (1).png");
+}
+
+void loadLevel3Textures() {
+  loadSet(level3BackgroundTextures, BG_SEGMENTS, "Assets/Level 3/bg/%d.png");
+}
+
+void loadBossTextures() {
+  bossBackgroundTexture = iLoadImage("Assets/Level 3/bossbg/bosslevelbg.png");
 }
 
 void loadInventoryTextures() {
@@ -272,6 +284,8 @@ void loadImages() {
           "Assets/Level 2/bg/bg (%d).png");
   tunnelTextures[0] = iLoadImage("Assets/tunnel/t1.png");
   tunnelTextures[1] = iLoadImage("Assets/tunnel/t2.png");
+  loadLevel3Textures();
+  loadBossTextures();
   loadCreatureTextures();
   loadSentryTextures();
   loadSparkleTextures();
@@ -279,6 +293,58 @@ void loadImages() {
   loadInventoryTextures();
   caveTexture = iLoadImage("Assets/Level 2/bg/cave.png");
   loadNPCTextures();
+  loadBossEntityTextures();
+}
+
+// ============================================================
+// BOSS ENTITY TEXTURES
+// ============================================================
+
+unsigned int bossIdle[BOSS_IDLE_FRAMES];
+unsigned int bossWalkL[BOSS_WALK_FRAMES];
+unsigned int bossWalkR[BOSS_WALK_FRAMES];
+unsigned int bossSlashL[BOSS_SLASH_FRAMES];
+unsigned int bossSlashR[BOSS_SLASH_FRAMES];
+unsigned int bossDashL[BOSS_DASH_FRAMES];
+unsigned int bossDashR[BOSS_DASH_FRAMES];
+unsigned int bossCastL[BOSS_CAST_FRAMES];
+unsigned int bossCastR[BOSS_CAST_FRAMES];
+unsigned int bossTeleportOut[BOSS_TELEPORT_FRAMES];
+unsigned int bossTeleportIn[BOSS_TELEPORT_FRAMES];
+unsigned int bossSpike[BOSS_SPIKE_FRAMES];
+unsigned int bossTrapIn[BOSS_TRAPIN_FRAMES];
+unsigned int bossTrapOut[BOSS_TRAPOUT_FRAMES];
+unsigned int bossDeath[BOSS_DEATH_FRAMES];
+
+unsigned int fireBatL[FIREBAT_FRAMES];
+unsigned int fireBatR[FIREBAT_FRAMES];
+unsigned int batL[BAT_FRAMES];
+unsigned int batR[BAT_FRAMES];
+unsigned int batDeath[BAT_DEATH_FRAMES];
+
+void loadBossEntityTextures() {
+  loadSet(bossIdle, BOSS_IDLE_FRAMES, "Assets/Boss/Idle/%d.png");
+  loadSet(bossWalkL, BOSS_WALK_FRAMES, "Assets/Boss/WalkL/%d.png");
+  loadSet(bossWalkR, BOSS_WALK_FRAMES, "Assets/Boss/WalkR/%d.png");
+  loadSet(bossSlashL, BOSS_SLASH_FRAMES, "Assets/Boss/SlashL/%d.png");
+  loadSet(bossSlashR, BOSS_SLASH_FRAMES, "Assets/Boss/SlashR/%d.png");
+  loadSet(bossDashL, BOSS_DASH_FRAMES, "Assets/Boss/DashL/%d.png");
+  loadSet(bossDashR, BOSS_DASH_FRAMES, "Assets/Boss/DashR/%d.png");
+  loadSet(bossCastL, BOSS_CAST_FRAMES, "Assets/Boss/CastL/%d.png");
+  loadSet(bossCastR, BOSS_CAST_FRAMES, "Assets/Boss/CastR/%d.png");
+  loadSet(bossTeleportOut, BOSS_TELEPORT_FRAMES,
+          "Assets/Boss/TeleportOut/%d.png");
+  loadSet(bossTeleportIn, BOSS_TELEPORT_FRAMES,
+          "Assets/Boss/TeleportIn/%d.png");
+  loadSet(bossSpike, BOSS_SPIKE_FRAMES, "Assets/Boss/Spike/%d.png");
+  loadSet(bossTrapIn, BOSS_TRAPIN_FRAMES, "Assets/Boss/TrapIn/%d.png");
+  loadSet(bossTrapOut, BOSS_TRAPOUT_FRAMES, "Assets/Boss/TrapOut/%d.png");
+  loadSet(bossDeath, BOSS_DEATH_FRAMES, "Assets/Boss/Death/%d.png");
+  loadSet(fireBatL, FIREBAT_FRAMES, "Assets/Boss/FireBatL/%d.png");
+  loadSet(fireBatR, FIREBAT_FRAMES, "Assets/Boss/FireBatR/%d.png");
+  loadSet(batL, BAT_FRAMES, "Assets/Boss/BatL/%d.png");
+  loadSet(batR, BAT_FRAMES, "Assets/Boss/BatR/%d.png");
+  loadSet(batDeath, BAT_DEATH_FRAMES, "Assets/Boss/BatDeath/%d.png");
 }
 
 #endif

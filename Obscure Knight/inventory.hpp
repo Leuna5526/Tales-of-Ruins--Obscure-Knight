@@ -37,13 +37,12 @@ inline void initGlowProjectile(struct GlowProjectile *glow) {
   glow->targetSentryIdx = -1;
 }
 
-
 inline void tryDropItem(struct Pickup pickups[], int x, int y) {
-  
-	if (rand() % 100 >= PICKUP_DROP_CHANCE)
+
+  if (rand() % 100 >= PICKUP_DROP_CHANCE)
     return;
 
-	for (int i = 0; i < MAX_PICKUPS; i++) {
+  for (int i = 0; i < MAX_PICKUPS; i++) {
     if (!pickups[i].active) {
       pickups[i].x = x;
       pickups[i].y = y;
@@ -54,9 +53,8 @@ inline void tryDropItem(struct Pickup pickups[], int x, int y) {
   }
 }
 
-
 inline void updatePickups(struct Pickup pickups[], struct Player *player) {
-  int playerCX = player->x + 64; 
+  int playerCX = player->x + 64;
   int playerCY = player->y + 64;
 
   for (int i = 0; i < MAX_PICKUPS; i++) {
@@ -67,24 +65,24 @@ inline void updatePickups(struct Pickup pickups[], struct Player *player) {
     int dy = playerCY - (pickups[i].y + PICKUP_SIZE / 2);
     float dist = sqrt((double)(dx * dx + dy * dy));
 
-    if (dist < 60) { 
+    if (dist < 60) {
       int canPickup = 1;
       switch (pickups[i].type) {
       case ITEM_HEART:
-          player->hasHeart = 1;
+        player->hasHeart = 1;
         break;
       case ITEM_POTION:
-          player->hasPotion = 1;
+        player->hasPotion = 1;
         break;
       case ITEM_POWER:
-          player->hasPower = 1;
+        player->hasPower = 1;
         break;
       case ITEM_GAIN:
-          player->hasGain = 1;
+        player->hasGain = 1;
         break;
       }
       if (canPickup) {
-        pickups[i].active = 0; 
+        pickups[i].active = 0;
         playItemCollectSound();
         printf("Item collected: %d\n", pickups[i].type);
       }
@@ -92,8 +90,10 @@ inline void updatePickups(struct Pickup pickups[], struct Player *player) {
   }
 }
 
-inline void handleItemInput(struct Player *player, struct GlowProjectile *glow, struct Creature creatures[],struct Sentry sentries[], int gameState) {
-  
+inline void handleItemInput(struct Player *player, struct GlowProjectile *glow,
+                            struct Creature creatures[],
+                            struct Sentry sentries[], int gameState) {
+
   static int key2WasPressed = 0;
 
   int key2 = GetAsyncKeyState('2') & 0x8000;
@@ -103,7 +103,7 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow, 
     player->potionTimer = POTION_DURATION;
     player->damageMultiplier = POTION_DAMAGE_MULTIPLIER;
   }
-  
+
   key2WasPressed = key2;
 
   static int key3WasPressed = 0;
@@ -117,8 +117,26 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow, 
     int targetX = 0, targetY = 0;
     int targetCreatureIdx = -1;
     int targetSentryIdx = -1;
+    int targetBoss = 0;
 
-    if (gameState == LEVEL2_STATE || gameState == PLAYING_STATE) {
+    if (gameState == BOSS_STATE) {
+      extern struct Boss boss; // From main
+      if (boss.active && boss.state != BOSS_DEATH_ANIM_STATE &&
+          boss.state != BOSS_DEATH_RISE_STATE) {
+        int dx = boss.x - player->x;
+        int dy = boss.y - player->y;
+        float dist = sqrt((double)(dx * dx + dy * dy));
+        if (dist < closestDist) {
+          closestDist = dist;
+          targetX = boss.x;
+          targetY = boss.y;
+          targetCreatureIdx = -1;
+          targetSentryIdx = -1;
+          targetBoss = 1;
+          foundTarget = 1;
+        }
+      }
+    } else if (gameState == LEVEL2_STATE || gameState == PLAYING_STATE) {
       for (int i = 0; i < MAX_CREATURES; i++) {
         if (!creatures[i].active || creatures[i].state == CREATURE_DEAD)
           continue;
@@ -131,6 +149,7 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow, 
           targetY = creatures[i].y;
           targetCreatureIdx = i;
           targetSentryIdx = -1;
+          targetBoss = 0;
           foundTarget = 1;
         }
       }
@@ -150,6 +169,7 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow, 
           targetY = sentries[i].y;
           targetCreatureIdx = -1;
           targetSentryIdx = i;
+          targetBoss = 0;
           foundTarget = 1;
         }
       }
@@ -157,19 +177,23 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow, 
 
     if (foundTarget) {
       glow->active = 1;
-      glow->x = player->x + 64; 
+      glow->x = player->x + 64;
       glow->y = player->y + 64;
       glow->targetX = targetX;
       glow->targetY = targetY;
       glow->targetCreatureIdx = targetCreatureIdx;
       glow->targetSentryIdx = targetSentryIdx;
+      // We encode boss targeting using indices (-2 is boss)
+      if (targetBoss) {
+        glow->targetCreatureIdx = -2;
+      }
       glow->frame = 0;
       glow->animTimer = 0;
     } else {
       player->hasPower = 1;
     }
   }
-  
+
   key3WasPressed = key3;
 
   static int key4WasPressed = 0;
@@ -196,7 +220,7 @@ inline void updateItemEffects(struct Player *player) {
   if (player->potionTimer > 0) {
     player->potionTimer--;
     if (player->potionTimer <= 0) {
-      player->damageMultiplier = 1; 
+      player->damageMultiplier = 1;
     }
   }
 
@@ -223,7 +247,9 @@ inline void updateItemEffects(struct Player *player) {
   }
 }
 
-inline void updateGlowProjectile(struct GlowProjectile *glow,struct Creature creatures[],struct Sentry sentries[]) {
+inline void updateGlowProjectile(struct GlowProjectile *glow,
+                                 struct Creature creatures[],
+                                 struct Sentry sentries[]) {
   if (!glow->active)
     return;
 
@@ -238,7 +264,23 @@ inline void updateGlowProjectile(struct GlowProjectile *glow,struct Creature cre
   float dist = sqrt((double)(dx * dx + dy * dy));
 
   if (dist < GLOW_SPEED + 5) {
-    if (glow->targetCreatureIdx >= 0) {
+    if (glow->targetCreatureIdx == -2) {
+      extern struct Boss boss;
+      if (boss.active && boss.state != BOSS_DEATH_ANIM_STATE &&
+          boss.state != BOSS_DEATH_RISE_STATE) {
+        int damage = boss.maxHealth * POWER_DAMAGE_PERCENT / 100;
+        boss.currentHealth -= damage;
+        if (boss.currentHealth <= 0) {
+          boss.currentHealth = 0;
+          boss.riseY = 0;
+          boss.state = BOSS_DEATH_RISE_STATE;
+          boss.stateTimer = 0;
+          boss.frame = 0;
+          boss.animTimer = 0;
+        }
+      }
+      glow->active = 0;
+    } else if (glow->targetCreatureIdx >= 0) {
       struct Creature *enemy = &creatures[glow->targetCreatureIdx];
       if (enemy->active && enemy->state != CREATURE_DEAD) {
         int damage = enemy->maxHealth * POWER_DAMAGE_PERCENT / 100;
@@ -274,7 +316,7 @@ inline void updateGlowProjectile(struct GlowProjectile *glow,struct Creature cre
         }
       }
     }
-    glow->active = 0; 
+    glow->active = 0;
   } else {
     float nx = dx / dist;
     float ny = dy / dist;
@@ -313,8 +355,8 @@ inline void renderPickups(struct Pickup pickups[], struct Camera *camera) {
 }
 
 void renderGlowProjectile(struct GlowProjectile *glow, struct Camera *camera) {
-  
-	if (!glow->active)
+
+  if (!glow->active)
     return;
 
   unsigned int tex = glowTextures[glow->frame % GLOW_FRAMES];
@@ -326,8 +368,8 @@ void renderGlowProjectile(struct GlowProjectile *glow, struct Camera *camera) {
 }
 
 inline void renderInventoryUI(struct Player *player) {
-  
-	if (inventoryBaseTex != 0) {
+
+  if (inventoryBaseTex != 0) {
     iShowImage(INVENTORY_X, INVENTORY_Y, INVENTORY_W, INVENTORY_H,
                inventoryBaseTex);
   }
@@ -352,4 +394,4 @@ inline void renderInventoryUI(struct Player *player) {
                inventoryGainTex);
   }
 }
-#endif 
+#endif

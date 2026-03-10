@@ -1,5 +1,6 @@
 #include "Sentry.hpp"
 #include "background.hpp"
+#include "boss.hpp"
 #include "bug.hpp"
 #include "camera.hpp"
 #include "game.hpp"
@@ -27,6 +28,9 @@ struct Camera camera;
 struct Pickup pickups[MAX_PICKUPS];
 struct GlowProjectile glowProjectile;
 struct NPC npc;
+struct Boss boss;
+struct BossMinion bossMinions[MAX_BOSS_MINIONS];
+struct BossHazard bossHazards[MAX_BOSS_HAZARDS];
 
 void iDraw() {
   iClear();
@@ -67,6 +71,27 @@ void iDraw() {
     renderInventoryUI(&player);
     renderGlowProjectile(&glowProjectile, &camera);
     renderPlayer(&player, &camera);
+  } else if (gameState == LEVEL3_STATE) {
+    renderBackgroundWithCamera(&camera, level3BackgroundTextures);
+    renderStaminaBar(&player);
+    renderHealthBar(&player);
+    renderPickups(pickups, &camera);
+    renderInventoryUI(&player);
+    renderGlowProjectile(&glowProjectile, &camera);
+    renderPlayer(&player, &camera);
+  } else if (gameState == BOSS_STATE) {
+    if (bossBackgroundTexture != 0) {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, bossBackgroundTexture);
+    }
+    renderHazards(bossHazards, &camera);
+    renderBoss(&boss, &camera);
+    renderMinions(bossMinions, &camera);
+    renderStaminaBar(&player);
+    renderHealthBar(&player);
+    renderPickups(pickups, &camera);
+    renderInventoryUI(&player);
+    renderGlowProjectile(&glowProjectile, &camera);
+    renderPlayer(&player, &camera);
   } else if (gameState == CAVE_STATE) {
     renderCaveBackground();
     renderStaminaBar(&player);
@@ -93,18 +118,45 @@ void animate() {
     handleItemInput(&player, &glowProjectile, creatures, sentries, gameState);
     updateFootstepSounds(&player, &mg, gameState);
     updateHealthSound(&player);
-  } else if (gameState == TUNNEL_STATE || gameState == LEVEL2_STATE) {
+  } else if (gameState == TUNNEL_STATE || gameState == LEVEL2_STATE ||
+             gameState == LEVEL3_STATE || gameState == BOSS_STATE) {
     updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups,
                sparkles);
     if (gameState == LEVEL2_STATE) {
       updateSentries(sentries, &player, pickups);
       updateSparkles(sparkles);
+    }
+    if (gameState == LEVEL2_STATE || gameState == LEVEL3_STATE ||
+        gameState == BOSS_STATE) {
       updatePickups(pickups, &player);
       updateItemEffects(&player);
       updateGlowProjectile(&glowProjectile, creatures, sentries);
       handleItemInput(&player, &glowProjectile, creatures, sentries, gameState);
       updateFootstepSounds(&player, &mg, gameState);
       updateHealthSound(&player);
+    }
+    if (gameState == BOSS_STATE) {
+      updateBoss(&boss, &player, bossMinions, bossHazards);
+      updateMinions(bossMinions, &player);
+      updateHazards(bossHazards, &player);
+
+      // Hook player attack into boss hit detection
+      // Normal overhead slash: trigger on active slashing frame
+      if (player.state == ATTACK_OVERHEAD_SLASHING && player.frame == 3) {
+        handlePlayerAttackBoss(&boss, &player, 0);
+        handlePlayerAttackMinion(bossMinions, &player, 0);
+      }
+      // Slashwave: trigger while the state is active
+      if (player.state == ATTACK_OVERHEAD_SLASHWAVE) {
+        handlePlayerAttackBoss(&boss, &player, 1);
+        handlePlayerAttackMinion(bossMinions, &player, 1);
+      }
+      // Downstab: trigger exactly once per slam (on the first frame of the
+      // state)
+      if (player.state == DOWNSTAB_ACTIVE && player.stateTimer == 1) {
+        handlePlayerAttackBoss(&boss, &player, 0);
+        handlePlayerAttackMinion(bossMinions, &player, 0);
+      }
     }
   } else if (gameState == CAVE_STATE) {
     updateGame(&player, creatures, &bg, &mg, &camera, &gameState, pickups,
@@ -120,6 +172,32 @@ void animate() {
 
 void iKeyboard(unsigned char key) {
   printf("Key pressed: %d\n", key);
+
+  if (key == '3') {
+    gameState = LEVEL3_STATE;
+    player.x = 200;
+    player.y = LEVEL3_GROUND_Y;
+    player.vy = 0;
+    player.onGround = 1;
+    setPlayerState(&player, IDLE);
+    camera.x = 0;
+    camera.targetX = 0;
+    return;
+  } else if (key == '4') {
+    gameState = BOSS_STATE;
+    player.x = 200;
+    player.y = BOSS_GROUND_Y;
+    player.vy = 0;
+    player.onGround = 1;
+    camera.x = 0;
+    camera.targetX = 0;
+    setPlayerState(&player, IDLE);
+    initBoss(&boss);
+    initMinions(bossMinions);
+    initHazards(bossHazards);
+    return;
+  }
+
   if (gameState == TITLE_SCREEN_STATE) {
     if (key == ' ' || key == 13) {
       playStartButtonClickSound();
@@ -132,7 +210,30 @@ void iKeyboard(unsigned char key) {
       gameState = TITLE_SCREEN_STATE;
     }
   } else if (gameState == CAVE_STATE) {
-	}
+  }
+
+  if (key == '3') {
+    gameState = LEVEL3_STATE;
+    player.x = 200;
+    player.y = LEVEL3_GROUND_Y;
+    player.vy = 0;
+    player.onGround = 1;
+    setPlayerState(&player, IDLE);
+    camera.x = 0;
+    camera.targetX = 0;
+  } else if (key == '4') {
+    gameState = BOSS_STATE;
+    player.x = 200;
+    player.y = BOSS_GROUND_Y;
+    player.vy = 0;
+    player.onGround = 1;
+    camera.x = 0;
+    camera.targetX = 0;
+    setPlayerState(&player, IDLE);
+    initBoss(&boss);
+    initMinions(bossMinions);
+    initHazards(bossHazards);
+  }
 }
 
 void iMouseMove(int mx, int my) {
@@ -182,6 +283,9 @@ int main() {
   initGlowProjectile(&glowProjectile);
 
   initSounds();
+  initBoss(&boss);
+  initMinions(bossMinions);
+  initHazards(bossHazards);
 
   loadImages();
   loadTitleTextures(&titleScreen);

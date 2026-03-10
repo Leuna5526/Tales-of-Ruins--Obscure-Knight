@@ -68,5 +68,8 @@
     <ClInclude Include="cave.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="boss.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
