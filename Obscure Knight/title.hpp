@@ -159,25 +159,45 @@ void renderTitleScreen(struct TitleScreen *title) {
     iShowImage(0, 0, SCREEN_W, SCREEN_H, title->titleTexture);
   }
 
+  int hoveredBtn = getTitleButtonAtPos(title->mouseX, title->mouseY);
+
   if (title->startTexture != 0) {
-    iShowImage(0, 0, SCREEN_W, SCREEN_H, title->startTexture);
+    if (hoveredBtn == 0) {
+      iShowImage(0, 4, SCREEN_W, SCREEN_H, title->startTexture);
+    } else {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, title->startTexture);
+    }
   }
 
   if (title->achievementsTexture != 0) {
-    iShowImage(0, 0, SCREEN_W, SCREEN_H, title->achievementsTexture);
+    if (hoveredBtn == 1) {
+      iShowImage(0, 4, SCREEN_W, SCREEN_H, title->achievementsTexture);
+    } else {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, title->achievementsTexture);
+    }
   }
 
   if (title->creditsTexture != 0) {
-    iShowImage(0, 0, SCREEN_W, SCREEN_H, title->creditsTexture);
+    if (hoveredBtn == 2) {
+      iShowImage(0, 4, SCREEN_W, SCREEN_H, title->creditsTexture);
+    } else {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, title->creditsTexture);
+    }
   }
+
   if (title->exitTexture != 0) {
-    iShowImage(0, 0, SCREEN_W, SCREEN_H, title->exitTexture);
+    if (hoveredBtn == 3) {
+      iShowImage(0, 4, SCREEN_W, SCREEN_H, title->exitTexture);
+    } else {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, title->exitTexture);
+    }
   }
 
   if (title->cursorTexture != 0) {
+    // The image's top-left tends to be drawing from bottom-left in iGraphics,
+    // so adjust Y based on image size to feel like a real cursor.
     iShowImage(title->mouseX, title->mouseY - 32, 32, 32, title->cursorTexture);
   }
-  iShowImage(title->mouseX, title->mouseY - 32, 32, 32, title->cursorTexture);
 }
 
 void renderCredits(struct TitleScreen *title) {
@@ -186,6 +206,9 @@ void renderCredits(struct TitleScreen *title) {
   } else {
     iSetColor(0, 0, 0);
     iFilledRectangle(0, 0, SCREEN_W, SCREEN_H);
+  }
+  if (title->cursorTexture != 0) {
+    iShowImage(title->mouseX, title->mouseY - 32, 32, 32, title->cursorTexture);
   }
 }
 
@@ -199,6 +222,9 @@ void renderControls(struct TitleScreen *title) {
       iSetColor(20, 20, 20);
       iFilledRectangle(0, 0, SCREEN_W, SCREEN_H);
     }
+  }
+  if (title->cursorTexture != 0) {
+    iShowImage(title->mouseX, title->mouseY - 32, 32, 32, title->cursorTexture);
   }
 }
 
@@ -217,6 +243,7 @@ void updateLoadingScreen(struct TitleScreen *title, int *gameState) {
     *gameState = PLAYING_STATE;
     restartBGMusic();
     title->loadingTimer = 0;
+    glutSetCursor(GLUT_CURSOR_INHERIT);
   }
 }
 
@@ -255,11 +282,13 @@ void handleTitleMouseClick(struct TitleScreen *title, int button, int state,
     if (mx >= 0 && mx <= SCREEN_W && my >= 0 && my <= SCREEN_H) {
       playButtonClickSound();
       *gameState = TITLE_SCREEN_STATE;
+      glutSetCursor(GLUT_CURSOR_NONE);
     }
   } else if (*gameState == CONTROLS_STATE) {
     if (mx >= 0 && mx <= SCREEN_W && my >= 0 && my <= SCREEN_H) {
       playButtonClickSound();
       *gameState = TITLE_SCREEN_STATE;
+      glutSetCursor(GLUT_CURSOR_NONE);
     }
   }
 }

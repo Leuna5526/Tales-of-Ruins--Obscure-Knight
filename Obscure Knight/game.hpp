@@ -97,6 +97,9 @@ void updateGame(struct Player *player, struct Creature creatures[],
       initBoss(&boss);
       initMinions(bossMinions);
       initHazards(bossHazards);
+      // Switch music: stop bg2, play boss theme
+      stopBG2Music();
+      playBossBGMusic();
     }
 
     // Player death check — health drops to 0
@@ -165,7 +168,8 @@ void updateGame(struct Player *player, struct Creature creatures[],
           bg->tunnelTransitionY = 0;
         } else {
           *gameState = LEVEL2_STATE;
-          restartBGMusic();
+          stopBGMusic();
+          playBG2Music();
           initCreatures(creatures);
 
           initSparkles(sparkles);

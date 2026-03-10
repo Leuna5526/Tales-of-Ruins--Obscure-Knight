@@ -140,6 +140,16 @@ void animate() {
       updateMinions(bossMinions, &player);
       updateHazards(bossHazards, &player);
 
+      // Stop boss music once boss death animation finishes
+      static int bossWasActive = 1;
+      if (bossWasActive && !boss.active) {
+        stopBossBGMusic();
+        bossWasActive = 0;
+      }
+      if (boss.active) {
+        bossWasActive = 1;
+      }
+
       // Hook player attack into boss hit detection
       // Normal overhead slash: trigger on active slashing frame
       if (player.state == ATTACK_OVERHEAD_SLASHING && player.frame == 3) {
@@ -182,6 +192,9 @@ void iKeyboard(unsigned char key) {
     setPlayerState(&player, IDLE);
     camera.x = 0;
     camera.targetX = 0;
+    stopBGMusic();
+    stopBossBGMusic();
+    playBG2Music();
     return;
   } else if (key == '4') {
     gameState = BOSS_STATE;
@@ -195,6 +208,9 @@ void iKeyboard(unsigned char key) {
     initBoss(&boss);
     initMinions(bossMinions);
     initHazards(bossHazards);
+    stopBGMusic();
+    stopBG2Music();
+    playBossBGMusic();
     return;
   }
 
@@ -203,11 +219,13 @@ void iKeyboard(unsigned char key) {
       playStartButtonClickSound();
       gameState = LOADING_STATE;
       titleScreen.loadingTimer = 0;
+      glutSetCursor(GLUT_CURSOR_INHERIT);
     }
   } else if (gameState == CREDITS_STATE || gameState == CONTROLS_STATE) {
     if (key == 27 || key == '\b') {
       playButtonClickSound();
       gameState = TITLE_SCREEN_STATE;
+      glutSetCursor(GLUT_CURSOR_NONE);
     }
   } else if (gameState == CAVE_STATE) {
   }
@@ -221,6 +239,9 @@ void iKeyboard(unsigned char key) {
     setPlayerState(&player, IDLE);
     camera.x = 0;
     camera.targetX = 0;
+    stopBGMusic();
+    stopBossBGMusic();
+    playBG2Music();
   } else if (key == '4') {
     gameState = BOSS_STATE;
     player.x = 200;
@@ -233,6 +254,9 @@ void iKeyboard(unsigned char key) {
     initBoss(&boss);
     initMinions(bossMinions);
     initHazards(bossHazards);
+    stopBGMusic();
+    stopBG2Music();
+    playBossBGMusic();
   }
 }
 
@@ -292,6 +316,8 @@ int main() {
 
   loadMidgroundTextures(&mg);
   setupTiles(&mg);
+
+  glutSetCursor(GLUT_CURSOR_NONE);
 
   iSetTimer(20, animate);
   iStart();

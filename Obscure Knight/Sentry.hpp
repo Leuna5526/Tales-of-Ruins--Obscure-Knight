@@ -11,7 +11,8 @@
 #include "textures.hpp"
 #include <math.h>
 
-inline int checkCollisionSentry(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+inline int checkCollisionSentry(int x1, int y1, int w1, int h1, int x2, int y2,
+                                int w2, int h2) {
   return !(x1 + w1 < x2 || x2 + w2 < x1 || y1 + h1 < y2 || y2 + h2 < y1);
 }
 
@@ -167,7 +168,7 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
 
     case SENTRY_RUN_RIGHT:
       s->x += s->vx;
-      if (!isDetected) { 
+      if (!isDetected) {
         if (s->x > s->patrolStartX) {
           s->state = SENTRY_WALK_LEFT;
           s->vx = -SENTRY_SPEED;
@@ -176,7 +177,7 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
           s->vx = SENTRY_SPEED;
         }
       }
-      if (dx < -50) { 
+      if (dx < -50) {
         s->facingRight = 0;
         s->state = SENTRY_RUN_LEFT;
         s->vx = -SENTRY_RUN_SPEED;
@@ -234,7 +235,7 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
     case SENTRY_SLASH_LEFT:
     case SENTRY_SLASH_RIGHT:
       if (s->subStateTimer >= SENTRY_SLASHL_FRAMES * 8) {
-        s->state = s->facingRight ? SENTRY_IDLE_STATE : SENTRY_IDLE_STATE; 
+        s->state = s->facingRight ? SENTRY_IDLE_STATE : SENTRY_IDLE_STATE;
         s->vx = 0;
         s->subStateTimer = 0;
       }
@@ -255,13 +256,15 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
     default:
       break;
     }
-    if ((s->state == SENTRY_WALK_LEFT || s->state == SENTRY_WALK_RIGHT || s->state == SENTRY_IDLE_STATE || s->state == SENTRY_RUN_LEFT ||  s->state == SENTRY_RUN_RIGHT) &&
+    if ((s->state == SENTRY_WALK_LEFT || s->state == SENTRY_WALK_RIGHT ||
+         s->state == SENTRY_IDLE_STATE || s->state == SENTRY_RUN_LEFT ||
+         s->state == SENTRY_RUN_RIGHT) &&
         distance <= SENTRY_ATTACK_RANGE) {
 
       s->facingRight = (dx > 0) ? 1 : 0;
       if (rand() % 100 < SENTRY_ATTACK_JUMP_CHANCE) {
         s->state = SENTRY_JUMP_ATTACK;
-        s->vy = SENTRY_JUMP_V; 
+        s->vy = SENTRY_JUMP_V;
         s->vx = s->facingRight ? 4 : -4;
         s->subStateTimer = 0;
       } else {
@@ -320,19 +323,25 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
       }
     }
 
-    if (s->state != SENTRY_DYING && s->state != SENTRY_DYING_AIR && s->state != SENTRY_WAKING && player->state != DEATH && player->invincibilityTimer == 0) { 
+    if (s->state != SENTRY_DYING && s->state != SENTRY_DYING_AIR &&
+        s->state != SENTRY_WAKING && player->state != DEATH &&
+        player->invincibilityTimer == 0) {
       int sY = s->y;
       int sH = SENTRY_SIZE;
       if (s->state == SENTRY_JUMP_ATTACK) {
-        sY -= 80; 
+        sY -= 80;
         sH += 80;
       }
 
-      if (checkCollisionSentry(player->x + 24, player->y + 24, 80, 80, s->x, sY, SENTRY_SIZE, sH)) {
+      if (checkCollisionSentry(player->x + 24, player->y + 24, 80, 80, s->x, sY,
+                               SENTRY_SIZE, sH)) {
         if (player->invincibilityTimer == 0) {
           int damagePercent = 10;
-          if (s->state == SENTRY_ATTACK_LEFT || s->state == SENTRY_ATTACK_RIGHT || s->state == SENTRY_SLASH_LEFT || s->state == SENTRY_SLASH_RIGHT || s->state == SENTRY_JUMP_ATTACK) {
-            damagePercent = DAMAGE_PLAYER_TAKES; 
+          if (s->state == SENTRY_ATTACK_LEFT ||
+              s->state == SENTRY_ATTACK_RIGHT ||
+              s->state == SENTRY_SLASH_LEFT || s->state == SENTRY_SLASH_RIGHT ||
+              s->state == SENTRY_JUMP_ATTACK) {
+            damagePercent = DAMAGE_PLAYER_TAKES;
           }
 
           int damage = PLAYER_MAX_HEALTH * damagePercent / 100;
@@ -340,7 +349,8 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
           if (player->health < 0)
             player->health = 0;
 
-          int invincibilityDuration = (damagePercent >= DAMAGE_PLAYER_TAKES) ? 60 : 10;
+          int invincibilityDuration =
+              (damagePercent >= DAMAGE_PLAYER_TAKES) ? 60 : 10;
           player->invincibilityTimer = invincibilityDuration;
         }
         if (player->health <= 0) {
@@ -353,24 +363,35 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
     }
 
     int isPlayerAttacking_local =
-        (player->state == ATTACK_OVERHEAD_RECOVER || player->state == ATTACK_OVERHEAD_SLASHING || player->state == ATTACK_OVERHEAD_SLASHWAVE || player->state == DOWNSTAB_PRE || player->state == DOWNSTAB_ACTIVE || player->state == DOWNSTAB_LAND);
+        (player->state == ATTACK_OVERHEAD_RECOVER ||
+         player->state == ATTACK_OVERHEAD_SLASHING ||
+         player->state == ATTACK_OVERHEAD_SLASHWAVE ||
+         player->state == DOWNSTAB_PRE || player->state == DOWNSTAB_ACTIVE ||
+         player->state == DOWNSTAB_LAND);
 
-    if (isPlayerAttacking_local && s->state != SENTRY_DYING && s->state != SENTRY_DYING_AIR) {
+    if (isPlayerAttacking_local && s->state != SENTRY_DYING &&
+        s->state != SENTRY_DYING_AIR) {
       int attackHitboxX = player->x;
       int attackHitboxW = ATTACK_RANGE;
       if (player->facingRight) {
         attackHitboxX = player->x + spriteW / 2;
       } else {
-        attackHitboxW = ATTACK_RANGE_LEFT; 
+        attackHitboxW = ATTACK_RANGE_LEFT;
         attackHitboxX = player->x - ATTACK_RANGE_LEFT;
       }
 
-      if (checkCollisionSentry(attackHitboxX, player->y, attackHitboxW, ATTACK_RANGE, s->x, s->y, SENTRY_SIZE, SENTRY_SIZE)) {
+      if (checkCollisionSentry(attackHitboxX, player->y, attackHitboxW,
+                               ATTACK_RANGE, s->x, s->y, SENTRY_SIZE,
+                               SENTRY_SIZE)) {
 
         if (s->invincibilityTimer == 0) {
-          int damagePercent = (player->state == DOWNSTAB_ACTIVE || player->state == DOWNSTAB_LAND) ? DAMAGE_DEALT_HEAVY : DAMAGE_DEALT_NORMAL;
+          int damagePercent = (player->state == DOWNSTAB_ACTIVE ||
+                               player->state == DOWNSTAB_LAND)
+                                  ? DAMAGE_DEALT_HEAVY
+                                  : DAMAGE_DEALT_NORMAL;
 
-          int damage = (s->maxHealth * damagePercent / 100) * player->damageMultiplier;
+          int damage =
+              (s->maxHealth * damagePercent / 100) * player->damageMultiplier;
           s->currentHealth -= damage;
 
           s->invincibilityTimer = 90;
@@ -387,7 +408,7 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
             tryDropItem(pickups, s->x, s->y);
             playEnemyKillSound();
           } else {
-            s->damageAnimTimer = SENTRY_DAMAGE_FRAMES * 4; 
+            s->damageAnimTimer = SENTRY_DAMAGE_FRAMES * 4;
             s->damageFrame = 0;
           }
         }
@@ -400,7 +421,8 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
 
     if (s->damageAnimTimer > 0) {
       s->damageAnimTimer--;
-      if (s->damageAnimTimer % 4 == 0 && s->damageFrame < SENTRY_DAMAGE_FRAMES - 1) {
+      if (s->damageAnimTimer % 4 == 0 &&
+          s->damageFrame < SENTRY_DAMAGE_FRAMES - 1) {
         s->damageFrame++;
       }
     }
@@ -447,7 +469,8 @@ void renderSentries(struct Sentry sentries[], struct Camera *camera) {
       tex = sentrySlashR[s->frame % SENTRY_SLASHR_FRAMES];
       break;
     case SENTRY_TURNING_STATE:
-      tex = s->facingRight ? sentryTurnR[s->frame % SENTRY_TURNR_FRAMES]: sentryTurnL[s->frame % SENTRY_TURNL_FRAMES];
+      tex = s->facingRight ? sentryTurnR[s->frame % SENTRY_TURNR_FRAMES]
+                           : sentryTurnL[s->frame % SENTRY_TURNL_FRAMES];
       break;
     case SENTRY_DYING:
       tex = sentryDeath[s->frame % SENTRY_DEATH_FRAMES];
@@ -470,7 +493,26 @@ void renderSentries(struct Sentry sentries[], struct Camera *camera) {
         iShowImage(screenX, screenY, SENTRY_SIZE, SENTRY_SIZE, dmgTex);
       }
     }
+
+    if (s->state != SENTRY_DYING && s->state != SENTRY_DYING_AIR &&
+        s->state != SENTRY_INACTIVE && s->maxHealth > 0) {
+      int barW = 50;
+      int barH = 5;
+      int barX = screenX + (SENTRY_SIZE - barW) / 2;
+      int barY = screenY + SENTRY_SIZE + 5;
+      int currHealth = s->currentHealth;
+      if (currHealth < 0)
+        currHealth = 0;
+      int filled = (currHealth * barW) / s->maxHealth;
+
+      iSetColor(80, 0, 0);
+      iFilledRectangle(barX, barY, barW, barH);
+      iSetColor(220, 30, 30);
+      iFilledRectangle(barX, barY, filled, barH);
+      iSetColor(255, 255, 255);
+      iRectangle(barX, barY, barW, barH);
+    }
   }
 }
 
-#endif 
+#endif

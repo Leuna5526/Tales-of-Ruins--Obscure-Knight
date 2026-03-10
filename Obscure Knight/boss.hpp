@@ -866,6 +866,28 @@ void renderMinions(struct BossMinion minions[], struct Camera *cam) {
 
     if (frames[frame] != 0)
       iShowImage(drawX, drawY, sz, sz, frames[frame]);
+
+    if (!m->isDying) {
+      int maxHealth =
+          (m->type == MINION_FIREBAT) ? FIREBAT_MAX_HEALTH : BAT_MAX_HEALTH;
+      if (maxHealth > 0) {
+        int barW = 30;
+        int barH = 4;
+        int barX = drawX + (sz - barW) / 2;
+        int barY = drawY + sz + 5;
+        int currHealth = m->health;
+        if (currHealth < 0)
+          currHealth = 0;
+        int filled = (currHealth * barW) / maxHealth;
+
+        iSetColor(80, 0, 0);
+        iFilledRectangle(barX, barY, barW, barH);
+        iSetColor(220, 30, 30);
+        iFilledRectangle(barX, barY, filled, barH);
+        iSetColor(255, 255, 255);
+        iRectangle(barX, barY, barW, barH);
+      }
+    }
   }
 }
 

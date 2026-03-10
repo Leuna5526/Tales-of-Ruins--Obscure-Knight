@@ -62,7 +62,7 @@ static void loadWavSound(const char *path, WavSound *snd) {
       if (snd->pcm)
         memcpy(snd->pcm, buf + pos + 8, chunkSize);
     }
-    pos += 8 + ((chunkSize + 1) & ~1u); 
+    pos += 8 + ((chunkSize + 1) & ~1u);
   }
   HeapFree(GetProcessHeap(), 0, buf);
 
@@ -92,10 +92,11 @@ static WavSound g_sndAttack, g_sndDownslash, g_sndDeath, g_sndEnemyKill;
 static WavSound g_sndOnButton, g_sndButtonClick, g_sndStartClick;
 static WavSound g_sndItemCollect, g_sndLoseLife;
 static WavSound g_sndBg;
+static WavSound g_sndBg2;
+static WavSound g_sndBossBg;
 static WavSound g_sndFootL1[FOOTSTEP_LEVEL1_COUNT];
 static WavSound g_sndFootL2[FOOTSTEP_LEVEL2_COUNT];
 static WavSound g_sndFootTile[FOOTSTEP_TILE_COUNT];
-
 
 void applyVolume(WavSound *snd, float volumeFact) {
   if (!snd || !snd->pcm)
@@ -168,13 +169,97 @@ void restartBGMusic() {
   playBGMusic();
 }
 
+// ── BG2 music (Level 2 & 3) ──────────────────────────────────
+static HANDLE hBg2Thread = NULL;
+static volatile int g_stopBg2Thread = 0;
+
+static DWORD WINAPI Bg2MusicThreadProc(LPVOID p) {
+  if (!g_sndBg2.hWave)
+    return 0;
+
+  while (!g_stopBg2Thread) {
+    if (g_sndBg2.hdr.dwFlags & WHDR_DONE) {
+      waveOutWrite(g_sndBg2.hWave, &g_sndBg2.hdr, sizeof(WAVEHDR));
+    }
+    Sleep(10);
+  }
+  return 0;
+}
+
+void playBG2Music() {
+  if (hBg2Thread)
+    return;
+  if (!g_sndBg2.pcm)
+    return;
+
+  g_stopBg2Thread = 0;
+  hBg2Thread = CreateThread(NULL, 0, Bg2MusicThreadProc, NULL, 0, NULL);
+}
+
+void stopBG2Music() {
+  if (hBg2Thread) {
+    g_stopBg2Thread = 1;
+    waveOutReset(g_sndBg2.hWave);
+    WaitForSingleObject(hBg2Thread, INFINITE);
+    CloseHandle(hBg2Thread);
+    hBg2Thread = NULL;
+  }
+}
+
+void restartBG2Music() {
+  stopBG2Music();
+  playBG2Music();
+}
+
+// ── Boss BG music ────────────────────────────────────────────
+static HANDLE hBossBgThread = NULL;
+static volatile int g_stopBossBgThread = 0;
+
+static DWORD WINAPI BossBgMusicThreadProc(LPVOID p) {
+  if (!g_sndBossBg.hWave)
+    return 0;
+
+  while (!g_stopBossBgThread) {
+    if (g_sndBossBg.hdr.dwFlags & WHDR_DONE) {
+      waveOutWrite(g_sndBossBg.hWave, &g_sndBossBg.hdr, sizeof(WAVEHDR));
+    }
+    Sleep(10);
+  }
+  return 0;
+}
+
+void playBossBGMusic() {
+  if (hBossBgThread)
+    return;
+  if (!g_sndBossBg.pcm)
+    return;
+
+  g_stopBossBgThread = 0;
+  hBossBgThread = CreateThread(NULL, 0, BossBgMusicThreadProc, NULL, 0, NULL);
+}
+
+void stopBossBGMusic() {
+  if (hBossBgThread) {
+    g_stopBossBgThread = 1;
+    waveOutReset(g_sndBossBg.hWave);
+    WaitForSingleObject(hBossBgThread, INFINITE);
+    CloseHandle(hBossBgThread);
+    hBossBgThread = NULL;
+  }
+}
+
+void restartBossBGMusic() {
+  stopBossBGMusic();
+  playBossBGMusic();
+}
+
 void initSounds() {
   g_footstepTimer = 0;
   g_lastHealthForSound = PLAYER_MAX_HEALTH;
   g_lastHoveredButton = -1;
 
   loadWavSound("Audios/movements/move/jump.wav", &g_sndJump);
-  loadWavSound("Audios/movements/move/jump.wav", &g_sndFall); 
+  loadWavSound("Audios/movements/move/jump.wav", &g_sndFall);
   loadWavSound("Audios/movements/move/land.wav", &g_sndLand);
   loadWavSound("Audios/movements/move/dash.wav", &g_sndDash);
   loadWavSound("Audios/movements/move/attack.wav", &g_sndAttack);
@@ -184,6 +269,12 @@ void initSounds() {
 
   loadWavSound("Audios/Background/bg.wav", &g_sndBg);
   applyVolume(&g_sndBg, 0.6f);
+
+  loadWavSound("Audios/Background/bg2.wav", &g_sndBg2);
+  applyVolume(&g_sndBg2, 0.6f);
+
+  loadWavSound("Audios/Background/bossbg.wav", &g_sndBossBg);
+  applyVolume(&g_sndBossBg, 0.6f);
 
   loadWavSound("Audios/UI/on_button.wav", &g_sndOnButton);
   loadWavSound("Audios/UI/button_click.wav", &g_sndButtonClick);
@@ -235,7 +326,6 @@ void playFootstepTile() {
   playWavSound(&g_sndFootTile[rand() % FOOTSTEP_TILE_COUNT]);
 }
 
-
 int isPlayerOnTile(struct Player *player, struct Midground *mg) {
   int spriteW = SPRITE_SIZE * (int)SCALE;
   int playerLeft = player->x;
@@ -256,7 +346,8 @@ int isPlayerOnTile(struct Player *player, struct Midground *mg) {
   return 0;
 }
 
-void updateFootstepSounds(struct Player *player, struct Midground *mg, int gameState) {
+void updateFootstepSounds(struct Player *player, struct Midground *mg,
+                          int gameState) {
   if (player->state != WALK || !player->onGround) {
     g_footstepTimer = FOOTSTEP_INTERVAL;
     return;

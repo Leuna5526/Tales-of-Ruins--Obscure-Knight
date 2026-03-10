@@ -368,6 +368,25 @@ void renderCreatures(struct Creature creatures[], struct Camera *camera) {
         iShowImage(screenX, screenY, CREATURE_SIZE, CREATURE_SIZE, dmgTex);
       }
     }
+
+    if (c->state != CREATURE_DEAD && c->state != CREATURE_INACTIVE &&
+        c->maxHealth > 0) {
+      int barW = 40;
+      int barH = 5;
+      int barX = screenX + (CREATURE_SIZE - barW) / 2;
+      int barY = screenY + CREATURE_SIZE + 5;
+      int currHealth = c->currentHealth;
+      if (currHealth < 0)
+        currHealth = 0;
+      int filled = (currHealth * barW) / c->maxHealth;
+
+      iSetColor(80, 0, 0);
+      iFilledRectangle(barX, barY, barW, barH);
+      iSetColor(220, 30, 30);
+      iFilledRectangle(barX, barY, filled, barH);
+      iSetColor(255, 255, 255);
+      iRectangle(barX, barY, barW, barH);
+    }
   }
 }
 
