@@ -143,6 +143,7 @@ int checkMidgroundCollision(struct Player *player, struct Midground *mg,
           effectiveHeight += 20;
         }
 
+
         if (effectiveHeight > highestPlatformY) {
           highestPlatformY = effectiveHeight;
           foundCollision = 1;

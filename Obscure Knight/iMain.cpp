@@ -78,6 +78,7 @@ void iDraw() {
     renderPlayer(&player, &camera);
   } else if (gameState == LEVEL3_STATE) {
     renderBackgroundWithCamera(&camera, level3BackgroundTextures);
+    renderMidground(&mg, &camera, gameState);
     renderTraderNPC(&traderNpc, &camera);
     renderGrims(grims, &camera);
     renderGrimFireballs(grimFireballs, &camera);
@@ -159,9 +160,9 @@ void animate() {
       }
       traderEKeyWas = traderEKey;
 
-      static int traderSpaceKeyWas = 0;
-      int traderSpaceKey = (GetAsyncKeyState(VK_SPACE) & 0x8000);
-      if (traderSpaceKey && !traderSpaceKeyWas &&
+      static int traderEnterKeyWas = 0;
+      int traderEnterKey = (GetAsyncKeyState(VK_RETURN) & 0x8000);
+      if (traderEnterKey && !traderEnterKeyWas &&
           traderNpc.state == TRADER_SHOW_KEY) {
         // Collect the key
         player.hasKey = 1;
@@ -169,21 +170,20 @@ void animate() {
         traderNpc.frame = 0;
         traderNpc.stateTimer = 0;
       }
-      traderSpaceKeyWas = traderSpaceKey;
+      traderEnterKeyWas = traderEnterKey;
 
-      static int traderXKeyWas = 0;
-      int traderXKey = (GetAsyncKeyState('X') & 0x8000);
-      if (traderXKey && !traderXKeyWas &&
+      static int traderBKeyWas = 0;
+      int traderBKey = (GetAsyncKeyState('B') & 0x8000);
+      if (traderBKey && !traderBKeyWas &&
           traderNpc.state == TRADER_SHOW_KEY) {
-        // Ignore - NPC walks away
-        traderNpc.state = TRADER_WALK_AWAY;
+        // Ignore - NPC walks back to initial position (stays active)
+        traderNpc.state = TRADER_WALK_BACK;
         traderNpc.frame = 0;
         traderNpc.stateTimer = 0;
-        // Walk away from player
-        float tdx = (float)(player.x - traderNpc.x);
-        traderNpc.facingRight = (tdx > 0) ? 0 : 1; // walk opposite to player
+        // Face towards initial position
+        traderNpc.facingRight = (traderNpc.initialX > traderNpc.x) ? 1 : 0;
       }
-      traderXKeyWas = traderXKey;
+      traderBKeyWas = traderBKey;
     }
     if (gameState == BOSS_STATE) {
       updateBoss(&boss, &player, bossMinions, bossHazards);
@@ -248,6 +248,22 @@ void iKeyboard(unsigned char key) {
     initTraderNPC(&traderNpc);
     initGrims(grims);
     initGrimFireballs(grimFireballs);
+    // Setup Level 3 tiles
+    mg.tileCount = 0;
+    {
+      mg.tileTexture1 = level3Tile1;
+      mg.tileTexture2 = level3Tile2;
+      mg.tiles[0].x = LEVEL3_TILE_1_X; mg.tiles[0].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_1_Y; mg.tiles[0].texture = level3Tile1;
+      mg.tiles[0].width = LEVEL3_TILE_W; mg.tiles[0].height = LEVEL3_TILE_H; mg.tiles[0].active = 1; mg.tiles[0].isJumpThrough = 0; mg.tileCount++;
+      mg.tiles[1].x = LEVEL3_TILE_2_X; mg.tiles[1].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_2_Y; mg.tiles[1].texture = level3Tile2;
+      mg.tiles[1].width = LEVEL3_TILE_WIDE_W; mg.tiles[1].height = LEVEL3_TILE_H; mg.tiles[1].active = 1; mg.tiles[1].isJumpThrough = 0; mg.tileCount++;
+      mg.tiles[2].x = LEVEL3_TILE_3_X; mg.tiles[2].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_3_Y; mg.tiles[2].texture = level3Tile1;
+      mg.tiles[2].width = LEVEL3_TILE_W; mg.tiles[2].height = LEVEL3_TILE_H; mg.tiles[2].active = 1; mg.tiles[2].isJumpThrough = 0; mg.tileCount++;
+      mg.tiles[3].x = LEVEL3_TILE_4_X; mg.tiles[3].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_4_Y; mg.tiles[3].texture = level3Tile2;
+      mg.tiles[3].width = LEVEL3_TILE_WIDE_W; mg.tiles[3].height = LEVEL3_TILE_H; mg.tiles[3].active = 1; mg.tiles[3].isJumpThrough = 0; mg.tileCount++;
+      mg.tiles[4].x = LEVEL3_TILE_5_X; mg.tiles[4].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_5_Y; mg.tiles[4].texture = level3Tile1;
+      mg.tiles[4].width = LEVEL3_TILE_W; mg.tiles[4].height = LEVEL3_TILE_H; mg.tiles[4].active = 1; mg.tiles[4].isJumpThrough = 0; mg.tileCount++;
+    }
     return;
   } else if (key == '4') {
     gameState = BOSS_STATE;
@@ -298,6 +314,21 @@ void iKeyboard(unsigned char key) {
     initTraderNPC(&traderNpc);
     initGrims(grims);
     initGrimFireballs(grimFireballs);
+    mg.tileCount = 0;
+    {
+      mg.tileTexture1 = level3Tile1;
+      mg.tileTexture2 = level3Tile2;
+      mg.tiles[0].x = LEVEL3_TILE_1_X; mg.tiles[0].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_1_Y; mg.tiles[0].texture = level3Tile1;
+      mg.tiles[0].width = LEVEL3_TILE_W; mg.tiles[0].height = LEVEL3_TILE_H; mg.tiles[0].active = 1; mg.tiles[0].isJumpThrough = 0; mg.tileCount++;
+      mg.tiles[1].x = LEVEL3_TILE_2_X; mg.tiles[1].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_2_Y; mg.tiles[1].texture = level3Tile2;
+      mg.tiles[1].width = LEVEL3_TILE_WIDE_W; mg.tiles[1].height = LEVEL3_TILE_H; mg.tiles[1].active = 1; mg.tiles[1].isJumpThrough = 0; mg.tileCount++;
+      mg.tiles[2].x = LEVEL3_TILE_3_X; mg.tiles[2].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_3_Y; mg.tiles[2].texture = level3Tile1;
+      mg.tiles[2].width = LEVEL3_TILE_W; mg.tiles[2].height = LEVEL3_TILE_H; mg.tiles[2].active = 1; mg.tiles[2].isJumpThrough = 0; mg.tileCount++;
+      mg.tiles[3].x = LEVEL3_TILE_4_X; mg.tiles[3].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_4_Y; mg.tiles[3].texture = level3Tile2;
+      mg.tiles[3].width = LEVEL3_TILE_WIDE_W; mg.tiles[3].height = LEVEL3_TILE_H; mg.tiles[3].active = 1; mg.tiles[3].isJumpThrough = 0; mg.tileCount++;
+      mg.tiles[4].x = LEVEL3_TILE_5_X; mg.tiles[4].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_5_Y; mg.tiles[4].texture = level3Tile1;
+      mg.tiles[4].width = LEVEL3_TILE_W; mg.tiles[4].height = LEVEL3_TILE_H; mg.tiles[4].active = 1; mg.tiles[4].isJumpThrough = 0; mg.tileCount++;
+    }
   } else if (key == '4') {
     gameState = BOSS_STATE;
     player.x = 200;

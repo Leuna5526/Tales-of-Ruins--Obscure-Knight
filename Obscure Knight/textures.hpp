@@ -94,6 +94,10 @@ unsigned int inventoryGainTex = 0;
 unsigned int pickableGainTex = 0;
 unsigned int glowTextures[GLOW_FRAMES];
 unsigned int caveTexture = 0;
+unsigned int crestInventoryTex = 0;
+
+unsigned int level3Tile1 = 0;
+unsigned int level3Tile2 = 0;
 
 #define NPC_APPROACH_FRAMES 12
 #define NPC_IDLE_LEFT_FRAMES 8
@@ -201,6 +205,12 @@ void loadInventoryTextures() {
   inventoryGainTex = iLoadImage("Assets/UI/Inventory/gain.png");
   pickableGainTex = iLoadImage("Assets/UI/Pickables/gain.png");
   loadSet(glowTextures, GLOW_FRAMES, "Assets/UI/Glow/glow (%d).png");
+  crestInventoryTex = iLoadImage("Assets/UI/Crests/crest inventory.png");
+}
+
+void loadLevel3TileTextures() {
+  level3Tile1 = iLoadImage("Assets/Level 3/tiles/tile (1).png");
+  level3Tile2 = iLoadImage("Assets/Level 3/tiles/tile (2).png");
 }
 
 void loadNPCTextures() {
@@ -426,6 +436,7 @@ void loadImages() {
   loadSentryTextures();
   loadSparkleTextures();
   loadLevel2TileTextures();
+  loadLevel3TileTextures();
   loadInventoryTextures();
   caveTexture = iLoadImage("Assets/Level 2/bg/cave.png");
   loadNPCTextures();

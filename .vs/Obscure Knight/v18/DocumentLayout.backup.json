@@ -87,20 +87,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "grimmaster.hpp",
-              "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\grimmaster.hpp",
-              "RelativeDocumentMoniker": "Obscure Knight\\grimmaster.hpp",
-              "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\grimmaster.hpp",
-              "RelativeToolTip": "Obscure Knight\\grimmaster.hpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-03-10T14:08:32.567Z"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 3,
@@ -127,6 +115,31 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "config.hpp",
+              "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\config.hpp",
+              "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp*",
+              "RelativeToolTip": "Obscure Knight\\config.hpp*",
+              "ViewState": "AgIAAC4BAAAAAAAAAAAAwEkBAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-11T09:11:42.888Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "grimmaster.hpp",
+              "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\grimmaster.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\grimmaster.hpp",
+              "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\grimmaster.hpp",
+              "RelativeToolTip": "Obscure Knight\\grimmaster.hpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-03-10T14:08:32.567Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 7,
               "Title": "background.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\background.hpp",
@@ -148,19 +161,6 @@
               "ViewState": "AgIAAFMAAAAAAAAAAAAUwGEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-02-11T09:11:37.978Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "config.hpp",
-              "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp",
-              "RelativeDocumentMoniker": "Obscure Knight\\config.hpp",
-              "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp*",
-              "RelativeToolTip": "Obscure Knight\\config.hpp*",
-              "ViewState": "AgIAABcBAAAAAAAAAAAAACYBAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-02-11T09:11:42.888Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",

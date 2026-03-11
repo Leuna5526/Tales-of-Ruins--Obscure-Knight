@@ -346,6 +346,7 @@ enum GrimState {
   GRIM_TELEPORT_IN_PILLAR,
   GRIM_TELEPORT_IN_STATE,
   GRIM_DYING,
+  GRIM_RETURNING,
   GRIM_DEAD
 };
 
@@ -368,7 +369,7 @@ struct GrimMaster {
 };
 
 struct GrimFireball {
-  int x, y;
+  float x, y;
   int targetX, targetY;
   float vx, vy;
   int active;

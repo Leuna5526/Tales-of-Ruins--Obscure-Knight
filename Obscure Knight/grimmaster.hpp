@@ -64,7 +64,7 @@ void spawnGrim(struct GrimMaster *grim, int x, int y) {
   grim->spawnY = y;
 }
 
-void spawnGrimFireball(struct GrimFireball fireballs[], int startX, int startY,
+void spawnGrimFireball(struct GrimFireball fireballs[], float startX, float startY,
                        int targetX, int targetY) {
   for (int i = 0; i < MAX_GRIM_FIREBALLS; i++) {
     if (!fireballs[i].active) {
@@ -99,8 +99,6 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
       int spawnX = GRIM_SPAWN_1_X;
       if (i == 1)
         spawnX = GRIM_SPAWN_2_X;
-      else if (i == 2)
-        spawnX = GRIM_SPAWN_3_X;
 
       int dx = player->x - spawnX;
       int dy = player->y - (LEVEL3_GROUND_Y + GRIM_SPAWN_Y_OFFSET);
@@ -123,19 +121,16 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
     float distFromSpawn = sqrt((double)(sdx * sdx + sdy * sdy));
 
     if (distFromSpawn > 600) {
-      // Player left the range — move Grim back to initial spawn position
-      g->x = g->spawnX;
-      g->y = g->spawnY;
-      g->state = GRIM_IDLE_STATE;
-      g->frame = 0;
-      g->stateTimer = 0;
-      g->subStateTimer = 0;
-      g->facingRight = 0;
-      g->currentHealth = g->maxHealth; // reset health
-      g->invincibilityTimer = 0;
-      g->damageAnimTimer = 0;
-      g->damageFrame = 0;
-      continue;
+      // Player left the range — Grim dashes back to initial position
+      if (g->state != GRIM_RETURNING) {
+        g->state = GRIM_RETURNING;
+        g->frame = 0;
+        g->stateTimer = 0;
+        g->subStateTimer = 0;
+        // Face towards spawn
+        g->facingRight = (g->spawnX > g->x) ? 1 : 0;
+        // Do NOT reset health
+      }
     }
 
     int dx = player->x - g->x;
@@ -217,6 +212,12 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
         g->frame++;
         if (g->frame >= GRIM_DEATH_FRAMES)
           g->frame = GRIM_DEATH_FRAMES - 1;
+        break;
+      case GRIM_RETURNING:
+        if (g->facingRight)
+          g->frame = (g->frame + 1) % GRIM_DASH_R_FRAMES;
+        else
+          g->frame = (g->frame + 1) % GRIM_DASH_L_FRAMES;
         break;
       default:
         break;
@@ -354,13 +355,14 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
         g->stateTimer = 0;
         g->subStateTimer = 0;
         // Spawn fireball from the Grim's current position
-        int fbX = g->facingRight
-                  ? g->x + GRIM_FB_SPAWN_OFFSET_X_RIGHT
-                  : g->x + GRIM_SIZE - GRIM_FB_SPAWN_OFFSET_X_LEFT - GRIM_FIREBALL_SIZE;
-        int fbY = g->y + GRIM_FB_SPAWN_OFFSET_Y;
-        // Target: player's current X, Y = ground - offset
-        int targetFbX = player->x + GRIM_FB_TARGET_PLAYER_OFFSET_X;
-        int targetFbY = LEVEL3_GROUND_Y - GRIM_FB_TARGET_GROUND_OFFSET;
+        float fbX = g->facingRight
+                  ? (float)(g->x + GRIM_FB_SPAWN_OFFSET_X_RIGHT)
+                  : (float)(g->x + GRIM_SIZE - GRIM_FB_SPAWN_OFFSET_X_LEFT - GRIM_FIREBALL_SIZE);
+        float fbY = (float)(g->y + GRIM_FB_SPAWN_OFFSET_Y);
+        // Target: player's actual center position for precise aiming
+        int spriteSize = (int)(SPRITE_SIZE * SCALE);
+        int targetFbX = player->x + spriteSize / 2;
+        int targetFbY = player->y + spriteSize / 2;
         spawnGrimFireball(fireballs, fbX, fbY, targetFbX, targetFbY);
       }
       break;
@@ -430,6 +432,26 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
       if (g->subStateTimer >= GRIM_DEATH_FRAMES * 20) {
         g->state = GRIM_DEAD;
         g->active = 0;
+      }
+      break;
+
+    case GRIM_RETURNING:
+      // Dash back towards initial spawn position
+      if (g->spawnX > g->x) {
+        g->x += GRIM_DASH_SPEED;
+        g->facingRight = 1;
+      } else if (g->spawnX < g->x) {
+        g->x -= GRIM_DASH_SPEED;
+        g->facingRight = 0;
+      }
+      // Reached spawn position
+      if (abs(g->x - g->spawnX) <= GRIM_DASH_SPEED) {
+        g->x = g->spawnX;
+        g->y = g->spawnY;
+        g->state = GRIM_IDLE_STATE;
+        g->frame = 0;
+        g->stateTimer = 0;
+        g->subStateTimer = 0;
       }
       break;
 
@@ -544,9 +566,9 @@ void updateGrimFireballs(struct GrimFireball fireballs[],
       continue;
     }
 
-    // Move fireball
-    fireballs[i].x += (int)fireballs[i].vx;
-    fireballs[i].y += (int)fireballs[i].vy;
+    // Move fireball using float for sub-pixel accuracy
+    fireballs[i].x += fireballs[i].vx;
+    fireballs[i].y += fireballs[i].vy;
 
     // Animate fireball
     fireballs[i].animTimer++;
@@ -555,12 +577,27 @@ void updateGrimFireballs(struct GrimFireball fireballs[],
       fireballs[i].frame = (fireballs[i].frame + 1) % GRIM_FIREBALL_FRAMES;
     }
 
+    // Integer positions for collision checks
+    int fbPosX = (int)fireballs[i].x;
+    int fbPosY = (int)fireballs[i].y;
+
     // Check collision with player
     if (player->invincibilityTimer == 0 && player->state != DEATH) {
-      if (checkCollisionGrim(player->x + 40, player->y + 24, 48, 80,
-                             fireballs[i].x + GRIM_FIREBALL_SIZE / 2 - 10, 
-                             fireballs[i].y + GRIM_FIREBALL_SIZE / 2 - 10,
-                             20, 20)) {
+      // Use fireball center and config-defined hitbox size
+      int fbCenterX = fbPosX + GRIM_FIREBALL_DISPLAY_SIZE / 2;
+      int fbCenterY = fbPosY + GRIM_FIREBALL_DISPLAY_SIZE / 2;
+      int fbHitX = fbCenterX - GRIM_FIREBALL_HIT_W / 2;
+      int fbHitY = fbCenterY - GRIM_FIREBALL_HIT_H / 2;
+
+      // Player hitbox: inset from sprite edges for a tighter, fairer box
+      int playerHitX = player->x + 24;
+      int playerHitY = player->y + 10;
+      int playerHitW = 80;
+      int playerHitH = 100;
+
+      if (checkCollisionGrim(playerHitX, playerHitY, playerHitW, playerHitH,
+                             fbHitX, fbHitY,
+                             GRIM_FIREBALL_HIT_W, GRIM_FIREBALL_HIT_H)) {
         // Explode
         fireballs[i].exploding = 1;
         fireballs[i].explodeFrame = 0;
@@ -578,23 +615,14 @@ void updateGrimFireballs(struct GrimFireball fireballs[],
           player->stateTimer = 0;
           playDeathSound();
         }
+        continue;
       }
     }
 
-    // Out of bounds or ground contact check
-    if (fireballs[i].x < -100 || fireballs[i].x > TOTAL_BG_WIDTH + 100 ||
-        fireballs[i].y < -100 || fireballs[i].y > 700 || 
-        fireballs[i].y <= LEVEL3_GROUND_Y - GRIM_FB_TARGET_GROUND_OFFSET + 10) {
-      // Explode on ground
-      if (fireballs[i].y <= LEVEL3_GROUND_Y - GRIM_FB_TARGET_GROUND_OFFSET + 10) {
-        fireballs[i].exploding = 1;
-        fireballs[i].explodeFrame = 0;
-        fireballs[i].explodeTimer = 0;
-        fireballs[i].vy = 0;
-        fireballs[i].vx = 0;
-      } else {
-        fireballs[i].active = 0;
-      }
+    // Out of bounds check - deactivate if fireball goes off-screen
+    if (fbPosX < -200 || fbPosX > TOTAL_BG_WIDTH + 200 ||
+        fbPosY < -200 || fbPosY > 800) {
+      fireballs[i].active = 0;
     }
   }
 }
@@ -656,6 +684,12 @@ void renderGrims(struct GrimMaster grims[], struct Camera *camera) {
     case GRIM_DYING:
       tex = grimDeath[g->frame % GRIM_DEATH_FRAMES];
       break;
+    case GRIM_RETURNING:
+      if (g->facingRight)
+        tex = grimDashR[g->frame % GRIM_DASH_R_FRAMES];
+      else
+        tex = grimDashL[g->frame % GRIM_DASH_L_FRAMES];
+      break;
     default:
       tex = grimIdle[0];
       break;
@@ -705,14 +739,14 @@ void renderGrimFireballs(struct GrimFireball fireballs[],
           grimFireballExplode[fireballs[i].explodeFrame %
                               GRIM_FIREBALL_EXPLODE_FRAMES];
       if (tex != 0) {
-        iShowImage(screenX, screenY, GRIM_FIREBALL_SIZE, GRIM_FIREBALL_SIZE,
+        iShowImage(screenX, screenY, GRIM_FIREBALL_EXPLODE_DISPLAY_SIZE, GRIM_FIREBALL_EXPLODE_DISPLAY_SIZE,
                    tex);
       }
     } else {
       unsigned int tex =
           grimFireball[fireballs[i].frame % GRIM_FIREBALL_FRAMES];
       if (tex != 0) {
-        iShowImage(screenX, screenY, GRIM_FIREBALL_SIZE, GRIM_FIREBALL_SIZE,
+        iShowImage(screenX, screenY, GRIM_FIREBALL_DISPLAY_SIZE, GRIM_FIREBALL_DISPLAY_SIZE,
                    tex);
       }
     }

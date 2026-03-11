@@ -413,9 +413,17 @@ inline void renderInventoryUI(struct Player *player) {
                inventoryGainTex);
   }
 
+  // Crest Inventory (right top corner) - always show background
+  if (crestInventoryTex != 0) {
+    iShowImage(CREST_INVENTORY_X, CREST_INVENTORY_Y, CREST_INVENTORY_W, CREST_INVENTORY_H,
+               crestInventoryTex);
+  }
+
+  // Key goes in crest inventory, not regular inventory
   if (player->hasKey && traderKeyTex != 0) {
-    // Render key in its own slot at original size
-    iShowImage(INVENTORY_X + 43, INVENTORY_Y + 41, 64, 64,
+    iShowImage(CREST_INVENTORY_X + CREST_KEY_OFFSET_X,
+               CREST_INVENTORY_Y + CREST_KEY_OFFSET_Y,
+               CREST_KEY_SIZE, CREST_KEY_SIZE,
                traderKeyTex);
   }
 }

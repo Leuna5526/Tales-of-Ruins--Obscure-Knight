@@ -45,6 +45,29 @@
 #define LEVEL2_END_X 4870
 #define LEVEL3_END_X 4870
 
+// Level 3 tiles
+#define LEVEL3_TILE_COUNT 5
+#define LEVEL3_TILE_W TILE_WIDTH
+#define LEVEL3_TILE_H TILE_HEIGHT
+#define LEVEL3_TILE_WIDE_W (int)(TILE_WIDTH * 1.5)
+#define LEVEL3_TILE_BASE_HEIGHT (LEVEL3_GROUND_Y + 125)
+// Tile positions (X, Y offset from base)
+#define LEVEL3_TILE_1_X 700
+#define LEVEL3_TILE_1_Y 0
+#define LEVEL3_TILE_2_X 1500
+#define LEVEL3_TILE_2_Y 50
+#define LEVEL3_TILE_3_X 2500
+#define LEVEL3_TILE_3_Y 30
+#define LEVEL3_TILE_4_X 3400
+#define LEVEL3_TILE_4_Y 60
+#define LEVEL3_TILE_5_X 4200
+#define LEVEL3_TILE_5_Y 40
+
+// Trader key display size (shown during trade prompt)
+#define TRADER_KEY_DISPLAY_SIZE 85
+#define TRADER_KEY_PROMPT_Y 110
+#define TRADER_KEY_PROMPT_X_OFFSET (TRADER_SIZE / 2 - TRADER_KEY_DISPLAY_SIZE / 2)
+
 #define DASH_SPEED 6
 #define EVADE_SPEED 10
 #define DOWNSTAB_VELOCITY -25
@@ -205,6 +228,16 @@
 #define INVENTORY_X -10
 #define INVENTORY_Y 215
 
+// Crest Inventory (right top corner)
+#define CREST_INVENTORY_X 900
+#define CREST_INVENTORY_Y 370
+#define CREST_INVENTORY_W 80
+#define CREST_INVENTORY_H 150
+// Key inside crest inventory
+#define CREST_KEY_OFFSET_X 20
+#define CREST_KEY_OFFSET_Y 57
+#define CREST_KEY_SIZE 35
+
 #define PICKUP_SIZE 48
 #define PICKUP_DROP_CHANCE 75
 #define MAX_PICKUPS 10
@@ -228,8 +261,8 @@
 // ============================================================
 // TRADER NPC (Level 3)
 // ============================================================
-#define TRADER_NPC_X 2400
-#define TRADER_NPC_Y LEVEL3_GROUND_Y
+#define TRADER_NPC_X 2900
+#define TRADER_NPC_Y LEVEL3_GROUND_Y+12
 #define TRADER_IDLE_FRAMES 8
 #define TRADER_WALK_L_FRAMES 9
 #define TRADER_WALK_R_FRAMES 9
@@ -271,16 +304,19 @@
 #define GRIM_ATTACK_RANGE 300
 #define GRIM_FIREBALL_SPEED 12
 #define GRIM_FIREBALL_SIZE 188
+#define GRIM_FIREBALL_DISPLAY_SIZE 80
+#define GRIM_FIREBALL_EXPLODE_DISPLAY_SIZE 150
+#define GRIM_FIREBALL_HIT_W 60
+#define GRIM_FIREBALL_HIT_H 60
 #define GRIM_ANIM_SPEED 4
 #define GRIM_TELEPORT_CHANCE 6
 #define GRIM_THROW_CHANCE 6
-#define GRIM_TELEPORT_RADIUS 100
+#define GRIM_TELEPORT_RADIUS 150
 #define GRIM_INVINCIBILITY_FRAMES 90
 #define GRIM_DAMAGE_FRAMES 3
-#define MAX_GRIMS 3
+#define MAX_GRIMS 2
 #define GRIM_SPAWN_1_X 1000
-#define GRIM_SPAWN_2_X 3100
-#define GRIM_SPAWN_3_X 4100
+#define GRIM_SPAWN_2_X 3910
 #define GRIM_SPAWN_Y_OFFSET 82
 #define GRIM_FIREBALL_DAMAGE 15
 #define GRIM_CONTACT_DAMAGE 10
@@ -291,8 +327,8 @@
 #define GRIM_FB_SPAWN_OFFSET_X_LEFT  15  // X offset when facing left (center-front of grim)
 #define GRIM_FB_SPAWN_OFFSET_Y       90  // Y offset from grim's y (staff height)
 // Fireball target offsets
-#define GRIM_FB_TARGET_PLAYER_OFFSET_X 16 // offset to center of player sprite
-#define GRIM_FB_TARGET_GROUND_OFFSET   200  // how far below ground level to target
+#define GRIM_FB_TARGET_PLAYER_OFFSET_X 50 // offset to center of player sprite
+#define GRIM_FB_TARGET_GROUND_OFFSET   50  // how far below ground level to target
 
 // ============================================================
 // FINAL BOSS CONFIGURATION

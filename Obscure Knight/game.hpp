@@ -98,6 +98,56 @@ void updateGame(struct Player *player, struct Creature creatures[],
       // Initialize grims
       initGrims(grims);
       initGrimFireballs(grimFireballs);
+      // Setup Level 3 tiles (same pattern as Level 1/2)
+      {
+        mg->tileTexture1 = level3Tile1;
+        mg->tileTexture2 = level3Tile2;
+
+        mg->tiles[0].x = LEVEL3_TILE_1_X;
+        mg->tiles[0].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_1_Y;
+        mg->tiles[0].texture = level3Tile1;
+        mg->tiles[0].width = LEVEL3_TILE_W;
+        mg->tiles[0].height = LEVEL3_TILE_H;
+        mg->tiles[0].active = 1;
+        mg->tiles[0].isJumpThrough = 0;
+        mg->tileCount++;
+
+        mg->tiles[1].x = LEVEL3_TILE_2_X;
+        mg->tiles[1].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_2_Y;
+        mg->tiles[1].texture = level3Tile2;
+        mg->tiles[1].width = LEVEL3_TILE_WIDE_W;
+        mg->tiles[1].height = LEVEL3_TILE_H;
+        mg->tiles[1].active = 1;
+        mg->tiles[1].isJumpThrough = 0;
+        mg->tileCount++;
+
+        mg->tiles[2].x = LEVEL3_TILE_3_X;
+        mg->tiles[2].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_3_Y;
+        mg->tiles[2].texture = level3Tile1;
+        mg->tiles[2].width = LEVEL3_TILE_W;
+        mg->tiles[2].height = LEVEL3_TILE_H;
+        mg->tiles[2].active = 1;
+        mg->tiles[2].isJumpThrough = 0;
+        mg->tileCount++;
+
+        mg->tiles[3].x = LEVEL3_TILE_4_X;
+        mg->tiles[3].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_4_Y;
+        mg->tiles[3].texture = level3Tile2;
+        mg->tiles[3].width = LEVEL3_TILE_WIDE_W;
+        mg->tiles[3].height = LEVEL3_TILE_H;
+        mg->tiles[3].active = 1;
+        mg->tiles[3].isJumpThrough = 0;
+        mg->tileCount++;
+
+        mg->tiles[4].x = LEVEL3_TILE_5_X;
+        mg->tiles[4].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_5_Y;
+        mg->tiles[4].texture = level3Tile1;
+        mg->tiles[4].width = LEVEL3_TILE_W;
+        mg->tiles[4].height = LEVEL3_TILE_H;
+        mg->tiles[4].active = 1;
+        mg->tiles[4].isJumpThrough = 0;
+        mg->tileCount++;
+      }
     }
 
     if (*gameState == LEVEL3_STATE && player->x >= LEVEL3_END_X) {

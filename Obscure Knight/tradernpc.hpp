@@ -268,16 +268,16 @@ void renderTraderNPC(struct TraderNPC *t, struct Camera *camera) {
     float screenX = getScreenX((float)t->x, camera);
     float screenY = getScreenY((float)t->y, camera);
 
-    // Show the key image 3 times larger
+    // Show the key image larger
     if (traderKeyTex != 0) {
-      float keyScreenY = getScreenY((float)(LEVEL3_GROUND_Y + 40), camera);
-      iShowImage((int)(screenX + TRADER_SIZE / 2 - 96),
-                 (int)keyScreenY, 192, 192, traderKeyTex);
+      float keyScreenY = getScreenY((float)(LEVEL3_GROUND_Y + TRADER_KEY_PROMPT_Y), camera);
+      iShowImage((int)(screenX + TRADER_KEY_PROMPT_X_OFFSET),
+                 (int)keyScreenY, TRADER_KEY_DISPLAY_SIZE, TRADER_KEY_DISPLAY_SIZE, traderKeyTex);
     }
 
     iSetColor(255, 255, 255);
     iText((int)(screenX - 60), (int)(screenY + TRADER_SIZE + 110),
-          "Space: Collect Key  /  X: Ignore",
+          "Enter: Collect Key  /  B: Ignore",
           GLUT_BITMAP_HELVETICA_18);
   }
 }
