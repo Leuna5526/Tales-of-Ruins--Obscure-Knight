@@ -6,6 +6,8 @@
 #include "structs.hpp"
 #include <math.h>
 
+extern int gameState;
+
 void initMidground(struct Midground *mg) {
   mg->tileCount = 0;
   mg->tileTexture1 = 0;
@@ -96,6 +98,9 @@ void renderMidground(struct Midground *mg, struct Camera *camera, int gameState)
 
 int checkMidgroundCollision(struct Player *player, struct Midground *mg,
                             int *platformY, int jumpDownActive) {
+  // BOSS_STATE has no tile collisions
+  if (gameState == BOSS_STATE) return 0;
+
   int playerLeft = player->x;
   int spriteW = SPRITE_SIZE * SCALE;
   int spriteH = SPRITE_SIZE * SCALE;
@@ -162,6 +167,9 @@ int checkMidgroundCollision(struct Player *player, struct Midground *mg,
 
 int checkMidgroundCeilingCollision(struct Player *player,
                                    struct Midground *mg) {
+  // BOSS_STATE has no tile collisions
+  if (gameState == BOSS_STATE) return -1;
+
   int spriteW = SPRITE_SIZE * SCALE;
   int spriteH = SPRITE_SIZE * SCALE;
   int playerTop = player->y + spriteH;

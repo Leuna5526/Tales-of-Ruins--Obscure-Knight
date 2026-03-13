@@ -96,6 +96,10 @@ unsigned int glowTextures[GLOW_FRAMES];
 unsigned int caveTexture = 0;
 unsigned int crestInventoryTex = 0;
 
+// Greeting NPC textures (end of Level 2)
+unsigned int greetIdleTex = 0;
+unsigned int greetAnimTex[GREET_ANIM_FRAMES];
+
 unsigned int level3Tile1 = 0;
 unsigned int level3Tile2 = 0;
 
@@ -201,6 +205,11 @@ void loadSparkleTextures() {
 void loadLevel2TileTextures() {
   level2TileFlat = iLoadImage("Assets/Level 2/bg/flattile.png");
   level2Tile1 = iLoadImage("Assets/Level 2/bg/tile (1).png");
+}
+
+void loadGreetTextures() {
+  greetIdleTex = iLoadImage("Assets/Level 2/greet/idle.png");
+  loadSet(greetAnimTex, GREET_ANIM_FRAMES, "Assets/Level 2/greet/greeting/%d.png");
 }
 
 void loadLevel3Textures() {
@@ -475,6 +484,7 @@ void loadImages() {
   loadLevel3TileTextures();
   loadInventoryTextures();
   caveTexture = iLoadImage("Assets/Level 2/bg/cave.png");
+  loadGreetTextures();
   loadNPCTextures();
   loadBossEntityTextures();
   loadTraderNPCTextures();

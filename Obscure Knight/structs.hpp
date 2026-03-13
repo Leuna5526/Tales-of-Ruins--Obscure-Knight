@@ -410,4 +410,22 @@ struct GrimFireball {
   int explodeTimer;
 };
 
+// ============================================================
+// GREETING NPC (end of Level 2)
+// ============================================================
+enum GreetState {
+  GREET_IDLE,
+  GREET_ANIMATING,
+  GREET_DONE
+};
+
+struct GreetNPC {
+  int x, y;
+  int frame;
+  int animTimer;
+  enum GreetState state;
+  int active;   // 1 = visible on screen
+  int done;     // 1 = animation finished, trigger level transition
+};
+
 #endif

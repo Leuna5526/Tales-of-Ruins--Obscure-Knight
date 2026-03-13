@@ -37,6 +37,7 @@ struct TraderNPC traderNpc;
 struct GrimMaster grims[MAX_GRIMS];
 struct GrimFireball grimFireballs[MAX_GRIM_FIREBALLS];
 struct BossDoor bossDoor;
+struct GreetNPC greetNpc;
 
 void iDraw() {
   iClear();
@@ -71,6 +72,7 @@ void iDraw() {
     renderCreatures(creatures, &camera);
     renderSentries(sentries, &camera);
     renderSparkles(sparkles, &camera);
+    renderGreetNPC(&greetNpc, &camera);
     renderStaminaBar(&player);
     renderHealthBar(&player);
     renderPickups(pickups, &camera);
@@ -117,6 +119,11 @@ void iDraw() {
     renderPlayer(&player, &camera);
     renderDialogue(&npc);
   }
+
+  // Global cursor draw - always on top
+  if (titleScreen.cursorTexture != 0) {
+    iShowImage(titleScreen.mouseX, titleScreen.mouseY - 32, 32, 32, titleScreen.cursorTexture);
+  }
 }
 
 void animate() {
@@ -140,6 +147,7 @@ void animate() {
     if (gameState == LEVEL2_STATE) {
       updateSentries(sentries, &player, pickups);
       updateSparkles(sparkles);
+      updateGreetNPC(&greetNpc);
     }
     if (gameState == LEVEL2_STATE || gameState == LEVEL3_STATE ||
         gameState == BOSS_STATE) {
@@ -340,13 +348,20 @@ void iKeyboard(unsigned char key) {
 }
 
 void iMouseMove(int mx, int my) {
-  printf("x=%d y=%d", mx, my);
+  // Global cursor move tracking
+  titleScreen.mouseX = mx;
+  titleScreen.mouseY = my;
+
   if (gameState == TITLE_SCREEN_STATE) {
     handleTitleMouseMove(&titleScreen, mx, my);
   }
 }
 
 void iPassiveMouseMove(int mx, int my) {
+  // Global cursor passive move tracking
+  titleScreen.mouseX = mx;
+  titleScreen.mouseY = my;
+
   if (gameState == TITLE_SCREEN_STATE || gameState == CREDITS_STATE ||
       gameState == CONTROLS_STATE) {
     handleTitleMouseMove(&titleScreen, mx, my);
@@ -408,6 +423,7 @@ int main() {
   initGrims(grims);
   initGrimFireballs(grimFireballs);
   initBossDoor(&bossDoor);
+  initGreetNPC(&greetNpc);
 
   loadImages();
   loadTitleTextures(&titleScreen);

@@ -20,6 +20,12 @@ extern struct TraderNPC traderNpc;
 extern struct GrimMaster grims[MAX_GRIMS];
 extern struct GrimFireball grimFireballs[MAX_GRIM_FIREBALLS];
 extern struct BossDoor bossDoor;
+extern struct GreetNPC greetNpc;
+
+// Forward declarations for greeting NPC
+void initGreetNPC(struct GreetNPC *g);
+void updateGreetNPC(struct GreetNPC *g);
+void renderGreetNPC(struct GreetNPC *g, struct Camera *camera);
 
 void updateGame(struct Player *player, struct Creature creatures[],
                 struct Background *bg, struct Midground *mg,
@@ -74,7 +80,28 @@ void updateGame(struct Player *player, struct Creature creatures[],
       initNPC(&npc);
       spawnCaveItems(pickups);
     }
-    if (*gameState == LEVEL2_STATE && player->x >= LEVEL2_END_X) {
+    if (*gameState == LEVEL2_STATE && player->x >= GREET_TRIGGER_X_START) {
+      // Activate greeter if not already active
+      if (!greetNpc.active) {
+        greetNpc.active = 1;
+        greetNpc.state = GREET_ANIMATING;
+        greetNpc.frame = 0;
+        greetNpc.animTimer = 0;
+      }
+      // Freeze player while greeting plays
+      if (greetNpc.state == GREET_ANIMATING) {
+        player->state = IDLE;
+        player->frame = 0;
+        // prevent player from walking further right
+        if (player->x > GREET_TRIGGER_X_START) {
+          player->x = GREET_TRIGGER_X_START;
+        }
+      }
+    }
+    // Transition to Level 3 after greeting animation finishes
+    if (*gameState == LEVEL2_STATE && greetNpc.done) {
+      greetNpc.done = 0;
+      greetNpc.active = 0;
       *gameState = LEVEL3_STATE;
       player->x = 200;
       player->y = LEVEL3_GROUND_Y;
@@ -198,6 +225,8 @@ void updateGame(struct Player *player, struct Creature creatures[],
         camera->x = 0;
         camera->targetX = 0;
         bg->x = 0;
+        // Reset greeting NPC
+        initGreetNPC(&greetNpc);
         // Re-setup Level 2 tiles instead of clearing them
         mg->tileCount = 0;
         {
@@ -267,6 +296,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
         initHazards(bossHazards);
       }
       player->health = player->maxHealth;
+      player->stamina = player->maxStamina;
       player->vy = 0;
       player->onGround = 1;
       player->invincibilityTimer = 60;
@@ -299,6 +329,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
           stopBGMusic();
           playBG2Music();
           initCreatures(creatures);
+          initGreetNPC(&greetNpc);
 
           initSparkles(sparkles);
           spawnSparkle(sparkles, SPARKLE_1_X, SPARKLE_1_Y);
@@ -377,6 +408,61 @@ void updateGame(struct Player *player, struct Creature creatures[],
       player->stateTimer++;
       if (player->stateTimer % 8 == 0) {
         player->frame = (player->frame + 1) % FALL_LEFT_FRAMES;
+      }
+    }
+  }
+}
+
+// ============================================================
+// GREETING NPC (end of Level 2)
+// ============================================================
+void initGreetNPC(struct GreetNPC *g) {
+  g->x = GREET_X;
+  g->y = GREET_Y;
+  g->frame = 0;
+  g->animTimer = 0;
+  g->state = GREET_IDLE;
+  g->active = 0;
+  g->done = 0;
+}
+
+void updateGreetNPC(struct GreetNPC *g) {
+  if (!g->active) return;
+
+  if (g->state == GREET_ANIMATING) {
+    g->animTimer++;
+    if (g->animTimer >= GREET_ANIM_SPEED) {
+      g->animTimer = 0;
+      g->frame++;
+      if (g->frame >= GREET_ANIM_FRAMES) {
+        // Animation finished
+        g->state = GREET_DONE;
+        g->done = 1;
+        g->frame = GREET_ANIM_FRAMES - 1; // stay on last frame
+      }
+    }
+  }
+}
+
+void renderGreetNPC(struct GreetNPC *g, struct Camera *camera) {
+  // Always draw the greeter when in Level 2 (idle or animating)
+  float screenX = getScreenX(g->x, camera);
+  float screenY = getScreenY(g->y, camera);
+
+  // Only draw if on-screen
+  if (screenX > -GREET_SIZE_W && screenX < SCREEN_W + GREET_SIZE_W) {
+    if (!g->active || g->state == GREET_IDLE) {
+      // Show idle image
+      if (greetIdleTex != 0) {
+        iShowImage(screenX, screenY, GREET_SIZE_W, GREET_SIZE_H, greetIdleTex);
+      }
+    } else if (g->state == GREET_ANIMATING || g->state == GREET_DONE) {
+      // Show current animation frame
+      int f = g->frame;
+      if (f < 0) f = 0;
+      if (f >= GREET_ANIM_FRAMES) f = GREET_ANIM_FRAMES - 1;
+      if (greetAnimTex[f] != 0) {
+        iShowImage(screenX, screenY, GREET_SIZE_W, GREET_SIZE_H, greetAnimTex[f]);
       }
     }
   }

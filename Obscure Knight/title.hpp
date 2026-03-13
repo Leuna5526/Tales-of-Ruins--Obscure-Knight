@@ -193,11 +193,7 @@ void renderTitleScreen(struct TitleScreen *title) {
     }
   }
 
-  if (title->cursorTexture != 0) {
-    // The image's top-left tends to be drawing from bottom-left in iGraphics,
-    // so adjust Y based on image size to feel like a real cursor.
-    iShowImage(title->mouseX, title->mouseY - 32, 32, 32, title->cursorTexture);
-  }
+  // cursor removed - now handled globally in iMain.cpp
 }
 
 void renderCredits(struct TitleScreen *title) {
@@ -206,9 +202,6 @@ void renderCredits(struct TitleScreen *title) {
   } else {
     iSetColor(0, 0, 0);
     iFilledRectangle(0, 0, SCREEN_W, SCREEN_H);
-  }
-  if (title->cursorTexture != 0) {
-    iShowImage(title->mouseX, title->mouseY - 32, 32, 32, title->cursorTexture);
   }
 }
 
@@ -222,9 +215,6 @@ void renderControls(struct TitleScreen *title) {
       iSetColor(20, 20, 20);
       iFilledRectangle(0, 0, SCREEN_W, SCREEN_H);
     }
-  }
-  if (title->cursorTexture != 0) {
-    iShowImage(title->mouseX, title->mouseY - 32, 32, 32, title->cursorTexture);
   }
 }
 
@@ -243,7 +233,7 @@ void updateLoadingScreen(struct TitleScreen *title, int *gameState) {
     *gameState = PLAYING_STATE;
     restartBGMusic();
     title->loadingTimer = 0;
-    glutSetCursor(GLUT_CURSOR_INHERIT);
+    glutSetCursor(GLUT_CURSOR_NONE);
   }
 }
 

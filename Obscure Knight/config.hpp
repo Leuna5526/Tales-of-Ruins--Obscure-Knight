@@ -45,6 +45,19 @@
 #define LEVEL2_END_X 4870
 #define LEVEL3_END_X 4870
 
+// ============================================================
+// GREETING NPC (end of Level 2)
+// ============================================================
+#define GREET_IDLE_FRAMES 1
+#define GREET_ANIM_FRAMES 8
+#define GREET_ANIM_SPEED 8
+#define GREET_SIZE_W 75
+#define GREET_SIZE_H 150
+#define GREET_X 4850
+#define GREET_Y LEVEL2_RAISED_GROUND_Y + 50
+#define GREET_TRIGGER_X_START 4750
+#define GREET_TRIGGER_X_END LEVEL2_END_X
+
 // Level 3 tiles
 #define LEVEL3_TILE_COUNT 5
 #define LEVEL3_TILE_W TILE_WIDTH
@@ -303,15 +316,15 @@
 #define GRIM_DASH_RANGE 200
 #define GRIM_ATTACK_RANGE 300
 #define GRIM_FIREBALL_SPEED 12
-#define GRIM_FIREBALL_SIZE 188
-#define GRIM_FIREBALL_DISPLAY_SIZE 160
-#define GRIM_FIREBALL_EXPLODE_DISPLAY_SIZE 300
+#define GRIM_FIREBALL_SIZE 50
+#define GRIM_FIREBALL_DISPLAY_SIZE 50
+#define GRIM_FIREBALL_EXPLODE_DISPLAY_SIZE 100
 #define GRIM_FIREBALL_HIT_W 120
 #define GRIM_FIREBALL_HIT_H 120
 #define GRIM_ANIM_SPEED 4
 #define GRIM_TELEPORT_CHANCE 6
 #define GRIM_THROW_CHANCE 6
-#define GRIM_TELEPORT_RADIUS 150
+#define GRIM_TELEPORT_RADIUS 250
 #define GRIM_INVINCIBILITY_FRAMES 90
 #define GRIM_DAMAGE_FRAMES 3
 #define MAX_GRIMS 2
@@ -323,12 +336,12 @@
 #define MAX_GRIM_FIREBALLS 6
 
 // Fireball spawn position offsets (relative to Grim's x,y)
-#define GRIM_FB_SPAWN_OFFSET_X_RIGHT 15  // X offset when facing right (center-front of grim)
-#define GRIM_FB_SPAWN_OFFSET_X_LEFT  15  // X offset when facing left (center-front of grim)
-#define GRIM_FB_SPAWN_OFFSET_Y       90  // Y offset from grim's y (staff height)
+#define GRIM_FB_SPAWN_OFFSET_X_RIGHT 100  // X offset when facing right (center-front of grim)
+#define GRIM_FB_SPAWN_OFFSET_X_LEFT  100 // X offset when facing left (center-front of grim)
+#define GRIM_FB_SPAWN_OFFSET_Y       130  // Y offset from grim's y (staff height)
 // Fireball target offsets
-#define GRIM_FB_TARGET_PLAYER_OFFSET_X 50 // offset to center of player sprite
-#define GRIM_FB_TARGET_GROUND_OFFSET   50  // how far below ground level to target
+#define GRIM_FB_TARGET_PLAYER_OFFSET_X 300 // offset to center of player sprite
+#define GRIM_FB_TARGET_GROUND_OFFSET   30  // how far below ground level to target
 
 // ============================================================
 // TRADE ITEM SYSTEM
@@ -337,7 +350,7 @@
 #define TRADE_ITEM_COST_SOUL 5
 #define TRADE_ITEM_COST_KEY 5
 
-#define SWIFTNESS_SPEED_MULTIPLIER 1.5f
+#define SWIFTNESS_SPEED_MULTIPLIER 2.5f
 #define SOUL_REGEN_ON_KILL 10  // 0.5 heart = 10 HP (out of 100)
 
 // Trade menu layout — list panel anchored to the right side of the screen
@@ -406,7 +419,7 @@
 // Door at end of Level 3
 #define DOOR_LOCKED_FRAMES 3
 #define DOOR_OPEN_FRAMES 6
-#define DOOR_X 4750
+#define DOOR_X 4850
 #define DOOR_Y LEVEL3_GROUND_Y+50
 #define DOOR_W 120
 #define DOOR_H 180
