@@ -66,6 +66,9 @@ struct Player {
   int stamina;
   int maxStamina;
   int staminaRegenTimer;
+  int deaths;
+  int gameOverFrame;
+  int gameOverTimer;
   int invincibilityTimer;
 
   int isAttacking;

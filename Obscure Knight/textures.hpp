@@ -37,6 +37,7 @@ unsigned int evadeRightActive[EVADE_RIGHT_ACTIVE_FRAMES];
 unsigned int evadeRightRecover[EVADE_RIGHT_RECOVER_FRAMES];
 
 unsigned int death[DEATH_FRAMES];
+unsigned int gameOverFrames[GAME_OVER_FRAMES];
 
 unsigned int wakePart1[WAKE_FRAMES_PART1];
 unsigned int wakePart2[WAKE_FRAMES_PART2];
@@ -491,6 +492,7 @@ void loadImages() {
   loadGrimMasterTextures();
   loadTradeItemTextures();
   loadDoorTextures();
+  loadSet(gameOverFrames, GAME_OVER_FRAMES, "Assets/GameOver/ezgif-frame-%03d.png");
 }
 
 #endif

@@ -28,6 +28,9 @@ void initPlayer(struct Player *player) {
   player->invincibilityTimer = 0;
   player->isAttacking = 0;
   player->isTrapped = 0;
+  player->deaths = 0;
+  player->gameOverFrame = 0;
+  player->gameOverTimer = 0;
 }
 
 void setPlayerState(struct Player *player, enum State s) {

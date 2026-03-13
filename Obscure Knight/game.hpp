@@ -215,6 +215,15 @@ void updateGame(struct Player *player, struct Creature creatures[],
          *gameState == LEVEL3_STATE || *gameState == BOSS_STATE) &&
         player->state == DEATH &&
         player->stateTimer > DEATH_ANIMATION_DURATION) {
+      
+      player->deaths++;
+      if (player->deaths >= 3) {
+        *gameState = GAME_OVER_STATE;
+        player->gameOverFrame = 0;
+        player->gameOverTimer = 0;
+        return;
+      }
+
       // Respawn position depends on which level the player is in
       if (*gameState == PLAYING_STATE) {
         player->x = 200;

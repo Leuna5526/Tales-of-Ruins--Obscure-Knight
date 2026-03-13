@@ -118,6 +118,10 @@ void iDraw() {
     renderPickups(pickups, &camera);
     renderPlayer(&player, &camera);
     renderDialogue(&npc);
+  } else if (gameState == GAME_OVER_STATE) {
+    if (gameOverFrames[player.gameOverFrame] != 0) {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, gameOverFrames[player.gameOverFrame]);
+    }
   }
 
   // Global cursor draw - always on top
@@ -225,6 +229,16 @@ void animate() {
     handleItemInput(&player, &glowProjectile, creatures, sentries, gameState);
     updateFootstepSounds(&player, &mg, gameState);
     updateHealthSound(&player);
+  } else if (gameState == GAME_OVER_STATE) {
+    player.gameOverTimer++;
+    // roughly 60ms delay per frame (3 * 20ms)
+    if (player.gameOverTimer >= 3) {
+      player.gameOverTimer = 0;
+      // Index 61 is frame 62, which is the last image before the black screens
+      if (player.gameOverFrame < 61) {
+        player.gameOverFrame++;
+      }
+    }
   }
 }
 
@@ -390,6 +404,30 @@ void iMouse(int button, int state, int mx, int my) {
   if ((gameState == LEVEL3_STATE || gameState == BOSS_STATE) &&
       button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     handleEquippedIconClick(&player, mx, my);
+  }
+  
+  if (gameState == GAME_OVER_STATE && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    gameState = TITLE_SCREEN_STATE;
+    player.deaths = 0;
+    player.health = player.maxHealth;
+    player.stamina = player.maxStamina;
+    player.invincibilityTimer = 60;
+    setPlayerState(&player, IDLE);
+    initCreatures(creatures);
+    initSentries(sentries);
+    initBoss(&boss);
+    initMinions(bossMinions);
+    initHazards(bossHazards);
+    initGrims(grims);
+    initGrimFireballs(grimFireballs);
+    initGreetNPC(&greetNpc);
+    player.x = 200;
+    player.y = GROUND_Y;
+    player.vy = 0;
+    player.onGround = 1;
+    camera.x = 0;
+    camera.targetX = 0;
+    bg.x = 0;
   }
 }
 
