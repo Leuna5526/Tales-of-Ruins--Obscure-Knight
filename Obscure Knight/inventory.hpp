@@ -23,6 +23,16 @@ inline void initPlayerInventory(struct Player *player) {
   player->gainRegenTimer = 0;
   player->hasKey = 0;
   player->hasUsedKey = 0;
+  player->fragments = 0;
+  player->hasSwiftness = 0;
+  player->hasSoul = 0;
+  player->hasKeyItem = 0;
+  player->swiftnessUsed = 0;
+  player->soulUsed = 0;
+  player->keyUsed = 0;
+  player->swiftnessActive = 0;
+  player->soulActive = 0;
+  player->speedMultiplier = 1.0f;
 }
 
 inline void initPickups(struct Pickup pickups[]) {
@@ -413,18 +423,5 @@ inline void renderInventoryUI(struct Player *player) {
                inventoryGainTex);
   }
 
-  // Crest Inventory (right top corner) - always show background
-  if (crestInventoryTex != 0) {
-    iShowImage(CREST_INVENTORY_X, CREST_INVENTORY_Y, CREST_INVENTORY_W, CREST_INVENTORY_H,
-               crestInventoryTex);
-  }
-
-  // Key goes in crest inventory, not regular inventory
-  if (player->hasKey && traderKeyTex != 0) {
-    iShowImage(CREST_INVENTORY_X + CREST_KEY_OFFSET_X,
-               CREST_INVENTORY_Y + CREST_KEY_OFFSET_Y,
-               CREST_KEY_SIZE, CREST_KEY_SIZE,
-               traderKeyTex);
-  }
 }
 #endif

@@ -301,6 +301,7 @@ void updateCreatures(struct Creature creatures[], struct Player *player,
           enemy->vy = 0;
           tryDropItem(pickups, enemy->x, enemy->y);
           playEnemyKillSound();
+          player->fragments++;
         } else {
           enemy->damageAnimTimer = CREATURE_DAMAGE_FRAMES * 4;
           enemy->damageFrame = 0;

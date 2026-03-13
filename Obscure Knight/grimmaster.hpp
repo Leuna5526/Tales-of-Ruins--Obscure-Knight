@@ -359,10 +359,10 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
                   ? (float)(g->x + GRIM_FB_SPAWN_OFFSET_X_RIGHT)
                   : (float)(g->x + GRIM_SIZE - GRIM_FB_SPAWN_OFFSET_X_LEFT - GRIM_FIREBALL_SIZE);
         float fbY = (float)(g->y + GRIM_FB_SPAWN_OFFSET_Y);
-        // Target: player's actual center position for precise aiming
+        // Target: player's actual center position for precise aiming, adjusted lower to not go over head
         int spriteSize = (int)(SPRITE_SIZE * SCALE);
-        int targetFbX = player->x + spriteSize / 2;
-        int targetFbY = player->y + spriteSize / 2;
+        int targetFbX = player->x + spriteSize / 2 - 30;
+        int targetFbY = player->y - GRIM_FB_TARGET_GROUND_OFFSET;
         spawnGrimFireball(fireballs, fbX, fbY, targetFbX, targetFbY);
       }
       break;
@@ -525,6 +525,7 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
             g->frame = 0;
             tryDropItem(pickups, g->x, g->y);
             playEnemyKillSound();
+            player->fragments++;
           } else {
             g->damageAnimTimer = GRIM_DAMAGE_FRAMES * 4;
             g->damageFrame = 0;
@@ -580,6 +581,15 @@ void updateGrimFireballs(struct GrimFireball fireballs[],
     // Integer positions for collision checks
     int fbPosX = (int)fireballs[i].x;
     int fbPosY = (int)fireballs[i].y;
+
+    // Check collision with ground
+    if (fbPosY <= LEVEL3_GROUND_Y) {
+      fireballs[i].y = LEVEL3_GROUND_Y; // Snap to ground
+      fireballs[i].exploding = 1;
+      fireballs[i].explodeFrame = 0;
+      fireballs[i].explodeTimer = 0;
+      continue;
+    }
 
     // Check collision with player
     if (player->invincibilityTimer == 0 && player->state != DEATH) {

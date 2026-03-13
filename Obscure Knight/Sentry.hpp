@@ -407,6 +407,7 @@ void updateSentries(struct Sentry sentries[], struct Player *player,
 
             tryDropItem(pickups, s->x, s->y);
             playEnemyKillSound();
+            player->fragments++;
           } else {
             s->damageAnimTimer = SENTRY_DAMAGE_FRAMES * 4;
             s->damageFrame = 0;

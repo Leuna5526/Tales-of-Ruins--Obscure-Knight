@@ -145,7 +145,7 @@ void handleInput(struct Player *player, int gameState) {
         player->facingRight = 1;
       }
 
-      player->x += SPEED;
+      player->x += (int)(SPEED * player->speedMultiplier);
       if (player->onGround && player->state != ATTACK_OVERHEAD_RECOVER &&
           player->state != ATTACK_OVERHEAD_SLASHING &&
           player->state != ATTACK_OVERHEAD_SLASHWAVE) {
@@ -159,7 +159,7 @@ void handleInput(struct Player *player, int gameState) {
         player->facingRight = 0;
       }
 
-      player->x -= SPEED;
+      player->x -= (int)(SPEED * player->speedMultiplier);
       if (player->onGround && player->state != ATTACK_OVERHEAD_RECOVER &&
           player->state != ATTACK_OVERHEAD_SLASHING &&
           player->state != ATTACK_OVERHEAD_SLASHWAVE) {

@@ -20,6 +20,65 @@ void initTraderNPC(struct TraderNPC *t) {
   t->active = 1;
   t->traded = 0;
   t->initialX = TRADER_NPC_X;
+  t->tradeMenuOpen = 0;
+  t->mouseX = 0;
+  t->mouseY = 0;
+  t->hoveredItem = 0;
+  t->tradedSwiftness = 0;
+  t->tradedSoul = 0;
+  t->tradedKey = 0;
+}
+
+// Check which trade item the mouse is hovering over
+int getTradeHoveredItem(int mx, int my, struct TraderNPC *t) {
+  if (!t->tradedSwiftness && mx >= TRADE_SWIFTNESS_X1 && mx <= TRADE_SWIFTNESS_X2 &&
+      my >= TRADE_SWIFTNESS_Y1 && my <= TRADE_SWIFTNESS_Y2)
+    return 1;
+  if (!t->tradedSoul && mx >= TRADE_SOUL_X1 && mx <= TRADE_SOUL_X2 &&
+      my >= TRADE_SOUL_Y1 && my <= TRADE_SOUL_Y2)
+    return 2;
+  if (!t->tradedKey && mx >= TRADE_KEY_X1 && mx <= TRADE_KEY_X2 &&
+      my >= TRADE_KEY_Y1 && my <= TRADE_KEY_Y2)
+    return 3;
+  return 0;
+}
+
+void handleTradeClick(struct TraderNPC *t, struct Player *player, int mx, int my) {
+  // If click is outside the list panel bounds, close the menu
+  if (mx < TRADE_LIST_X || mx > TRADE_LIST_X + TRADE_LIST_W ||
+      my < TRADE_LIST_Y || my > TRADE_LIST_Y + TRADE_LIST_H) {
+    t->tradeMenuOpen = 0;
+    return;
+  }
+
+  int item = getTradeHoveredItem(mx, my, t);
+  if (item == 0) return;
+
+  int cost = 0;
+  switch (item) {
+    case 1: cost = TRADE_ITEM_COST_SWIFTNESS; break;
+    case 2: cost = TRADE_ITEM_COST_SOUL; break;
+    case 3: cost = TRADE_ITEM_COST_KEY; break;
+  }
+
+  if (player->fragments < cost) return; // Not enough fragments
+
+  player->fragments -= cost;
+
+  switch (item) {
+    case 1:
+      player->hasSwiftness = 1;
+      t->tradedSwiftness = 1;
+      break;
+    case 2:
+      player->hasSoul = 1;
+      t->tradedSoul = 1;
+      break;
+    case 3:
+      player->hasKeyItem = 1;
+      t->tradedKey = 1;
+      break;
+  }
 }
 
 void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
@@ -39,6 +98,8 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
 
     switch (t->state) {
     case TRADER_IDLE_STATE:
+    case TRADER_PROMPT_INTERACT:
+    case TRADER_TRADE_MENU:
       t->frame = (t->frame + 1) % TRADER_IDLE_FRAMES;
       break;
     case TRADER_WALK_TO_PLAYER:
@@ -56,11 +117,6 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
       t->frame = (t->frame + 1) % TRADER_TRADE_FRAMES;
       break;
     case TRADER_WALK_AWAY:
-      if (t->facingRight)
-        t->frame = (t->frame + 1) % TRADER_WALK_R_FRAMES;
-      else
-        t->frame = (t->frame + 1) % TRADER_WALK_L_FRAMES;
-      break;
     case TRADER_WALK_BACK:
       if (t->facingRight)
         t->frame = (t->frame + 1) % TRADER_WALK_R_FRAMES;
@@ -75,43 +131,16 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
   // State logic
   switch (t->state) {
   case TRADER_IDLE_STATE:
-    // Check if player is out of range from NPC's initial position
-    {
-      float dxFromInit = (float)(player->x - t->initialX);
-      float distFromInit = (dxFromInit < 0) ? -dxFromInit : dxFromInit;
-      if (distFromInit > TRADER_DETECTION_RADIUS && t->x != t->initialX) {
-        // Player left — walk back to initial position
-        t->state = TRADER_WALK_BACK;
-        t->frame = 0;
-        t->stateTimer = 0;
-        t->facingRight = (t->initialX > t->x) ? 1 : 0;
-        break;
-      }
-    }
     // Detect player within radius
-    if (distance <= TRADER_DETECTION_RADIUS) {
+    if (distance <= TRADER_DETECTION_RADIUS && !t->traded) {
       t->state = TRADER_WALK_TO_PLAYER;
       t->frame = 0;
       t->stateTimer = 0;
-      // Face towards player
       t->facingRight = (dx > 0) ? 1 : 0;
     }
     break;
 
-  case TRADER_WALK_TO_PLAYER: {
-    // Check if player walked away during approach
-    float dxFromInit = (float)(player->x - t->initialX);
-    float distFromInit = (dxFromInit < 0) ? -dxFromInit : dxFromInit;
-    if (distFromInit > TRADER_DETECTION_RADIUS) {
-      // Player left — walk back to initial position
-      t->state = TRADER_WALK_BACK;
-      t->frame = 0;
-      t->stateTimer = 0;
-      t->facingRight = (t->initialX > t->x) ? 1 : 0;
-      break;
-    }
-
-    // Walk towards player
+  case TRADER_WALK_TO_PLAYER:
     if (dx > 0) {
       t->x += TRADER_WALK_SPEED;
       t->facingRight = 1;
@@ -120,68 +149,76 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
       t->facingRight = 0;
     }
 
-    // Stop when close enough
     if (distance <= TRADER_STOP_RADIUS) {
       t->state = TRADER_PROMPT_INTERACT;
       t->frame = 0;
       t->stateTimer = 0;
     }
     break;
-  }
 
-  case TRADER_PROMPT_INTERACT: {
-    // Check if player walked away while waiting
-    float dxFromInit = (float)(player->x - t->initialX);
-    float distFromInit = (dxFromInit < 0) ? -dxFromInit : dxFromInit;
-    if (distFromInit > TRADER_DETECTION_RADIUS) {
-      t->state = TRADER_WALK_BACK;
-      t->frame = 0;
-      t->stateTimer = 0;
-      t->facingRight = (t->initialX > t->x) ? 1 : 0;
-      break;
-    }
-    // Animate idle while waiting
-    if (t->animTimer == 0) {
-      t->frame = (t->frame + 1) % TRADER_IDLE_FRAMES;
-    }
+  case TRADER_PROMPT_INTERACT:
+    // Wait for E key (handled externally)
+    // Keep facing player
     break;
-  }
 
   case TRADER_TURN_STATE:
-    // Turning to face player
     if (t->stateTimer >= TRADER_TURN_FRAMES * TRADER_ANIM_SPEED) {
-      // After turning, show key prompt
       t->facingRight = (dx > 0) ? 1 : 0;
-      t->state = TRADER_SHOW_KEY;
+      t->state = TRADER_TRADE_MENU;
+      t->tradeMenuOpen = 1;
       t->frame = 0;
       t->stateTimer = 0;
     }
     break;
 
-  case TRADER_SHOW_KEY:
-    // Idle while showing key prompt - waiting for Space/X input
-    if (t->animTimer == 0) {
-      t->frame = (t->frame + 1) % TRADER_IDLE_FRAMES;
+  case TRADER_TRADE_MENU:
+    // Update hovered item based on mouse position
+    t->hoveredItem = getTradeHoveredItem(t->mouseX, t->mouseY, t);
+    // If player moves too far away, close menu
+    if (distance > TRADER_DETECTION_RADIUS + 100) {
+      t->tradeMenuOpen = 0;
+      t->state = TRADER_WALK_BACK;
+      t->facingRight = (t->initialX > t->x) ? 1 : 0;
+      t->frame = 0;
+      t->stateTimer = 0;
     }
     break;
 
   case TRADER_TRADING:
-    // Trade animation playing - make it slower and last longer
-    if (t->stateTimer >= TRADER_TRADE_FRAMES * TRADER_ANIM_SPEED * 12) {
-      t->state = TRADER_IDLE_STATE;
-      t->traded = 1;
-      t->active = 1; // Explicitly keep active
+    if (t->stateTimer >= TRADER_TRADE_FRAMES * TRADER_ANIM_SPEED * 8) {
+      t->state = TRADER_TRADE_MENU;
+      t->tradeMenuOpen = 1;
+      t->frame = 0;
+      t->stateTimer = 0;
+    }
+    break;
+
+  case TRADER_WALK_BACK:
+    // Walk back to initial position
+    {
+      int ddx = t->initialX - t->x;
+      if (ddx > 0) {
+        t->x += TRADER_WALK_SPEED;
+        t->facingRight = 1;
+      } else if (ddx < 0) {
+        t->x -= TRADER_WALK_SPEED;
+        t->facingRight = 0;
+      }
+      if (abs(ddx) < TRADER_WALK_SPEED + 2) {
+        t->x = t->initialX;
+        t->state = TRADER_IDLE_STATE;
+        t->frame = 0;
+        t->stateTimer = 0;
+      }
     }
     break;
 
   case TRADER_WALK_AWAY:
-    // Walk away from player (opposite direction)
     if (t->facingRight)
       t->x += TRADER_WALK_SPEED;
     else
       t->x -= TRADER_WALK_SPEED;
 
-    // Deactivate when far enough away or off screen
     if (t->x < -200 || t->x > TOTAL_BG_WIDTH + 200 ||
         t->stateTimer > 200) {
       t->state = TRADER_DONE;
@@ -189,26 +226,9 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
     }
     break;
 
-  case TRADER_WALK_BACK:
-    // Walk back towards initial position
-    if (t->initialX > t->x) {
-      t->x += TRADER_WALK_SPEED;
-      t->facingRight = 1;
-    } else if (t->initialX < t->x) {
-      t->x -= TRADER_WALK_SPEED;
-      t->facingRight = 0;
-    }
-
-    // Reached initial position (within walking speed tolerance)
-    if (abs(t->x - t->initialX) <= TRADER_WALK_SPEED) {
-      t->x = t->initialX;
-      t->state = TRADER_IDLE_STATE;
-      t->frame = 0;
-      t->stateTimer = 0;
-    }
-    break;
-
   case TRADER_DONE:
+    break;
+  default:
     break;
   }
 }
@@ -223,9 +243,11 @@ void renderTraderNPC(struct TraderNPC *t, struct Camera *camera) {
   case TRADER_IDLE_STATE:
   case TRADER_PROMPT_INTERACT:
   case TRADER_SHOW_KEY:
+  case TRADER_TRADE_MENU:
     tex = traderIdle[t->frame % TRADER_IDLE_FRAMES];
     break;
   case TRADER_WALK_TO_PLAYER:
+  case TRADER_WALK_BACK:
     if (t->facingRight)
       tex = traderWalkR[t->frame % TRADER_WALK_R_FRAMES];
     else
@@ -238,7 +260,6 @@ void renderTraderNPC(struct TraderNPC *t, struct Camera *camera) {
     tex = traderTrade[t->frame % TRADER_TRADE_FRAMES];
     break;
   case TRADER_WALK_AWAY:
-  case TRADER_WALK_BACK:
     if (t->facingRight)
       tex = traderWalkR[t->frame % TRADER_WALK_R_FRAMES];
     else
@@ -255,30 +276,214 @@ void renderTraderNPC(struct TraderNPC *t, struct Camera *camera) {
     iShowImage(screenX, screenY, TRADER_SIZE, TRADER_SIZE, tex);
   }
 
-  // Render prompts
+  // Render "Enter E to trade" prompt
   if (t->state == TRADER_PROMPT_INTERACT) {
     float screenX = getScreenX((float)t->x, camera);
     float screenY = getScreenY((float)t->y, camera);
     iSetColor(255, 255, 255);
     iText((int)(screenX - 30), (int)(screenY + TRADER_SIZE + 15),
-          "Enter E to interact", GLUT_BITMAP_HELVETICA_18);
+          "Enter E to trade", GLUT_BITMAP_HELVETICA_18);
+  }
+}
+
+// Render the trade menu panel on the right side of the screen (no fullscreen overlay)
+// Render the trade menu panel on the right side of the screen (no fullscreen overlay)
+void renderTradeMenu(struct TraderNPC *t, struct Player *player) {
+  if (!t->tradeMenuOpen) return;
+
+  // 1. Draw the list background
+  if (tradeListTex != 0) {
+    iShowImage(TRADE_LIST_X, TRADE_LIST_Y, TRADE_LIST_W, TRADE_LIST_H, tradeListTex);
   }
 
-  if (t->state == TRADER_SHOW_KEY) {
-    float screenX = getScreenX((float)t->x, camera);
-    float screenY = getScreenY((float)t->y, camera);
+  // 2. Draw the fragment image and player's fragment count
+  if (tradeFragmentTex != 0) {
+    iShowImage(TRADE_FRAGMENT_X, TRADE_FRAGMENT_Y, TRADE_FRAGMENT_W, TRADE_FRAGMENT_H, tradeFragmentTex);
+  }
+  char fragText[32];
+  sprintf_s(fragText, "%d", player->fragments);
+  iSetColor(255, 255, 255); // White
+  // Use config defined total fragment display coordinates
+  iText(TRADE_TOTAL_FRAGMENT_X, TRADE_TOTAL_FRAGMENT_Y, fragText, GLUT_BITMAP_TIMES_ROMAN_24);
 
-    // Show the key image larger
-    if (traderKeyTex != 0) {
-      float keyScreenY = getScreenY((float)(LEVEL3_GROUND_Y + TRADER_KEY_PROMPT_Y), camera);
-      iShowImage((int)(screenX + TRADER_KEY_PROMPT_X_OFFSET),
-                 (int)keyScreenY, TRADER_KEY_DISPLAY_SIZE, TRADER_KEY_DISPLAY_SIZE, traderKeyTex);
+  // 3. Draw all three trade items simultaneously
+
+  // Swiftness
+  if (!t->tradedSwiftness && tradeSwiftnessTex != 0) {
+    int yOff = (t->hoveredItem == 1) ? TRADE_HOVER_OFFSET : 0;
+    iShowImage(TRADE_SWIFTNESS_X1, TRADE_SWIFTNESS_Y1 + yOff,
+               TRADE_ITEM_W, TRADE_ITEM_H, tradeSwiftnessTex);
+    // Cost: fragment icon only (text removed)
+    if (tradeFragmentTex != 0 && TRADE_COST_ICON_W > 0) {
+      iShowImage(TRADE_SWIFTNESS_X1 + 20, TRADE_SWIFTNESS_Y1 + TRADE_COST_ICON_Y_OFFSET,
+                 TRADE_COST_ICON_W, TRADE_COST_ICON_H, tradeFragmentTex);
     }
+  }
 
-    iSetColor(255, 255, 255);
-    iText((int)(screenX - 60), (int)(screenY + TRADER_SIZE + 110),
-          "Enter: Collect Key  /  B: Ignore",
-          GLUT_BITMAP_HELVETICA_18);
+  // Soul
+  if (!t->tradedSoul && tradeSoulTex != 0) {
+    int yOff = (t->hoveredItem == 2) ? TRADE_HOVER_OFFSET : 0;
+    iShowImage(TRADE_SOUL_X1, TRADE_SOUL_Y1 + yOff,
+               TRADE_ITEM_W, TRADE_ITEM_H, tradeSoulTex);
+    // Cost: fragment icon only (text removed)
+    if (tradeFragmentTex != 0 && TRADE_COST_ICON_W > 0) {
+      iShowImage(TRADE_SOUL_X1 + 20, TRADE_SOUL_Y1 + TRADE_COST_ICON_Y_OFFSET,
+                 TRADE_COST_ICON_W, TRADE_COST_ICON_H, tradeFragmentTex);
+    }
+  }
+
+  // Key
+  if (!t->tradedKey && tradeKeyImageTex != 0) {
+    int yOff = (t->hoveredItem == 3) ? TRADE_HOVER_OFFSET : 0;
+    iShowImage(TRADE_KEY_X1, TRADE_KEY_Y1 + yOff,
+               TRADE_ITEM_W, TRADE_ITEM_H, tradeKeyImageTex);
+    // Cost: fragment icon only (text removed)
+    if (tradeFragmentTex != 0 && TRADE_COST_ICON_W > 0) {
+      iShowImage(TRADE_KEY_X1 + 20, TRADE_KEY_Y1 + TRADE_COST_ICON_Y_OFFSET,
+                 TRADE_COST_ICON_W, TRADE_COST_ICON_H, tradeFragmentTex);
+    }
+  }
+
+  // 4. Description popups (using fixed config coordinates)
+  if (t->hoveredItem == 1 && tradeDesc1Tex != 0) {
+    iShowImage(TRADE_DESC_X, TRADE_DESC_Y, TRADE_DESC_W, TRADE_DESC_H, tradeDesc1Tex);
+  }
+  if (t->hoveredItem == 2 && tradeDesc2Tex != 0) {
+    iShowImage(TRADE_DESC_X, TRADE_DESC_Y, TRADE_DESC_W, TRADE_DESC_H, tradeDesc2Tex);
+  }
+  if (t->hoveredItem == 3 && tradeDesc3Tex != 0) {
+    iShowImage(TRADE_DESC_X, TRADE_DESC_Y, TRADE_DESC_W, TRADE_DESC_H, tradeDesc3Tex);
+  }
+}
+
+// Render equipped item icons at top-right corner
+void renderEquippedIcons(struct Player *player) {
+  int iconIdx = 0;
+
+  if (player->hasSwiftness && !player->swiftnessUsed && swiftnessIconTex != 0) {
+    int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
+    int iy = EQUIPPED_ICON_Y;
+    iShowImage(ix, iy, EQUIPPED_ICON_SIZE, EQUIPPED_ICON_SIZE, swiftnessIconTex);
+    iconIdx++;
+  }
+
+  if (player->hasSoul && !player->soulUsed && soulIconTex != 0) {
+    int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
+    int iy = EQUIPPED_ICON_Y;
+    iShowImage(ix, iy, EQUIPPED_ICON_SIZE, EQUIPPED_ICON_SIZE, soulIconTex);
+    iconIdx++;
+  }
+
+  if (player->hasKeyItem && !player->keyUsed && keyIconTex != 0) {
+    int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
+    int iy = EQUIPPED_ICON_Y;
+    iShowImage(ix, iy, EQUIPPED_ICON_SIZE, EQUIPPED_ICON_SIZE, keyIconTex);
+    iconIdx++;
+  }
+}
+
+// Check if player clicked on an equipped icon to use it
+void handleEquippedIconClick(struct Player *player, int mx, int my) {
+  int iconIdx = 0;
+
+  if (player->hasSwiftness) {
+    int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
+    int iy = EQUIPPED_ICON_Y;
+    if (mx >= ix && mx <= ix + EQUIPPED_ICON_SIZE &&
+        my >= iy && my <= iy + EQUIPPED_ICON_SIZE) {
+      if (!player->swiftnessUsed) {
+        player->swiftnessUsed = 1;
+        player->swiftnessActive = 1;
+        player->speedMultiplier = SWIFTNESS_SPEED_MULTIPLIER;
+        printf("Swiftness activated! Speed x1.5\n");
+      }
+    }
+    iconIdx++;
+  }
+
+  if (player->hasSoul) {
+    int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
+    int iy = EQUIPPED_ICON_Y;
+    if (mx >= ix && mx <= ix + EQUIPPED_ICON_SIZE &&
+        my >= iy && my <= iy + EQUIPPED_ICON_SIZE) {
+      if (!player->soulUsed) {
+        player->soulUsed = 1;
+        player->soulActive = 1;
+        printf("Soul activated! Heal on minion kill\n");
+      }
+    }
+    iconIdx++;
+  }
+
+  if (player->hasKeyItem) {
+    int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
+    int iy = EQUIPPED_ICON_Y;
+    if (mx >= ix && mx <= ix + EQUIPPED_ICON_SIZE &&
+        my >= iy && my <= iy + EQUIPPED_ICON_SIZE) {
+      if (!player->keyUsed) {
+        player->keyUsed = 1;
+        player->hasUsedKey = 1; // compatibility with existing door logic
+        printf("Key used! Door unlocked\n");
+      }
+    }
+    iconIdx++;
+  }
+}
+
+// Initialize the boss door
+void initBossDoor(struct BossDoor *door) {
+  door->x = DOOR_X;
+  door->y = DOOR_Y;
+  door->frame = 0;
+  door->animTimer = 0;
+  door->locked = 1;
+  door->opening = 0;
+  door->opened = 0;
+}
+
+// Update the boss door animation
+void updateBossDoor(struct BossDoor *door, struct Player *player) {
+  // Only animate when the door is actively opening
+  if (door->opening) {
+    door->animTimer++;
+    if (door->animTimer >= DOOR_ANIM_SPEED) {
+      door->animTimer = 0;
+      door->frame++;
+      if (door->frame >= DOOR_OPEN_FRAMES) {
+        door->frame = DOOR_OPEN_FRAMES - 1;
+        door->opened = 1;
+        door->opening = 0;
+      }
+    }
+  }
+  // While locked: stay static at frame 0 (no animation)
+
+  // Check if player is near and has used the key
+  if (door->locked && player->keyUsed) {
+    int ddx = player->x - door->x;
+    if (abs(ddx) < 120) {
+      door->locked = 0;
+      door->opening = 1;
+      door->frame = 0;
+      door->animTimer = 0;
+    }
+  }
+}
+
+// Render the boss door
+void renderBossDoor(struct BossDoor *door, struct Camera *camera) {
+  float screenX = getScreenX((float)door->x, camera);
+  float screenY = getScreenY((float)door->y, camera);
+
+  unsigned int tex = 0;
+  if (door->opened || door->opening) {
+    tex = doorOpenTex[door->frame % DOOR_OPEN_FRAMES];
+  } else {
+    tex = doorLockedTex[door->frame % DOOR_LOCKED_FRAMES];
+  }
+
+  if (tex != 0) {
+    iShowImage(screenX, screenY, DOOR_W, DOOR_H, tex);
   }
 }
 

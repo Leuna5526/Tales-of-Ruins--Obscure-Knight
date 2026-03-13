@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\config.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\tradernpc.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\tradernpc.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\grimmaster.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{EE53464F-E376-4DD2-9EE9-D3E7C410A78C}|Obscure Knight\\Obscure Knight.vcxproj|solutionrelative:Obscure Knight\\grimmaster.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -87,11 +91,23 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
+              "Title": "tradernpc.hpp",
+              "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\tradernpc.hpp",
+              "RelativeDocumentMoniker": "Obscure Knight\\tradernpc.hpp",
+              "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\tradernpc.hpp",
+              "RelativeToolTip": "Obscure Knight\\tradernpc.hpp",
+              "ViewState": "AgIAAFcBAAAAAAAAAAAuwGYBAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-03-12T22:37:47.628Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "cave.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\cave.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\cave.hpp",
@@ -103,7 +119,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "inventory.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\inventory.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\inventory.hpp",
@@ -119,16 +135,16 @@
               "Title": "config.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\config.hpp",
-              "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp*",
-              "RelativeToolTip": "Obscure Knight\\config.hpp*",
-              "ViewState": "AgIAAC4BAAAAAAAAAAAAwEkBAAApAAAAAAAAAA==",
+              "ToolTip": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\config.hpp",
+              "RelativeToolTip": "Obscure Knight\\config.hpp",
+              "ViewState": "AgIAAFwBAAAAAAAAAAAAAGYBAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-02-11T09:11:42.888Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "grimmaster.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\grimmaster.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\grimmaster.hpp",
@@ -140,7 +156,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "background.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\background.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\background.hpp",
@@ -152,7 +168,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "game.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\game.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\game.hpp",
@@ -164,7 +180,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "midground.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\midground.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\midground.hpp",
@@ -176,7 +192,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "player.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\player.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\player.hpp",
@@ -188,7 +204,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "structs.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\structs.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\structs.hpp",
@@ -200,7 +216,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "textures.hpp",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\textures.hpp",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\textures.hpp",
@@ -212,7 +228,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "iMain.cpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\iMain.cpp",
               "RelativeDocumentMoniker": "Obscure Knight\\iMain.cpp",
@@ -224,7 +240,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "camera.hpp",
               "DocumentMoniker": "E:\\PROJECTS\\Obscure Knight\\Tales of Ruins- Obscure Knight\\Obscure Knight\\camera.hpp",
               "RelativeDocumentMoniker": "Obscure Knight\\camera.hpp",
@@ -236,7 +252,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "title.hpp",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\title.hpp",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\Obscure Knight_v15\\Obscure Knight\\title.hpp",
@@ -248,7 +264,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "creatures.hpp",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\current edit\\Obscure Knight\\Obscure Knight\\creatures.hpp",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\current edit\\Obscure Knight\\Obscure Knight\\creatures.hpp",
@@ -260,7 +276,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "midground.h",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\midground.h",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\midground.h",
@@ -272,7 +288,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "player.h",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\player.h",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\player.h",
@@ -284,7 +300,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "game.h",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\game.h",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\game.h",
@@ -296,7 +312,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "camera.h",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\camera.h",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\camera.h",
@@ -308,7 +324,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "title.cpp",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.cpp",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.cpp",
@@ -320,7 +336,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "title.h",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.h",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\title.h",
@@ -332,7 +348,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "textures.h",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\textures.h",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\textures.h",
@@ -344,7 +360,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "config.h",
               "DocumentMoniker": "E:\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\config.h",
               "RelativeDocumentMoniker": "..\\..\\..\\MY FILES\\study materials\\1.2\\software dev lab\\obscure knight\\vs edit\\Obscure Knight\\Obscure Knight\\config.h",

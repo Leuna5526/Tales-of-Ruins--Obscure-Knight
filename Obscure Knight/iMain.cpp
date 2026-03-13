@@ -36,6 +36,7 @@ struct BossHazard bossHazards[MAX_BOSS_HAZARDS];
 struct TraderNPC traderNpc;
 struct GrimMaster grims[MAX_GRIMS];
 struct GrimFireball grimFireballs[MAX_GRIM_FIREBALLS];
+struct BossDoor bossDoor;
 
 void iDraw() {
   iClear();
@@ -79,6 +80,7 @@ void iDraw() {
   } else if (gameState == LEVEL3_STATE) {
     renderBackgroundWithCamera(&camera, level3BackgroundTextures);
     renderMidground(&mg, &camera, gameState);
+    renderBossDoor(&bossDoor, &camera);
     renderTraderNPC(&traderNpc, &camera);
     renderGrims(grims, &camera);
     renderGrimFireballs(grimFireballs, &camera);
@@ -88,6 +90,9 @@ void iDraw() {
     renderInventoryUI(&player);
     renderGlowProjectile(&glowProjectile, &camera);
     renderPlayer(&player, &camera);
+    renderEquippedIcons(&player);
+    // Trade menu overlay on top of everything
+    renderTradeMenu(&traderNpc, &player);
   } else if (gameState == BOSS_STATE) {
     if (bossBackgroundTexture != 0) {
       iShowImage(0, 0, SCREEN_W, SCREEN_H, bossBackgroundTexture);
@@ -101,6 +106,7 @@ void iDraw() {
     renderInventoryUI(&player);
     renderGlowProjectile(&glowProjectile, &camera);
     renderPlayer(&player, &camera);
+    renderEquippedIcons(&player);
   } else if (gameState == CAVE_STATE) {
     renderCaveBackground();
     renderStaminaBar(&player);
@@ -148,42 +154,26 @@ void animate() {
       updateTraderNPC(&traderNpc, &player);
       updateGrims(grims, grimFireballs, &player, pickups);
       updateGrimFireballs(grimFireballs, &player);
+      updateBossDoor(&bossDoor, &player);
 
       // Trader NPC keyboard interaction
       static int traderEKeyWas = 0;
       int traderEKey = (GetAsyncKeyState('E') & 0x8000);
-      if (traderEKey && !traderEKeyWas &&
-          traderNpc.state == TRADER_PROMPT_INTERACT) {
-        traderNpc.state = TRADER_TURN_STATE;
-        traderNpc.frame = 0;
-        traderNpc.stateTimer = 0;
+      if (traderEKey && !traderEKeyWas) {
+        if (traderNpc.state == TRADER_PROMPT_INTERACT) {
+          traderNpc.state = TRADER_TURN_STATE;
+          traderNpc.frame = 0;
+          traderNpc.stateTimer = 0;
+        } else if (traderNpc.tradeMenuOpen) {
+          // Close trade menu with E
+          traderNpc.tradeMenuOpen = 0;
+          traderNpc.state = TRADER_WALK_BACK;
+          traderNpc.facingRight = (traderNpc.initialX > traderNpc.x) ? 1 : 0;
+          traderNpc.frame = 0;
+          traderNpc.stateTimer = 0;
+        }
       }
       traderEKeyWas = traderEKey;
-
-      static int traderEnterKeyWas = 0;
-      int traderEnterKey = (GetAsyncKeyState(VK_RETURN) & 0x8000);
-      if (traderEnterKey && !traderEnterKeyWas &&
-          traderNpc.state == TRADER_SHOW_KEY) {
-        // Collect the key
-        player.hasKey = 1;
-        traderNpc.state = TRADER_TRADING;
-        traderNpc.frame = 0;
-        traderNpc.stateTimer = 0;
-      }
-      traderEnterKeyWas = traderEnterKey;
-
-      static int traderBKeyWas = 0;
-      int traderBKey = (GetAsyncKeyState('B') & 0x8000);
-      if (traderBKey && !traderBKeyWas &&
-          traderNpc.state == TRADER_SHOW_KEY) {
-        // Ignore - NPC walks back to initial position (stays active)
-        traderNpc.state = TRADER_WALK_BACK;
-        traderNpc.frame = 0;
-        traderNpc.stateTimer = 0;
-        // Face towards initial position
-        traderNpc.facingRight = (traderNpc.initialX > traderNpc.x) ? 1 : 0;
-      }
-      traderBKeyWas = traderBKey;
     }
     if (gameState == BOSS_STATE) {
       updateBoss(&boss, &player, bossMinions, bossHazards);
@@ -248,6 +238,7 @@ void iKeyboard(unsigned char key) {
     initTraderNPC(&traderNpc);
     initGrims(grims);
     initGrimFireballs(grimFireballs);
+    initBossDoor(&bossDoor);
     // Setup Level 3 tiles
     mg.tileCount = 0;
     {
@@ -314,6 +305,7 @@ void iKeyboard(unsigned char key) {
     initTraderNPC(&traderNpc);
     initGrims(grims);
     initGrimFireballs(grimFireballs);
+    initBossDoor(&bossDoor);
     mg.tileCount = 0;
     {
       mg.tileTexture1 = level3Tile1;
@@ -362,12 +354,27 @@ void iPassiveMouseMove(int mx, int my) {
   if (gameState == TITLE_SCREEN_STATE) {
     updateButtonHoverSound(mx, my);
   }
+  // Update trader mouse position for hover effects
+  if (gameState == LEVEL3_STATE) {
+    traderNpc.mouseX = mx;
+    traderNpc.mouseY = my;
+  }
 }
 
 void iMouse(int button, int state, int mx, int my) {
   if (gameState == TITLE_SCREEN_STATE || gameState == CREDITS_STATE ||
       gameState == CONTROLS_STATE) {
     handleTitleMouseClick(&titleScreen, button, state, mx, my, &gameState);
+  }
+  // Trade menu click
+  if (gameState == LEVEL3_STATE && traderNpc.tradeMenuOpen &&
+      button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    handleTradeClick(&traderNpc, &player, mx, my);
+  }
+  // Equipped icon click
+  if ((gameState == LEVEL3_STATE || gameState == BOSS_STATE) &&
+      button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    handleEquippedIconClick(&player, mx, my);
   }
 }
 
@@ -400,6 +407,7 @@ int main() {
   initTraderNPC(&traderNpc);
   initGrims(grims);
   initGrimFireballs(grimFireballs);
+  initBossDoor(&bossDoor);
 
   loadImages();
   loadTitleTextures(&titleScreen);

@@ -679,6 +679,13 @@ void handlePlayerAttackMinion(struct BossMinion minions[],
         m->isDying = 1;
         m->frame = 0;
         m->animTimer = 0;
+        player->fragments++;
+        if (player->soulActive) {
+          player->health += SOUL_REGEN_ON_KILL;
+          if (player->health > player->maxHealth) {
+            player->health = player->maxHealth;
+          }
+        }
       }
     }
   }

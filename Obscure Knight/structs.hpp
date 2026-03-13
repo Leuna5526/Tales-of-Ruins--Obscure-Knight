@@ -86,6 +86,18 @@ struct Player {
   int gainRegenTimer;
   int hasKey;
   int hasUsedKey;
+
+  // Trade/Fragment system
+  int fragments;
+  int hasSwiftness;
+  int hasSoul;
+  int hasKeyItem;
+  int swiftnessUsed;   // 1 = used (activated), permanent
+  int soulUsed;        // 1 = used (activated), permanent
+  int keyUsed;         // 1 = used at door
+  int swiftnessActive; // effect active
+  int soulActive;      // effect active
+  float speedMultiplier;
 };
 
 struct Camera {
@@ -313,6 +325,7 @@ enum TraderState {
   TRADER_PROMPT_INTERACT,
   TRADER_SHOW_KEY,
   TRADER_TRADING,
+  TRADER_TRADE_MENU,
   TRADER_WALK_AWAY,
   TRADER_WALK_BACK,
   TRADER_DONE
@@ -327,7 +340,24 @@ struct TraderNPC {
   int facingRight;
   int active;
   int traded;
-  int initialX; // initial spawn X to return to
+  int initialX;
+  // Trade menu
+  int tradeMenuOpen;
+  int mouseX, mouseY;
+  int hoveredItem;    // 0=none, 1=swiftness, 2=soul, 3=key
+  int tradedSwiftness;
+  int tradedSoul;
+  int tradedKey;
+};
+
+// Boss door at end of Level 3
+struct BossDoor {
+  int x, y;
+  int frame;
+  int animTimer;
+  int locked;       // 1 = locked, 0 = unlocked
+  int opening;      // 1 = playing open animation
+  int opened;       // 1 = fully open (player can pass)
 };
 
 // ============================================================

@@ -304,10 +304,10 @@
 #define GRIM_ATTACK_RANGE 300
 #define GRIM_FIREBALL_SPEED 12
 #define GRIM_FIREBALL_SIZE 188
-#define GRIM_FIREBALL_DISPLAY_SIZE 80
-#define GRIM_FIREBALL_EXPLODE_DISPLAY_SIZE 150
-#define GRIM_FIREBALL_HIT_W 60
-#define GRIM_FIREBALL_HIT_H 60
+#define GRIM_FIREBALL_DISPLAY_SIZE 160
+#define GRIM_FIREBALL_EXPLODE_DISPLAY_SIZE 300
+#define GRIM_FIREBALL_HIT_W 120
+#define GRIM_FIREBALL_HIT_H 120
 #define GRIM_ANIM_SPEED 4
 #define GRIM_TELEPORT_CHANCE 6
 #define GRIM_THROW_CHANCE 6
@@ -329,6 +329,88 @@
 // Fireball target offsets
 #define GRIM_FB_TARGET_PLAYER_OFFSET_X 50 // offset to center of player sprite
 #define GRIM_FB_TARGET_GROUND_OFFSET   50  // how far below ground level to target
+
+// ============================================================
+// TRADE ITEM SYSTEM
+// ============================================================
+#define TRADE_ITEM_COST_SWIFTNESS 5
+#define TRADE_ITEM_COST_SOUL 5
+#define TRADE_ITEM_COST_KEY 5
+
+#define SWIFTNESS_SPEED_MULTIPLIER 1.5f
+#define SOUL_REGEN_ON_KILL 10  // 0.5 heart = 10 HP (out of 100)
+
+// Trade menu layout — list panel anchored to the right side of the screen
+// The list background occupies the right portion of the screen
+#define TRADE_LIST_X 180
+#define TRADE_LIST_Y 50
+#define TRADE_LIST_W 800
+#define TRADE_LIST_H 480
+
+// Fragment image and count display (on the list, upper area)
+#define TRADE_FRAGMENT_X (TRADE_LIST_X)
+#define TRADE_FRAGMENT_Y (TRADE_LIST_Y)
+#define TRADE_FRAGMENT_W 800
+#define TRADE_FRAGMENT_H 480
+#define TRADE_FRAGMENT_TEXT_OFFSET_X 88   // text X offset from TRADE_FRAGMENT_X
+#define TRADE_FRAGMENT_TEXT_OFFSET_Y 34   // text Y offset from TRADE_FRAGMENT_Y
+
+#define TRADE_TOTAL_FRAGMENT_X 843
+#define TRADE_TOTAL_FRAGMENT_Y 456
+
+// Purchasable item image sizes
+#define TRADE_ITEM_W 175
+#define TRADE_ITEM_H 70
+
+// Swiftness item position
+#define TRADE_SWIFTNESS_X1 (TRADE_LIST_X + 150)
+#define TRADE_SWIFTNESS_Y1 (TRADE_LIST_Y + 311)
+#define TRADE_SWIFTNESS_X2 (TRADE_SWIFTNESS_X1 + TRADE_ITEM_W)
+#define TRADE_SWIFTNESS_Y2 (TRADE_SWIFTNESS_Y1 + TRADE_ITEM_H)
+
+// Soul item position
+#define TRADE_SOUL_X1 (TRADE_LIST_X + 150)
+#define TRADE_SOUL_Y1 (TRADE_LIST_Y + 209)
+#define TRADE_SOUL_X2 (TRADE_SOUL_X1 + TRADE_ITEM_W)
+#define TRADE_SOUL_Y2 (TRADE_SOUL_Y1 + TRADE_ITEM_H)
+
+// Key item position
+#define TRADE_KEY_X1 (TRADE_LIST_X + 150)
+#define TRADE_KEY_Y1 (TRADE_LIST_Y + 105)
+#define TRADE_KEY_X2 (TRADE_KEY_X1 + TRADE_ITEM_W)
+#define TRADE_KEY_Y2 (TRADE_KEY_Y1 + TRADE_ITEM_H)
+
+// Description popup size & offset (shown above the hovered item)
+#define TRADE_DESC_X 180
+#define TRADE_DESC_Y 50
+#define TRADE_DESC_W 800
+#define TRADE_DESC_H 480
+#define TRADE_DESC_Y_OFFSET 0  // gap between item top and desc bottom
+
+// Cost fragment icon (small fragment image shown below each item as cost)
+#define TRADE_COST_ICON_W 0
+#define TRADE_COST_ICON_H 0
+#define TRADE_COST_ICON_Y_OFFSET (-35)  // below the item Y1
+#define TRADE_COST_TEXT_X_OFFSET 34     // cost number text X offset from icon
+#define TRADE_COST_TEXT_Y_OFFSET 8      // cost number text Y offset from icon
+
+// Hover effect lift amount (like title buttons)
+#define TRADE_HOVER_OFFSET 12
+
+// Equipped item icons (top-right corner)
+#define EQUIPPED_ICON_SIZE 40
+#define EQUIPPED_ICON_X 910
+#define EQUIPPED_ICON_Y 550
+#define EQUIPPED_ICON_SPACING 50
+
+// Door at end of Level 3
+#define DOOR_LOCKED_FRAMES 3
+#define DOOR_OPEN_FRAMES 6
+#define DOOR_X 4750
+#define DOOR_Y LEVEL3_GROUND_Y+50
+#define DOOR_W 120
+#define DOOR_H 180
+#define DOOR_ANIM_SPEED 6
 
 // ============================================================
 // FINAL BOSS CONFIGURATION

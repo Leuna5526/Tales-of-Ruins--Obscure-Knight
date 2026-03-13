@@ -99,6 +99,23 @@ unsigned int crestInventoryTex = 0;
 unsigned int level3Tile1 = 0;
 unsigned int level3Tile2 = 0;
 
+// Trade item textures
+unsigned int tradeListTex = 0;
+unsigned int tradeFragmentTex = 0;
+unsigned int tradeSwiftnessTex = 0;
+unsigned int tradeSoulTex = 0;
+unsigned int tradeKeyImageTex = 0;
+unsigned int tradeDesc1Tex = 0;
+unsigned int tradeDesc2Tex = 0;
+unsigned int tradeDesc3Tex = 0;
+unsigned int swiftnessIconTex = 0;
+unsigned int soulIconTex = 0;
+unsigned int keyIconTex = 0;
+
+// Door textures
+unsigned int doorLockedTex[DOOR_LOCKED_FRAMES];
+unsigned int doorOpenTex[DOOR_OPEN_FRAMES];
+
 #define NPC_APPROACH_FRAMES 12
 #define NPC_IDLE_LEFT_FRAMES 8
 #define NPC_IDLE_RIGHT_FRAMES 6
@@ -303,7 +320,26 @@ void loadTraderNPCTextures() {
           "Assets/Level 3/trader npc/turn/%d.png");
   loadSet(traderTrade, TRADER_TRADE_FRAMES,
           "Assets/Level 3/trader npc/trade/%d.png");
-  traderKeyTex = iLoadImage("Assets/Level 3/trade item/Key.png");
+  traderKeyTex = iLoadImage("Assets/Level 3/trade item/key.png");
+}
+
+void loadTradeItemTextures() {
+  tradeListTex = iLoadImage("Assets/Level 3/trade item/list.png");
+  tradeFragmentTex = iLoadImage("Assets/Level 3/trade item/fragment.png");
+  tradeSwiftnessTex = iLoadImage("Assets/Level 3/trade item/swiftness.png");
+  tradeSoulTex = iLoadImage("Assets/Level 3/trade item/soul.png");
+  tradeKeyImageTex = iLoadImage("Assets/Level 3/trade item/key.png");
+  tradeDesc1Tex = iLoadImage("Assets/Level 3/trade item/description 1.png");
+  tradeDesc2Tex = iLoadImage("Assets/Level 3/trade item/description 2.png");
+  tradeDesc3Tex = iLoadImage("Assets/Level 3/trade item/description 3.png");
+  swiftnessIconTex = iLoadImage("Assets/Level 3/trade item/swiftness icon.png");
+  soulIconTex = iLoadImage("Assets/Level 3/trade item/soul icon.png");
+  keyIconTex = iLoadImage("Assets/Level 3/trade item/key icon.png");
+}
+
+void loadDoorTextures() {
+  loadSet(doorLockedTex, DOOR_LOCKED_FRAMES, "Assets/Level 3/door/locked/%d.png");
+  loadSet(doorOpenTex, DOOR_OPEN_FRAMES, "Assets/Level 3/door/open/%d.png");
 }
 
 // ============================================================
@@ -443,6 +479,8 @@ void loadImages() {
   loadBossEntityTextures();
   loadTraderNPCTextures();
   loadGrimMasterTextures();
+  loadTradeItemTextures();
+  loadDoorTextures();
 }
 
 #endif

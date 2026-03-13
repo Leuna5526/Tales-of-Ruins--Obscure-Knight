@@ -19,6 +19,7 @@ extern struct BossHazard bossHazards[MAX_BOSS_HAZARDS];
 extern struct TraderNPC traderNpc;
 extern struct GrimMaster grims[MAX_GRIMS];
 extern struct GrimFireball grimFireballs[MAX_GRIM_FIREBALLS];
+extern struct BossDoor bossDoor;
 
 void updateGame(struct Player *player, struct Creature creatures[],
                 struct Background *bg, struct Midground *mg,
@@ -151,9 +152,8 @@ void updateGame(struct Player *player, struct Creature creatures[],
     }
 
     if (*gameState == LEVEL3_STATE && player->x >= LEVEL3_END_X) {
-      // Only allow entry to boss if player has used the key
-      if (player->hasUsedKey) {
-        player->hasUsedKey = 0; // consume the state
+      // Only allow entry to boss if door is opened
+      if (bossDoor.opened) {
         *gameState = BOSS_STATE;
         player->x = 200;
         player->y = BOSS_GROUND_Y;
@@ -198,7 +198,58 @@ void updateGame(struct Player *player, struct Creature creatures[],
         camera->x = 0;
         camera->targetX = 0;
         bg->x = 0;
+        // Re-setup Level 2 tiles instead of clearing them
         mg->tileCount = 0;
+        {
+          int baseHeight = LEVEL2_GROUND_Y + 100;
+          mg->tileTexture1 = level2Tile1;
+          mg->tileTexture2 = level2TileFlat;
+
+          mg->tiles[0].x = 600;
+          mg->tiles[0].y = baseHeight;
+          mg->tiles[0].texture = level2Tile1;
+          mg->tiles[0].width = TILE_WIDTH;
+          mg->tiles[0].height = TILE_HEIGHT;
+          mg->tiles[0].active = 1;
+          mg->tiles[0].isJumpThrough = 0;
+          mg->tileCount++;
+
+          mg->tiles[1].x = 1200;
+          mg->tiles[1].y = baseHeight + 50;
+          mg->tiles[1].texture = level2TileFlat;
+          mg->tiles[1].width = TILE_WIDTH * 1.5;
+          mg->tiles[1].height = TILE_HEIGHT;
+          mg->tiles[1].active = 1;
+          mg->tiles[1].isJumpThrough = 0;
+          mg->tileCount++;
+
+          mg->tiles[2].x = 2000;
+          mg->tiles[2].y = baseHeight + 30;
+          mg->tiles[2].texture = level2Tile1;
+          mg->tiles[2].width = TILE_WIDTH;
+          mg->tiles[2].height = TILE_HEIGHT;
+          mg->tiles[2].active = 1;
+          mg->tiles[2].isJumpThrough = 0;
+          mg->tileCount++;
+
+          mg->tiles[3].x = 2800;
+          mg->tiles[3].y = baseHeight + 60;
+          mg->tiles[3].texture = level2TileFlat;
+          mg->tiles[3].width = TILE_WIDTH * 1.5;
+          mg->tiles[3].height = TILE_HEIGHT;
+          mg->tiles[3].active = 1;
+          mg->tiles[3].isJumpThrough = 0;
+          mg->tileCount++;
+
+          mg->tiles[4].x = 3500;
+          mg->tiles[4].y = baseHeight + 40;
+          mg->tiles[4].texture = level2Tile1;
+          mg->tiles[4].width = TILE_WIDTH;
+          mg->tiles[4].height = TILE_HEIGHT;
+          mg->tiles[4].active = 1;
+          mg->tiles[4].isJumpThrough = 0;
+          mg->tileCount++;
+        }
       } else if (*gameState == LEVEL3_STATE) {
         *gameState = LEVEL3_STATE;
         player->x = 200;
