@@ -354,7 +354,7 @@
 #define TRADE_ITEM_COST_KEY 5
 
 #define SWIFTNESS_SPEED_MULTIPLIER 2.5f
-#define SOUL_REGEN_ON_KILL 10  // 0.5 heart = 10 HP (out of 100)
+#define SOUL_REGEN_ON_KILL 20  // 1 heart = 20 HP (out of 100)
 
 // Trade menu layout — list panel anchored to the right side of the screen
 // The list background occupies the right portion of the screen

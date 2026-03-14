@@ -194,6 +194,8 @@ void updateGame(struct Player *player, struct Creature creatures[],
         initBoss(&boss);
         initMinions(bossMinions);
         initHazards(bossHazards);
+        // Reset death counter for boss — fresh 3 lives
+        player->deaths = 0;
         // Switch music: stop bg2, play boss theme
         stopBG2Music();
         playBossBGMusic();

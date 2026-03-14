@@ -386,45 +386,39 @@ void renderEquippedIcons(struct Player *player) {
 void handleEquippedIconClick(struct Player *player, int mx, int my) {
   int iconIdx = 0;
 
-  if (player->hasSwiftness) {
+  if (player->hasSwiftness && !player->swiftnessUsed) {
     int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
     int iy = EQUIPPED_ICON_Y;
     if (mx >= ix && mx <= ix + EQUIPPED_ICON_SIZE &&
         my >= iy && my <= iy + EQUIPPED_ICON_SIZE) {
-      if (!player->swiftnessUsed) {
-        player->swiftnessUsed = 1;
-        player->swiftnessActive = 1;
-        player->speedMultiplier = SWIFTNESS_SPEED_MULTIPLIER;
-        printf("Swiftness activated! Speed x1.5\n");
-      }
+      player->swiftnessUsed = 1;
+      player->swiftnessActive = 1;
+      player->speedMultiplier = SWIFTNESS_SPEED_MULTIPLIER;
+      printf("Swiftness activated! Speed x1.5\n");
     }
     iconIdx++;
   }
 
-  if (player->hasSoul) {
+  if (player->hasSoul && !player->soulUsed) {
     int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
     int iy = EQUIPPED_ICON_Y;
     if (mx >= ix && mx <= ix + EQUIPPED_ICON_SIZE &&
         my >= iy && my <= iy + EQUIPPED_ICON_SIZE) {
-      if (!player->soulUsed) {
-        player->soulUsed = 1;
-        player->soulActive = 1;
-        printf("Soul activated! Heal on minion kill\n");
-      }
+      player->soulUsed = 1;
+      player->soulActive = 1;
+      printf("Soul activated! Heal on minion kill\n");
     }
     iconIdx++;
   }
 
-  if (player->hasKeyItem) {
+  if (player->hasKeyItem && !player->keyUsed) {
     int ix = EQUIPPED_ICON_X - iconIdx * EQUIPPED_ICON_SPACING;
     int iy = EQUIPPED_ICON_Y;
     if (mx >= ix && mx <= ix + EQUIPPED_ICON_SIZE &&
         my >= iy && my <= iy + EQUIPPED_ICON_SIZE) {
-      if (!player->keyUsed) {
-        player->keyUsed = 1;
-        player->hasUsedKey = 1; // compatibility with existing door logic
-        printf("Key used! Door unlocked\n");
-      }
+      player->keyUsed = 1;
+      player->hasUsedKey = 1; // compatibility with existing door logic
+      printf("Key used! Door unlocked\n");
     }
     iconIdx++;
   }

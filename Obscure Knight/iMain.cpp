@@ -421,6 +421,9 @@ void iMouse(int button, int state, int mx, int my) {
     initGrims(grims);
     initGrimFireballs(grimFireballs);
     initGreetNPC(&greetNpc);
+    initPlayerInventory(&player);
+    initTraderNPC(&traderNpc);
+    initBossDoor(&bossDoor);
     player.x = 200;
     player.y = GROUND_Y;
     player.vy = 0;
@@ -428,6 +431,14 @@ void iMouse(int button, int state, int mx, int my) {
     camera.x = 0;
     camera.targetX = 0;
     bg.x = 0;
+    // Reset Level 1 tiles
+    initMidground(&mg);
+    loadMidgroundTextures(&mg);
+    setupTiles(&mg);
+    // Reset music: stop gameplay tracks, restart title/bg music
+    stopBG2Music();
+    stopBossBGMusic();
+    restartBGMusic();
   }
 }
 
