@@ -294,8 +294,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
         *gameState = LEVEL3_STATE;
         player->x = 200;
         player->y = LEVEL3_GROUND_Y;
-        // Reset grims on respawn
-        initGrims(grims);
+        // Grims persist — only reset on Game Over or fresh level entry
         initGrimFireballs(grimFireballs);
       } else if (*gameState == BOSS_STATE) {
         *gameState = BOSS_STATE;

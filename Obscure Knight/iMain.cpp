@@ -245,6 +245,43 @@ void animate() {
 void iKeyboard(unsigned char key) {
   printf("Key pressed: %d\n", key);
 
+  // Game Over: any key returns to title screen (same as mouse click)
+  if (gameState == GAME_OVER_STATE) {
+    gameState = TITLE_SCREEN_STATE;
+    player.deaths = 0;
+    player.health = player.maxHealth;
+    player.stamina = player.maxStamina;
+    player.invincibilityTimer = 60;
+    setPlayerState(&player, IDLE);
+    initCreatures(creatures);
+    initSentries(sentries);
+    initBoss(&boss);
+    initMinions(bossMinions);
+    initHazards(bossHazards);
+    initGrims(grims);
+    initGrimFireballs(grimFireballs);
+    initGreetNPC(&greetNpc);
+    initPlayerInventory(&player);
+    initTraderNPC(&traderNpc);
+    initBossDoor(&bossDoor);
+    player.x = 200;
+    player.y = GROUND_Y;
+    player.vy = 0;
+    player.onGround = 1;
+    camera.x = 0;
+    camera.targetX = 0;
+    bg.x = 0;
+    // Reset Level 1 tiles
+    initMidground(&mg);
+    loadMidgroundTextures(&mg);
+    setupTiles(&mg);
+    // Reset music: stop gameplay tracks, restart title/bg music
+    stopBG2Music();
+    stopBossBGMusic();
+    restartBGMusic();
+    return;
+  }
+
   if (key == '3') {
     gameState = LEVEL3_STATE;
     player.x = 200;
