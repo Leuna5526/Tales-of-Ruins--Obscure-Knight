@@ -121,6 +121,13 @@ unsigned int keyIconTex = 0;
 unsigned int doorLockedTex[DOOR_LOCKED_FRAMES];
 unsigned int doorOpenTex[DOOR_OPEN_FRAMES];
 
+// Quit game menu textures
+unsigned int quitBgTex = 0;
+unsigned int quitYesTex = 0;
+unsigned int quitNoTex = 0;
+unsigned int quitArrow1Tex = 0;
+unsigned int quitArrow2Tex = 0;
+
 #define NPC_APPROACH_FRAMES 12
 #define NPC_IDLE_LEFT_FRAMES 8
 #define NPC_IDLE_RIGHT_FRAMES 6
@@ -493,6 +500,13 @@ void loadImages() {
   loadTradeItemTextures();
   loadDoorTextures();
   loadSet(gameOverFrames, GAME_OVER_FRAMES, "Assets/GameOver/ezgif-frame-%03d.png");
+
+  // Quit game menu
+  quitBgTex = iLoadImage("Assets/Quit game/bg.png");
+  quitYesTex = iLoadImage("Assets/Quit game/yes.png");
+  quitNoTex = iLoadImage("Assets/Quit game/no.png");
+  quitArrow1Tex = iLoadImage("Assets/Quit game/arrow1.png");
+  quitArrow2Tex = iLoadImage("Assets/Quit game/arrow2.png");
 }
 
 #endif

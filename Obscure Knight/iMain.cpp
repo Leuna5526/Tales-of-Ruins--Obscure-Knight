@@ -39,6 +39,67 @@ struct GrimFireball grimFireballs[MAX_GRIM_FIREBALLS];
 struct BossDoor bossDoor;
 struct GreetNPC greetNpc;
 
+// Quit/Pause menu state
+int prevState = PLAYING_STATE;
+int quitHovered = 0; // 0=none, 1=yes, 2=no
+
+// Helper: render the gameplay scene for a given state (used for paused overlay)
+void renderGameplayForState(int st) {
+  if (st == PLAYING_STATE) {
+    renderBackgroundWithCamera(&camera, backgroundTextures);
+    renderMidground(&mg, &camera, st);
+    renderCreatures(creatures, &camera);
+    renderStaminaBar(&player);
+    renderHealthBar(&player);
+    renderPickups(pickups, &camera);
+    renderInventoryUI(&player);
+    renderGlowProjectile(&glowProjectile, &camera);
+    renderPlayer(&player, &camera);
+  } else if (st == LEVEL2_STATE) {
+    renderBackgroundWithCamera(&camera, level2BackgroundTextures);
+    renderMidground(&mg, &camera, st);
+    renderCreatures(creatures, &camera);
+    renderSentries(sentries, &camera);
+    renderSparkles(sparkles, &camera);
+    renderGreetNPC(&greetNpc, &camera);
+    renderStaminaBar(&player);
+    renderHealthBar(&player);
+    renderPickups(pickups, &camera);
+    renderInventoryUI(&player);
+    renderGlowProjectile(&glowProjectile, &camera);
+    renderPlayer(&player, &camera);
+  } else if (st == LEVEL3_STATE) {
+    renderBackgroundWithCamera(&camera, level3BackgroundTextures);
+    renderMidground(&mg, &camera, st);
+    renderBossDoor(&bossDoor, &camera);
+    renderTraderNPC(&traderNpc, &camera);
+    renderGrims(grims, &camera);
+    renderGrimFireballs(grimFireballs, &camera);
+    renderStaminaBar(&player);
+    renderHealthBar(&player);
+    renderPickups(pickups, &camera);
+    renderInventoryUI(&player);
+    renderGlowProjectile(&glowProjectile, &camera);
+    renderPlayer(&player, &camera);
+    renderEquippedIcons(&player);
+    renderTradeMenu(&traderNpc, &player);
+  } else if (st == BOSS_STATE) {
+    if (bossBackgroundTexture != 0) {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, bossBackgroundTexture);
+    }
+    renderHazards(bossHazards, &camera);
+    renderBoss(&boss, &camera);
+    renderMinions(bossMinions, &camera);
+    renderStaminaBar(&player);
+    renderHealthBar(&player);
+    renderPickups(pickups, &camera);
+    renderInventoryUI(&player);
+    renderGlowProjectile(&glowProjectile, &camera);
+    renderPlayer(&player, &camera);
+    renderEquippedIcons(&player);
+  }
+}
+
 void iDraw() {
   iClear();
 
@@ -121,6 +182,30 @@ void iDraw() {
   } else if (gameState == GAME_OVER_STATE) {
     if (gameOverFrames[player.gameOverFrame] != 0) {
       iShowImage(0, 0, SCREEN_W, SCREEN_H, gameOverFrames[player.gameOverFrame]);
+    }
+  } else if (gameState == PAUSED_STATE) {
+    // Render the frozen gameplay underneath
+    renderGameplayForState(prevState);
+    // Overlay quit menu
+    if (quitBgTex != 0) {
+      iShowImage(QUIT_BG_X, QUIT_BG_Y, QUIT_BG_W, QUIT_BG_H, quitBgTex);
+    }
+    // Yes button with hover
+    if (quitYesTex != 0) {
+      int yOff = (quitHovered == 1) ? QUIT_HOVER_OFFSET : 0;
+      iShowImage(QUIT_YES_X, QUIT_YES_Y + yOff, QUIT_BTN_W, QUIT_BTN_H, quitYesTex);
+    }
+    // No button with hover
+    if (quitNoTex != 0) {
+      int yOff = (quitHovered == 2) ? QUIT_HOVER_OFFSET : 0;
+      iShowImage(QUIT_NO_X, QUIT_NO_Y + yOff, QUIT_BTN_W, QUIT_BTN_H, quitNoTex);
+    }
+    // Arrow indicators
+    if (quitHovered == 1 && quitArrow1Tex != 0) {
+      iShowImage(QUIT_ARROW1_X, QUIT_ARROW1_Y, QUIT_ARROW_W, QUIT_ARROW_H, quitArrow1Tex);
+    }
+    if (quitHovered == 2 && quitArrow2Tex != 0) {
+      iShowImage(QUIT_ARROW2_X, QUIT_ARROW2_Y, QUIT_ARROW_W, QUIT_ARROW_H, quitArrow2Tex);
     }
   }
 
@@ -282,6 +367,20 @@ void iKeyboard(unsigned char key) {
     return;
   }
 
+  // Esc to pause during gameplay
+  if (key == 27 && (gameState == PLAYING_STATE || gameState == LEVEL2_STATE ||
+      gameState == LEVEL3_STATE || gameState == BOSS_STATE)) {
+    prevState = gameState;
+    gameState = PAUSED_STATE;
+    quitHovered = 0;
+    return;
+  }
+  // Esc or any key to resume from pause (No)
+  if (gameState == PAUSED_STATE) {
+    gameState = prevState;
+    return;
+  }
+
   if (key == '3') {
     gameState = LEVEL3_STATE;
     player.x = 200;
@@ -332,7 +431,6 @@ void iKeyboard(unsigned char key) {
     playBossBGMusic();
     return;
   }
-
   if (gameState == TITLE_SCREEN_STATE) {
     if (key == ' ' || key == 13) {
       playStartButtonClickSound();
@@ -348,55 +446,8 @@ void iKeyboard(unsigned char key) {
     }
   } else if (gameState == CAVE_STATE) {
   }
-
-  if (key == '3') {
-    gameState = LEVEL3_STATE;
-    player.x = 200;
-    player.y = LEVEL3_GROUND_Y;
-    player.vy = 0;
-    player.onGround = 1;
-    setPlayerState(&player, IDLE);
-    camera.x = 0;
-    camera.targetX = 0;
-    stopBGMusic();
-    stopBossBGMusic();
-    playBG2Music();
-    initTraderNPC(&traderNpc);
-    initGrims(grims);
-    initGrimFireballs(grimFireballs);
-    initBossDoor(&bossDoor);
-    mg.tileCount = 0;
-    {
-      mg.tileTexture1 = level3Tile1;
-      mg.tileTexture2 = level3Tile2;
-      mg.tiles[0].x = LEVEL3_TILE_1_X; mg.tiles[0].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_1_Y; mg.tiles[0].texture = level3Tile1;
-      mg.tiles[0].width = LEVEL3_TILE_W; mg.tiles[0].height = LEVEL3_TILE_H; mg.tiles[0].active = 1; mg.tiles[0].isJumpThrough = 0; mg.tileCount++;
-      mg.tiles[1].x = LEVEL3_TILE_2_X; mg.tiles[1].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_2_Y; mg.tiles[1].texture = level3Tile2;
-      mg.tiles[1].width = LEVEL3_TILE_WIDE_W; mg.tiles[1].height = LEVEL3_TILE_H; mg.tiles[1].active = 1; mg.tiles[1].isJumpThrough = 0; mg.tileCount++;
-      mg.tiles[2].x = LEVEL3_TILE_3_X; mg.tiles[2].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_3_Y; mg.tiles[2].texture = level3Tile1;
-      mg.tiles[2].width = LEVEL3_TILE_W; mg.tiles[2].height = LEVEL3_TILE_H; mg.tiles[2].active = 1; mg.tiles[2].isJumpThrough = 0; mg.tileCount++;
-      mg.tiles[3].x = LEVEL3_TILE_4_X; mg.tiles[3].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_4_Y; mg.tiles[3].texture = level3Tile2;
-      mg.tiles[3].width = LEVEL3_TILE_WIDE_W; mg.tiles[3].height = LEVEL3_TILE_H; mg.tiles[3].active = 1; mg.tiles[3].isJumpThrough = 0; mg.tileCount++;
-      mg.tiles[4].x = LEVEL3_TILE_5_X; mg.tiles[4].y = LEVEL3_TILE_BASE_HEIGHT + LEVEL3_TILE_5_Y; mg.tiles[4].texture = level3Tile1;
-      mg.tiles[4].width = LEVEL3_TILE_W; mg.tiles[4].height = LEVEL3_TILE_H; mg.tiles[4].active = 1; mg.tiles[4].isJumpThrough = 0; mg.tileCount++;
-    }
-  } else if (key == '4') {
-    gameState = BOSS_STATE;
-    player.x = 200;
-    player.y = BOSS_GROUND_Y;
-    player.vy = 0;
-    player.onGround = 1;
-    camera.x = 0;
-    camera.targetX = 0;
-    setPlayerState(&player, IDLE);
-    initBoss(&boss);
-    initMinions(bossMinions);
-    initHazards(bossHazards);
-    stopBGMusic();
-    stopBG2Music();
-    playBossBGMusic();
-  }
 }
+
 
 void iMouseMove(int mx, int my) {
   // Global cursor move tracking
@@ -421,6 +472,18 @@ void iPassiveMouseMove(int mx, int my) {
     updateButtonHoverSound(mx, my);
   }
   // Update trader mouse position for hover effects
+  // Quit menu hover tracking
+  if (gameState == PAUSED_STATE) {
+    if (mx >= QUIT_YES_X && mx <= QUIT_YES_X + QUIT_BTN_W &&
+        my >= QUIT_YES_Y && my <= QUIT_YES_Y + QUIT_BTN_H) {
+      quitHovered = 1;
+    } else if (mx >= QUIT_NO_X && mx <= QUIT_NO_X + QUIT_BTN_W &&
+               my >= QUIT_NO_Y && my <= QUIT_NO_Y + QUIT_BTN_H) {
+      quitHovered = 2;
+    } else {
+      quitHovered = 0;
+    }
+  }
   if (gameState == LEVEL3_STATE) {
     traderNpc.mouseX = mx;
     traderNpc.mouseY = my;
@@ -441,6 +504,48 @@ void iMouse(int button, int state, int mx, int my) {
   if ((gameState == LEVEL3_STATE || gameState == BOSS_STATE) &&
       button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     handleEquippedIconClick(&player, mx, my);
+  }
+
+  // Quit menu click handling
+  if (gameState == PAUSED_STATE && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    if (mx >= QUIT_YES_X && mx <= QUIT_YES_X + QUIT_BTN_W &&
+        my >= QUIT_YES_Y && my <= QUIT_YES_Y + QUIT_BTN_H) {
+      // Yes: full game reset (same as Game Over)
+      gameState = TITLE_SCREEN_STATE;
+      player.deaths = 0;
+      player.health = player.maxHealth;
+      player.stamina = player.maxStamina;
+      player.invincibilityTimer = 60;
+      setPlayerState(&player, IDLE);
+      initCreatures(creatures);
+      initSentries(sentries);
+      initBoss(&boss);
+      initMinions(bossMinions);
+      initHazards(bossHazards);
+      initGrims(grims);
+      initGrimFireballs(grimFireballs);
+      initGreetNPC(&greetNpc);
+      initPlayerInventory(&player);
+      initTraderNPC(&traderNpc);
+      initBossDoor(&bossDoor);
+      player.x = 200;
+      player.y = GROUND_Y;
+      player.vy = 0;
+      player.onGround = 1;
+      camera.x = 0;
+      camera.targetX = 0;
+      bg.x = 0;
+      initMidground(&mg);
+      loadMidgroundTextures(&mg);
+      setupTiles(&mg);
+      stopBG2Music();
+      stopBossBGMusic();
+      restartBGMusic();
+    } else if (mx >= QUIT_NO_X && mx <= QUIT_NO_X + QUIT_BTN_W &&
+               my >= QUIT_NO_Y && my <= QUIT_NO_Y + QUIT_BTN_H) {
+      // No: resume game
+      gameState = prevState;
+    }
   }
   
   if (gameState == GAME_OVER_STATE && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {

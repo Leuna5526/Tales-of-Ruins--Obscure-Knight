@@ -483,12 +483,17 @@ void keyboardHandlerUp2FF(int key, int x, int y) {
   glutPostRedisplay();
 }
 
+void iKeyboard(unsigned char key);
+void iSpecialKeyboard(unsigned char key);
+
 void keyboardHandler1FF(unsigned char key, int x, int y) {
   keyPressed[key] = 1;
+  iKeyboard(key);
   glutPostRedisplay();
 }
 void keyboardHandler2FF(int key, int x, int y) {
   specialKeyPressed[key] = 1;
+  iSpecialKeyboard((unsigned char)key);
   glutPostRedisplay();
 }
 

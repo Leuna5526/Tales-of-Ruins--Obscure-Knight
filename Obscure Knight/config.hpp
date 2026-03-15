@@ -349,9 +349,9 @@
 // ============================================================
 // TRADE ITEM SYSTEM
 // ============================================================
-#define TRADE_ITEM_COST_SWIFTNESS 0
-#define TRADE_ITEM_COST_SOUL 0
-#define TRADE_ITEM_COST_KEY 0
+#define TRADE_ITEM_COST_SWIFTNESS 5
+#define TRADE_ITEM_COST_SOUL 5
+#define TRADE_ITEM_COST_KEY 5
 
 #define SWIFTNESS_SPEED_MULTIPLIER 1.5f
 #define SOUL_REGEN_ON_KILL 20  // 1 heart = 20 HP (out of 100)
@@ -500,5 +500,35 @@
 // Max entities
 #define MAX_BOSS_MINIONS 4
 #define MAX_BOSS_HAZARDS 4
+
+// ============================================================
+// QUIT GAME / PAUSE MENU
+// ============================================================
+#define PAUSED_STATE 11
+
+// Quit menu background (full overlay)
+#define QUIT_BG_X 0
+#define QUIT_BG_Y 0
+#define QUIT_BG_W SCREEN_W
+#define QUIT_BG_H SCREEN_H
+
+// Yes/No button sizes and positions (centered on screen)
+#define QUIT_BTN_W 90
+#define QUIT_BTN_H 50
+#define QUIT_YES_X 460
+#define QUIT_YES_Y 270
+#define QUIT_NO_X  464
+#define QUIT_NO_Y  220
+
+// Arrow images shown next to hovered button
+#define QUIT_ARROW_W 1000
+#define QUIT_ARROW_H 600
+#define QUIT_ARROW1_X 0
+#define QUIT_ARROW1_Y 0
+#define QUIT_ARROW2_X 0
+#define QUIT_ARROW2_Y 0
+
+// Hover effect offset (same style as title screen buttons)
+#define QUIT_HOVER_OFFSET 4
 
 #endif
