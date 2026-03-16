@@ -6,8 +6,8 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <mmsystem.h>
 #include <windows.h>
+#include <mmsystem.h>
 
 #pragma comment(lib, "winmm.lib")
 
@@ -251,6 +251,17 @@ void stopBossBGMusic() {
 void restartBossBGMusic() {
   stopBossBGMusic();
   playBossBGMusic();
+}
+
+// ── Boss Entry music (MP3) ────────────────────────────────────────────
+void playBossEntryMusic() {
+  mciSendStringA("open \"Audios/Background/bossentrybg.mp3\" type mpegvideo alias bossentry", NULL, 0, NULL);
+  mciSendStringA("play bossentry from 0", NULL, 0, NULL);
+}
+
+void stopBossEntryMusic() {
+  mciSendStringA("stop bossentry", NULL, 0, NULL);
+  mciSendStringA("close bossentry", NULL, 0, NULL);
 }
 
 void initSounds() {

@@ -21,8 +21,11 @@
 #define LEVEL3_STATE 8
 #define BOSS_STATE 9
 #define GAME_OVER_STATE 10
+#define PAUSED_STATE 11
+#define BOSS_ENTRY_STATE 12
 
 #define GAME_OVER_FRAMES 65
+#define BOSS_ENTRY_FRAMES 278
 
 #define SCREEN_W 1000
 #define SCREEN_H 600

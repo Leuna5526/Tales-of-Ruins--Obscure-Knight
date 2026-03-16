@@ -101,6 +101,10 @@ struct Player {
   int swiftnessActive; // effect active
   int soulActive;      // effect active
   float speedMultiplier;
+
+  int hasPlayedBossEntry;
+  int bossEntryFrame;
+  int bossEntryTimer;
 };
 
 struct Camera {

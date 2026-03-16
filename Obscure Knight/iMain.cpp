@@ -179,6 +179,10 @@ void iDraw() {
     renderPickups(pickups, &camera);
     renderPlayer(&player, &camera);
     renderDialogue(&npc);
+  } else if (gameState == BOSS_ENTRY_STATE) {
+    if (bossEntryFrames[player.bossEntryFrame] != 0) {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, bossEntryFrames[player.bossEntryFrame]);
+    }
   } else if (gameState == GAME_OVER_STATE) {
     if (gameOverFrames[player.gameOverFrame] != 0) {
       iShowImage(0, 0, SCREEN_W, SCREEN_H, gameOverFrames[player.gameOverFrame]);
@@ -253,6 +257,15 @@ void animate() {
       updateGrimFireballs(grimFireballs, &player);
       updateBossDoor(&bossDoor, &player);
 
+      if (bossDoor.opening && !player.hasPlayedBossEntry) {
+        gameState = BOSS_ENTRY_STATE;
+        player.hasPlayedBossEntry = 1;
+        player.bossEntryFrame = 0;
+        player.bossEntryTimer = 0;
+        stopBG2Music();
+        playBossEntryMusic();
+      }
+
       // Trader NPC keyboard interaction
       static int traderEKeyWas = 0;
       int traderEKey = (GetAsyncKeyState('E') & 0x8000);
@@ -324,6 +337,31 @@ void animate() {
         player.gameOverFrame++;
       }
     }
+  } else if (gameState == BOSS_ENTRY_STATE) {
+    player.bossEntryTimer++;
+    // 40ms delay per frame (2 * 20ms)
+    if (player.bossEntryTimer >= 2) {
+      player.bossEntryTimer = 0;
+      if (player.bossEntryFrame < BOSS_ENTRY_FRAMES - 1) {
+        player.bossEntryFrame++;
+      } else {
+        gameState = BOSS_STATE;
+        player.x = 200;
+        player.y = BOSS_GROUND_Y;
+        player.vy = 0;
+        player.onGround = 1;
+        setPlayerState(&player, IDLE);
+        player.stateTimer = 0;
+        camera.x = 0;
+        camera.targetX = 0;
+        initBoss(&boss);
+        initMinions(bossMinions);
+        initHazards(bossHazards);
+        player.deaths = 0;
+        stopBossEntryMusic();
+        playBossBGMusic();
+      }
+    }
   }
 }
 
@@ -334,6 +372,7 @@ void iKeyboard(unsigned char key) {
   if (gameState == GAME_OVER_STATE) {
     gameState = TITLE_SCREEN_STATE;
     player.deaths = 0;
+    player.hasPlayedBossEntry = 0;
     player.health = player.maxHealth;
     player.stamina = player.maxStamina;
     player.invincibilityTimer = 60;
@@ -363,6 +402,7 @@ void iKeyboard(unsigned char key) {
     // Reset music: stop gameplay tracks, restart title/bg music
     stopBG2Music();
     stopBossBGMusic();
+    stopBossEntryMusic();
     restartBGMusic();
     return;
   }
@@ -392,6 +432,7 @@ void iKeyboard(unsigned char key) {
     camera.targetX = 0;
     stopBGMusic();
     stopBossBGMusic();
+    stopBossEntryMusic();
     playBG2Music();
     initTraderNPC(&traderNpc);
     initGrims(grims);
@@ -513,6 +554,7 @@ void iMouse(int button, int state, int mx, int my) {
       // Yes: full game reset (same as Game Over)
       gameState = TITLE_SCREEN_STATE;
       player.deaths = 0;
+      player.hasPlayedBossEntry = 0;
       player.health = player.maxHealth;
       player.stamina = player.maxStamina;
       player.invincibilityTimer = 60;
@@ -540,6 +582,7 @@ void iMouse(int button, int state, int mx, int my) {
       setupTiles(&mg);
       stopBG2Music();
       stopBossBGMusic();
+      stopBossEntryMusic();
       restartBGMusic();
     } else if (mx >= QUIT_NO_X && mx <= QUIT_NO_X + QUIT_BTN_W &&
                my >= QUIT_NO_Y && my <= QUIT_NO_Y + QUIT_BTN_H) {
@@ -551,6 +594,7 @@ void iMouse(int button, int state, int mx, int my) {
   if (gameState == GAME_OVER_STATE && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     gameState = TITLE_SCREEN_STATE;
     player.deaths = 0;
+    player.hasPlayedBossEntry = 0;
     player.health = player.maxHealth;
     player.stamina = player.maxStamina;
     player.invincibilityTimer = 60;
@@ -577,9 +621,9 @@ void iMouse(int button, int state, int mx, int my) {
     initMidground(&mg);
     loadMidgroundTextures(&mg);
     setupTiles(&mg);
-    // Reset music: stop gameplay tracks, restart title/bg music
     stopBG2Music();
     stopBossBGMusic();
+    stopBossEntryMusic();
     restartBGMusic();
   }
 }
