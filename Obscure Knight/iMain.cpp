@@ -257,7 +257,7 @@ void animate() {
       updateGrimFireballs(grimFireballs, &player);
       updateBossDoor(&bossDoor, &player);
 
-      if (bossDoor.opening && !player.hasPlayedBossEntry) {
+      if (bossDoor.opened && !player.hasPlayedBossEntry) {
         gameState = BOSS_ENTRY_STATE;
         player.hasPlayedBossEntry = 1;
         player.bossEntryFrame = 0;
