@@ -191,6 +191,10 @@ void iDraw() {
     if (gameEndingFrames[player.gameEndingFrame] != 0) {
       iShowImage(0, 0, SCREEN_W, SCREEN_H, gameEndingFrames[player.gameEndingFrame]);
     }
+  } else if (gameState == CONGRATS_STATE) {
+    if (congratsTex != 0) {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, congratsTex);
+    }
   } else if (gameState == PAUSED_STATE) {
     // Render the frozen gameplay underneath
     renderGameplayForState(prevState);
@@ -355,6 +359,8 @@ void animate() {
         player.gameEndingFrame++;
         if (player.gameEndingFrame == GAME_ENDING_FRAMES - 1) {
           stopGameEndingMusic();
+          gameState = CONGRATS_STATE;
+          playCongratsMusic();
         }
       }
     }
@@ -389,10 +395,11 @@ void animate() {
 void iKeyboard(unsigned char key) {
   printf("Key pressed: %d\n", key);
 
-  // Game Over / Game Ending: any key returns to title screen (same as mouse click)
-  if (gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE) {
-    gameState = TITLE_SCREEN_STATE;
+  // Game Over / Game Ending / Congrats: any key returns to title screen (same as mouse click)
+  if (gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE || gameState == CONGRATS_STATE) {
     if (gameState == GAME_ENDING_STATE) stopGameEndingMusic();
+    if (gameState == CONGRATS_STATE) stopCongratsMusic();
+    gameState = TITLE_SCREEN_STATE;
     player.deaths = 0;
     player.hasPlayedBossEntry = 0;
     player.health = player.maxHealth;
@@ -563,8 +570,9 @@ void iMouse(int button, int state, int mx, int my) {
     }
   }
   
-  if ((gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE) && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+  if ((gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE || gameState == CONGRATS_STATE) && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     if (gameState == GAME_ENDING_STATE) stopGameEndingMusic();
+    if (gameState == CONGRATS_STATE) stopCongratsMusic();
     gameState = TITLE_SCREEN_STATE;
     player.deaths = 0;
     player.hasPlayedBossEntry = 0;

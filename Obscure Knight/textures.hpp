@@ -129,6 +129,7 @@ unsigned int quitYesTex = 0;
 unsigned int quitNoTex = 0;
 unsigned int quitArrow1Tex = 0;
 unsigned int quitArrow2Tex = 0;
+unsigned int congratsTex = 0;
 
 #define NPC_APPROACH_FRAMES 12
 #define NPC_IDLE_LEFT_FRAMES 8
@@ -504,6 +505,7 @@ void loadImages() {
   loadSet(gameOverFrames, GAME_OVER_FRAMES, "Assets/GameOver/ezgif-frame-%03d.png");
   loadSet(bossEntryFrames, BOSS_ENTRY_FRAMES, "Assets/BossEntry/ezgif-frame-%03d.png");
   loadSet(gameEndingFrames, GAME_ENDING_FRAMES, "Assets/GameEnding/ezgif-frame-%03d.png");
+  congratsTex = iLoadImage("Assets/CongratsScreen/congrats.png");
 
   // Quit game menu
   quitBgTex = iLoadImage("Assets/Quit game/bg.png");

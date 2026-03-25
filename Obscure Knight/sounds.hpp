@@ -275,6 +275,17 @@ void stopGameEndingMusic() {
   mciSendStringA("close gameending", NULL, 0, NULL);
 }
 
+// ── Congrats Screen music (WAV) ────────────────────────────────────────────
+void playCongratsMusic() {
+  mciSendStringA("open \"Audios/Background/ending2.wav\" type waveaudio alias congratsmusic", NULL, 0, NULL);
+  mciSendStringA("play congratsmusic from 0", NULL, 0, NULL);
+}
+
+void stopCongratsMusic() {
+  mciSendStringA("stop congratsmusic", NULL, 0, NULL);
+  mciSendStringA("close congratsmusic", NULL, 0, NULL);
+}
+
 void initSounds() {
   g_footstepTimer = 0;
   g_lastHealthForSound = PLAYER_MAX_HEALTH;
