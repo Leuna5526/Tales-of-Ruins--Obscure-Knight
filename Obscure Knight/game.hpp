@@ -220,9 +220,17 @@ void updateGame(struct Player *player, struct Creature creatures[],
       
       player->deaths++;
       if (player->deaths >= 3) {
-        *gameState = GAME_OVER_STATE;
-        player->gameOverFrame = 0;
-        player->gameOverTimer = 0;
+        if (*gameState == BOSS_STATE) {
+          stopBossBGMusic();
+          *gameState = GAME_ENDING_STATE;
+          player->gameEndingFrame = 0;
+          player->gameEndingTimer = 0;
+          playGameEndingMusic();
+        } else {
+          *gameState = GAME_OVER_STATE;
+          player->gameOverFrame = 0;
+          player->gameOverTimer = 0;
+        }
         return;
       }
 

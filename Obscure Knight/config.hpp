@@ -23,9 +23,11 @@
 #define GAME_OVER_STATE 10
 #define PAUSED_STATE 11
 #define BOSS_ENTRY_STATE 12
+#define GAME_ENDING_STATE 13
 
 #define GAME_OVER_FRAMES 65
 #define BOSS_ENTRY_FRAMES 278
+#define GAME_ENDING_FRAMES 277
 
 #define SCREEN_W 1000
 #define SCREEN_H 600
@@ -354,7 +356,7 @@
 // ============================================================
 #define TRADE_ITEM_COST_SWIFTNESS 5
 #define TRADE_ITEM_COST_SOUL 5
-#define TRADE_ITEM_COST_KEY 5
+#define TRADE_ITEM_COST_KEY 0
 
 #define SWIFTNESS_SPEED_MULTIPLIER 1.5f
 #define SOUL_REGEN_ON_KILL 20  // 1 heart = 20 HP (out of 100)

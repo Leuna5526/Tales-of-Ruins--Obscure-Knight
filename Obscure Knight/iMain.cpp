@@ -187,6 +187,10 @@ void iDraw() {
     if (gameOverFrames[player.gameOverFrame] != 0) {
       iShowImage(0, 0, SCREEN_W, SCREEN_H, gameOverFrames[player.gameOverFrame]);
     }
+  } else if (gameState == GAME_ENDING_STATE) {
+    if (gameEndingFrames[player.gameEndingFrame] != 0) {
+      iShowImage(0, 0, SCREEN_W, SCREEN_H, gameEndingFrames[player.gameEndingFrame]);
+    }
   } else if (gameState == PAUSED_STATE) {
     // Render the frozen gameplay underneath
     renderGameplayForState(prevState);
@@ -295,6 +299,11 @@ void animate() {
       if (bossWasActive && !boss.active) {
         stopBossBGMusic();
         bossWasActive = 0;
+        
+        gameState = GAME_ENDING_STATE;
+        player.gameEndingFrame = 0;
+        player.gameEndingTimer = 0;
+        playGameEndingMusic();
       }
       if (boss.active) {
         bossWasActive = 1;
@@ -337,6 +346,18 @@ void animate() {
         player.gameOverFrame++;
       }
     }
+  } else if (gameState == GAME_ENDING_STATE) {
+    player.gameEndingTimer++;
+    // 40ms delay per frame (2 * 20ms)
+    if (player.gameEndingTimer >= 2) {
+      player.gameEndingTimer = 0;
+      if (player.gameEndingFrame < GAME_ENDING_FRAMES - 1) {
+        player.gameEndingFrame++;
+        if (player.gameEndingFrame == GAME_ENDING_FRAMES - 1) {
+          stopGameEndingMusic();
+        }
+      }
+    }
   } else if (gameState == BOSS_ENTRY_STATE) {
     player.bossEntryTimer++;
     // 40ms delay per frame (2 * 20ms)
@@ -368,9 +389,10 @@ void animate() {
 void iKeyboard(unsigned char key) {
   printf("Key pressed: %d\n", key);
 
-  // Game Over: any key returns to title screen (same as mouse click)
-  if (gameState == GAME_OVER_STATE) {
+  // Game Over / Game Ending: any key returns to title screen (same as mouse click)
+  if (gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE) {
     gameState = TITLE_SCREEN_STATE;
+    if (gameState == GAME_ENDING_STATE) stopGameEndingMusic();
     player.deaths = 0;
     player.hasPlayedBossEntry = 0;
     player.health = player.maxHealth;
@@ -541,7 +563,8 @@ void iMouse(int button, int state, int mx, int my) {
     }
   }
   
-  if (gameState == GAME_OVER_STATE && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+  if ((gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE) && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    if (gameState == GAME_ENDING_STATE) stopGameEndingMusic();
     gameState = TITLE_SCREEN_STATE;
     player.deaths = 0;
     player.hasPlayedBossEntry = 0;

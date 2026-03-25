@@ -264,6 +264,17 @@ void stopBossEntryMusic() {
   mciSendStringA("close bossentry", NULL, 0, NULL);
 }
 
+// ── Game Ending music (WAV) ────────────────────────────────────────────
+void playGameEndingMusic() {
+  mciSendStringA("open \"Audios/Background/ending1.wav\" type waveaudio alias gameending", NULL, 0, NULL);
+  mciSendStringA("play gameending from 0", NULL, 0, NULL);
+}
+
+void stopGameEndingMusic() {
+  mciSendStringA("stop gameending", NULL, 0, NULL);
+  mciSendStringA("close gameending", NULL, 0, NULL);
+}
+
 void initSounds() {
   g_footstepTimer = 0;
   g_lastHealthForSound = PLAYER_MAX_HEALTH;

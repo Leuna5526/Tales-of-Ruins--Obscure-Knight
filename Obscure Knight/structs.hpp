@@ -105,6 +105,8 @@ struct Player {
   int hasPlayedBossEntry;
   int bossEntryFrame;
   int bossEntryTimer;
+  int gameEndingFrame;
+  int gameEndingTimer;
 };
 
 struct Camera {
