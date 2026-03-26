@@ -255,9 +255,7 @@ void updateCaveState(struct Player *player, struct Background *bg,
       player->facingRight = 0;
     }
 
-    // No x clamp here -- platform boundary logic below handles limits
-    // (removing clamp allows cave exit to trigger when player goes left)
-
+ 
     if (player->vy <= 0) {
       float prevY = (float)(player->y - (player->vy + GRAVITY));
       if (player->y <= CAVE_P3_Y && prevY >= CAVE_P3_Y &&
@@ -341,7 +339,6 @@ void updateCaveState(struct Player *player, struct Background *bg,
         player->stateTimer = 0;
       }
       if (player->x <= CAVE_EXIT_X && player->onGround) {
-        // Clear any remaining cave items so they don't appear outside
         for (int ci = 0; ci < MAX_PICKUPS; ci++) {
           pickups[ci].active = 0;
         }

@@ -6,8 +6,8 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <windows.h>
 #include <mmsystem.h>
+#include <windows.h>
 
 #pragma comment(lib, "winmm.lib")
 
@@ -169,7 +169,6 @@ void restartBGMusic() {
   playBGMusic();
 }
 
-// ── BG2 music (Level 2 & 3) ──────────────────────────────────
 static HANDLE hBg2Thread = NULL;
 static volatile int g_stopBg2Thread = 0;
 
@@ -211,7 +210,6 @@ void restartBG2Music() {
   playBG2Music();
 }
 
-// ── Boss BG music ────────────────────────────────────────────
 static HANDLE hBossBgThread = NULL;
 static volatile int g_stopBossBgThread = 0;
 
@@ -253,9 +251,10 @@ void restartBossBGMusic() {
   playBossBGMusic();
 }
 
-// ── Boss Entry music (MP3) ────────────────────────────────────────────
 void playBossEntryMusic() {
-  mciSendStringA("open \"Audios/Background/bossentrybg.mp3\" type mpegvideo alias bossentry", NULL, 0, NULL);
+  mciSendStringA("open \"Audios/Background/bossentrybg.mp3\" type mpegvideo "
+                 "alias bossentry",
+                 NULL, 0, NULL);
   mciSendStringA("play bossentry from 0", NULL, 0, NULL);
 }
 
@@ -264,9 +263,10 @@ void stopBossEntryMusic() {
   mciSendStringA("close bossentry", NULL, 0, NULL);
 }
 
-// ── Game Ending music (WAV) ────────────────────────────────────────────
 void playGameEndingMusic() {
-  mciSendStringA("open \"Audios/Background/ending1.wav\" type waveaudio alias gameending", NULL, 0, NULL);
+  mciSendStringA(
+      "open \"Audios/Background/ending1.wav\" type waveaudio alias gameending",
+      NULL, 0, NULL);
   mciSendStringA("play gameending from 0", NULL, 0, NULL);
 }
 
@@ -275,15 +275,42 @@ void stopGameEndingMusic() {
   mciSendStringA("close gameending", NULL, 0, NULL);
 }
 
-// ── Congrats Screen music (WAV) ────────────────────────────────────────────
+static WavSound g_sndCongrats;
+static HANDLE hCongratsThread = NULL;
+static volatile int g_stopCongratsThread = 0;
+
+static DWORD WINAPI CongratsMusicThreadProc(LPVOID p) {
+  if (!g_sndCongrats.hWave)
+    return 0;
+
+  while (!g_stopCongratsThread) {
+    if (g_sndCongrats.hdr.dwFlags & WHDR_DONE) {
+      waveOutWrite(g_sndCongrats.hWave, &g_sndCongrats.hdr, sizeof(WAVEHDR));
+    }
+    Sleep(10);
+  }
+  return 0;
+}
+
 void playCongratsMusic() {
-  mciSendStringA("open \"Audios/Background/ending2.wav\" type waveaudio alias congratsmusic", NULL, 0, NULL);
-  mciSendStringA("play congratsmusic from 0", NULL, 0, NULL);
+  if (hCongratsThread)
+    return;
+  if (!g_sndCongrats.pcm)
+    return;
+
+  g_stopCongratsThread = 0;
+  hCongratsThread =
+      CreateThread(NULL, 0, CongratsMusicThreadProc, NULL, 0, NULL);
 }
 
 void stopCongratsMusic() {
-  mciSendStringA("stop congratsmusic", NULL, 0, NULL);
-  mciSendStringA("close congratsmusic", NULL, 0, NULL);
+  if (hCongratsThread) {
+    g_stopCongratsThread = 1;
+    waveOutReset(g_sndCongrats.hWave);
+    WaitForSingleObject(hCongratsThread, INFINITE);
+    CloseHandle(hCongratsThread);
+    hCongratsThread = NULL;
+  }
 }
 
 void initSounds() {
@@ -308,6 +335,9 @@ void initSounds() {
 
   loadWavSound("Audios/Background/bossbg.wav", &g_sndBossBg);
   applyVolume(&g_sndBossBg, 0.6f);
+
+  loadWavSound("Audios/Background/ending2.wav", &g_sndCongrats);
+  applyVolume(&g_sndCongrats, 0.6f);
 
   loadWavSound("Audios/UI/on_button.wav", &g_sndOnButton);
   loadWavSound("Audios/UI/button_click.wav", &g_sndButtonClick);

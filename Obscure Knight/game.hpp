@@ -36,18 +36,14 @@ void updateGame(struct Player *player, struct Creature creatures[],
       *gameState == LEVEL3_STATE || *gameState == BOSS_STATE) {
     updatePlayerAnimation(player, mg, *gameState);
 
-    // Only update creatures for Playing and Level 2 right now.
-    // If you add Level 3 or Boss enemies later, add them here.
     if (*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE) {
       updateCreatures(creatures, player, pickups, *gameState);
     }
 
-    // Only scroll background for scrolling levels
     if (*gameState != BOSS_STATE) {
       updateBackground(bg, player);
     }
 
-    // Boss state has a fixed camera, so we only update camera for others
     if (*gameState == BOSS_STATE) {
       camera->x = 0;
       camera->targetX = 0;
@@ -81,24 +77,20 @@ void updateGame(struct Player *player, struct Creature creatures[],
       spawnCaveItems(pickups);
     }
     if (*gameState == LEVEL2_STATE && player->x >= GREET_TRIGGER_X_START) {
-      // Activate greeter if not already active
       if (!greetNpc.active) {
         greetNpc.active = 1;
         greetNpc.state = GREET_ANIMATING;
         greetNpc.frame = 0;
         greetNpc.animTimer = 0;
       }
-      // Freeze player while greeting plays
       if (greetNpc.state == GREET_ANIMATING) {
         player->state = IDLE;
         player->frame = 0;
-        // prevent player from walking further right
         if (player->x > GREET_TRIGGER_X_START) {
           player->x = GREET_TRIGGER_X_START;
         }
       }
     }
-    // Transition to Level 3 after greeting animation finishes
     if (*gameState == LEVEL2_STATE && greetNpc.done) {
       greetNpc.done = 0;
       greetNpc.active = 0;
@@ -113,7 +105,6 @@ void updateGame(struct Player *player, struct Creature creatures[],
       camera->targetX = 0;
       bg->x = 0;
       mg->tileCount = 0;
-      // Initialize trader NPC
       traderNpc.x = TRADER_NPC_X;
       traderNpc.y = TRADER_NPC_Y;
       traderNpc.frame = 0;
@@ -123,10 +114,8 @@ void updateGame(struct Player *player, struct Creature creatures[],
       traderNpc.facingRight = 0;
       traderNpc.active = 1;
       traderNpc.traded = 0;
-      // Initialize grims
       initGrims(grims);
       initGrimFireballs(grimFireballs);
-      // Setup Level 3 tiles (same pattern as Level 1/2)
       {
         mg->tileTexture1 = level3Tile1;
         mg->tileTexture2 = level3Tile2;
@@ -179,7 +168,6 @@ void updateGame(struct Player *player, struct Creature creatures[],
     }
 
     if (*gameState == LEVEL3_STATE && player->x >= LEVEL3_END_X) {
-      // Only allow entry to boss if door is opened
       if (bossDoor.opened) {
         *gameState = BOSS_STATE;
         player->x = 200;
@@ -190,34 +178,28 @@ void updateGame(struct Player *player, struct Creature creatures[],
         player->stateTimer = 0;
         camera->x = 0;
         camera->targetX = 0;
-        // Re-initialize boss when entering boss level
         initBoss(&boss);
         initMinions(bossMinions);
         initHazards(bossHazards);
-        // Reset death counter for boss — fresh 3 lives
         player->deaths = 0;
-        // Switch music: stop bg2, play boss theme
         stopBG2Music();
         playBossBGMusic();
       } else {
-        // Block player from going further
         player->x = LEVEL3_END_X - 10;
       }
     }
 
-    // Player death check — health drops to 0
     if ((*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE ||
          *gameState == LEVEL3_STATE || *gameState == BOSS_STATE) &&
         player->health <= 0 && player->state != DEATH) {
       setPlayerState(player, DEATH);
       player->stateTimer = 0;
     }
-    // After death animation finishes, respawn at start of current level
     if ((*gameState == PLAYING_STATE || *gameState == LEVEL2_STATE ||
          *gameState == LEVEL3_STATE || *gameState == BOSS_STATE) &&
         player->state == DEATH &&
         player->stateTimer > DEATH_ANIMATION_DURATION) {
-      
+
       player->deaths++;
       if (player->deaths >= 3) {
         if (*gameState == BOSS_STATE) {
@@ -234,7 +216,6 @@ void updateGame(struct Player *player, struct Creature creatures[],
         return;
       }
 
-      // Respawn position depends on which level the player is in
       if (*gameState == PLAYING_STATE) {
         player->x = 200;
         player->y = GROUND_Y;
@@ -244,9 +225,7 @@ void updateGame(struct Player *player, struct Creature creatures[],
         camera->x = 0;
         camera->targetX = 0;
         bg->x = 0;
-        // Reset greeting NPC
         initGreetNPC(&greetNpc);
-        // Re-setup Level 2 tiles instead of clearing them
         mg->tileCount = 0;
         {
           int baseHeight = LEVEL2_GROUND_Y + 100;
@@ -302,16 +281,15 @@ void updateGame(struct Player *player, struct Creature creatures[],
         *gameState = LEVEL3_STATE;
         player->x = 200;
         player->y = LEVEL3_GROUND_Y;
-        // Grims persist — only reset on Game Over or fresh level entry
         initGrimFireballs(grimFireballs);
       } else if (*gameState == BOSS_STATE) {
         *gameState = BOSS_STATE;
         player->x = 200;
         player->y = BOSS_GROUND_Y;
-        // Reset boss on death
         initBoss(&boss);
         initMinions(bossMinions);
         initHazards(bossHazards);
+        restartBossBGMusic();
       }
       player->health = player->maxHealth;
       player->stamina = player->maxStamina;
@@ -431,9 +409,6 @@ void updateGame(struct Player *player, struct Creature creatures[],
   }
 }
 
-// ============================================================
-// GREETING NPC (end of Level 2)
-// ============================================================
 void initGreetNPC(struct GreetNPC *g) {
   g->x = GREET_X;
   g->y = GREET_Y;
@@ -445,7 +420,8 @@ void initGreetNPC(struct GreetNPC *g) {
 }
 
 void updateGreetNPC(struct GreetNPC *g) {
-  if (!g->active) return;
+  if (!g->active)
+    return;
 
   if (g->state == GREET_ANIMATING) {
     g->animTimer++;
@@ -453,7 +429,6 @@ void updateGreetNPC(struct GreetNPC *g) {
       g->animTimer = 0;
       g->frame++;
       if (g->frame >= GREET_ANIM_FRAMES) {
-        // Animation finished
         g->state = GREET_DONE;
         g->done = 1;
         g->frame = GREET_ANIM_FRAMES - 1; // stay on last frame
@@ -463,24 +438,23 @@ void updateGreetNPC(struct GreetNPC *g) {
 }
 
 void renderGreetNPC(struct GreetNPC *g, struct Camera *camera) {
-  // Always draw the greeter when in Level 2 (idle or animating)
   float screenX = getScreenX(g->x, camera);
   float screenY = getScreenY(g->y, camera);
 
-  // Only draw if on-screen
   if (screenX > -GREET_SIZE_W && screenX < SCREEN_W + GREET_SIZE_W) {
     if (!g->active || g->state == GREET_IDLE) {
-      // Show idle image
       if (greetIdleTex != 0) {
         iShowImage(screenX, screenY, GREET_SIZE_W, GREET_SIZE_H, greetIdleTex);
       }
     } else if (g->state == GREET_ANIMATING || g->state == GREET_DONE) {
-      // Show current animation frame
       int f = g->frame;
-      if (f < 0) f = 0;
-      if (f >= GREET_ANIM_FRAMES) f = GREET_ANIM_FRAMES - 1;
+      if (f < 0)
+        f = 0;
+      if (f >= GREET_ANIM_FRAMES)
+        f = GREET_ANIM_FRAMES - 1;
       if (greetAnimTex[f] != 0) {
-        iShowImage(screenX, screenY, GREET_SIZE_W, GREET_SIZE_H, greetAnimTex[f]);
+        iShowImage(screenX, screenY, GREET_SIZE_W, GREET_SIZE_H,
+                   greetAnimTex[f]);
       }
     }
   }

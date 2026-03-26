@@ -198,7 +198,6 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow,
       glow->targetY = targetY;
       glow->targetCreatureIdx = targetCreatureIdx;
       glow->targetSentryIdx = targetSentryIdx;
-      // We encode boss targeting using indices (-2 is boss)
       if (targetBoss) {
         glow->targetCreatureIdx = -2;
       }
@@ -232,7 +231,6 @@ inline void handleItemInput(struct Player *player, struct GlowProjectile *glow,
 
   static int key6WasPressed = 0;
   int key6 = GetAsyncKeyState('6') & 0x8000;
-  // Key can only be used when player is at the end of level 3 background
   if (key6 && !key6WasPressed && player->hasKey &&
       gameState == LEVEL3_STATE && player->x >= LEVEL3_END_X - 200) {
     player->hasKey = 0;

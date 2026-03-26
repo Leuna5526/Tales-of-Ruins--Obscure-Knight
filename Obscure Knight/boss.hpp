@@ -8,22 +8,17 @@
 #include "textures.hpp"
 #include <stdlib.h>
 
-// ============================================================
-// HELPERS
-// ============================================================
 
 static int bossRectsOverlap(int ax, int ay, int aw, int ah, int bx, int by,
                             int bw, int bh) {
   return (ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by);
 }
 
-// Choose a random teleport X coordinate on the ground (not the spawn end)
 static int randomTeleportX() {
   int range = BOSS_RAND_TELEPORT_MAX - BOSS_RAND_TELEPORT_MIN;
   return BOSS_RAND_TELEPORT_MIN + (rand() % range);
 }
 
-// Advance an animation frame
 static void bossAnimTick(int *frame, int *animTimer, int totalFrames,
                          int speed) {
   (*animTimer)++;
@@ -35,11 +30,10 @@ static void bossAnimTick(int *frame, int *animTimer, int totalFrames,
   }
 }
 
-// Advance an animation frame but stay on last frame (non-looping)
 static int bossAnimTickOnce(int *frame, int *animTimer, int totalFrames,
                             int speed) {
   if (*frame >= totalFrames - 1)
-    return 1; // done
+    return 1; 
   (*animTimer)++;
   if (*animTimer >= speed) {
     *animTimer = 0;
@@ -48,9 +42,6 @@ static int bossAnimTickOnce(int *frame, int *animTimer, int totalFrames,
   return (*frame >= totalFrames - 1);
 }
 
-// ============================================================
-// BOSS INIT
-// ============================================================
 
 void initBoss(struct Boss *boss) {
   boss->x = BOSS_SPAWN_X;
@@ -58,7 +49,7 @@ void initBoss(struct Boss *boss) {
   boss->frame = 0;
   boss->animTimer = 0;
   boss->active = 1;
-  boss->facingRight = 0; // faces left (towards player start)
+  boss->facingRight = 0; 
   boss->state = BOSS_IDLE_STATE;
   boss->stateTimer = 0;
   boss->currentHealth = BOSS_MAX_HEALTH;
@@ -92,9 +83,6 @@ void initHazards(struct BossHazard hazards[]) {
   }
 }
 
-// ============================================================
-// BOSS STATE TRANSITIONS
-// ============================================================
 
 static void bossSetState(struct Boss *boss, enum BossState s) {
   boss->state = s;
@@ -103,18 +91,15 @@ static void bossSetState(struct Boss *boss, enum BossState s) {
   boss->animTimer = 0;
 }
 
-// Determines if player is to the left of boss
 static int playerIsLeft(struct Boss *boss, struct Player *player) {
   return player->x < boss->x;
 }
 
-// Start teleport to a target x
 static void bossTeleportTo(struct Boss *boss, int targetX) {
   boss->teleportTargetX = targetX;
   bossSetState(boss, BOSS_TELEPORT_OUT_STATE);
 }
 
-// Spawn a FireBat in the minions array
 static void spawnFireBat(struct BossMinion minions[], int bossX, int bossY,
                          int playerX) {
   for (int i = 0; i < MAX_BOSS_MINIONS; i++) {
@@ -135,7 +120,6 @@ static void spawnFireBat(struct BossMinion minions[], int bossX, int bossY,
   }
 }
 
-// Spawn 2 bats after boss death
 static void spawnBats(struct BossMinion minions[], int bossX, int bossY,
                       int playerX) {
   int spawned = 0;
@@ -157,13 +141,11 @@ static void spawnBats(struct BossMinion minions[], int bossX, int bossY,
   }
 }
 
-// Spawn spikes at up to 2 random ground X locations (avoids boss position)
 static void spawnSpikes(struct BossHazard hazards[]) {
   int spawned = 0;
   for (int i = 0; i < MAX_BOSS_HAZARDS && spawned < 2; i++) {
     if (!hazards[i].active) {
       hazards[i].active = 1;
-      // Spawn spikes across the arena, away from the extreme edges
       hazards[i].x = 150 + (rand() % (BOSS_SPAWN_X - 250));
       hazards[i].y = BOSS_GROUND_Y;
       hazards[i].frame = 0;
@@ -175,7 +157,6 @@ static void spawnSpikes(struct BossHazard hazards[]) {
   }
 }
 
-// Spawn a Trap exactly where the player stands
 static void spawnTrap(struct BossHazard hazards[], int playerX) {
   for (int i = 0; i < MAX_BOSS_HAZARDS; i++) {
     if (!hazards[i].active) {
@@ -191,7 +172,6 @@ static void spawnTrap(struct BossHazard hazards[], int playerX) {
   }
 }
 
-// Returns 1 if any FireBat is still alive
 static int anyFireBatAlive(struct BossMinion minions[]) {
   for (int i = 0; i < MAX_BOSS_MINIONS; i++) {
     if (minions[i].active && !minions[i].isDying &&
@@ -201,7 +181,14 @@ static int anyFireBatAlive(struct BossMinion minions[]) {
   return 0;
 }
 
-// Returns 1 if any spike/trap hazard is still animating
+static int anyBatAlive(struct BossMinion minions[]) {
+  for (int i = 0; i < MAX_BOSS_MINIONS; i++) {
+    if (minions[i].active && minions[i].type == MINION_BAT)
+      return 1;
+  }
+  return 0;
+}
+
 static int anyHazardActive(struct BossHazard hazards[]) {
   for (int i = 0; i < MAX_BOSS_HAZARDS; i++) {
     if (hazards[i].active)
@@ -210,74 +197,60 @@ static int anyHazardActive(struct BossHazard hazards[]) {
   return 0;
 }
 
-// Pick the next attack at random, considering boss phase
 static enum BossState pickNextAttack(struct Boss *boss) {
   int r = rand() % 100;
 
   if (boss->phase >= 3 && !boss->hasUsedTrap) {
-    // Trap attack — one time only at <= 25%
     return BOSS_TRAP_STATE;
   }
 
   if (boss->phase >= 2) {
-    // Phase 2 extra spike chance
     if (r < 30)
       return BOSS_SPIKE_STATE;
     if (r < 50)
       return BOSS_WALK_STATE;
     if (r < 75)
-      return BOSS_DASH_STATE; // Increased dash chance (50-75 = 25%)
+      return BOSS_DASH_STATE; 
     if (r < 90)
       return BOSS_CAST_STATE;
-    return BOSS_TELEPORT_OUT_STATE; // random teleport
+    return BOSS_TELEPORT_OUT_STATE; 
   }
 
-  // Phase 1: walk (35%), dash (30%), cast (20%), teleport (15%)
   if (r < 35)
     return BOSS_WALK_STATE;
   if (r < 65)
-    return BOSS_DASH_STATE; // Increased dash chance
+    return BOSS_DASH_STATE; 
   if (r < 85)
     return BOSS_CAST_STATE;
   return BOSS_TELEPORT_OUT_STATE;
 }
 
-// Forward declaration
 void clearAllTraps(struct BossHazard hazards[]);
-
-// ============================================================
-// UPDATE BOSS
-// ============================================================
 
 void updateBoss(struct Boss *boss, struct Player *player,
                 struct BossMinion minions[], struct BossHazard hazards[]) {
   if (!boss->active)
     return;
 
-  // Update phase
   int hpPct = (boss->currentHealth * 100) / boss->maxHealth;
   if (hpPct <= 25 && boss->phase < 3)
     boss->phase = 3;
   else if (hpPct <= 50 && boss->phase < 2)
     boss->phase = 2;
 
-  // Cool down invincibility
   if (boss->invincibilityTimer > 0)
     boss->invincibilityTimer--;
 
-  // Face player by default while idle / walking
   boss->facingRight = (player->x < boss->x) ? 0 : 1;
 
   boss->stateTimer++;
 
   switch (boss->state) {
 
-  // ─── IDLE ───────────────────────────────────────────────
   case BOSS_IDLE_STATE: {
     bossAnimTick(&boss->frame, &boss->animTimer, BOSS_IDLE_FRAMES,
                  BOSS_ANIM_SPEED);
 
-    // Don't start fighting until player is close
     int dist = player->x - boss->x;
     if (dist < 0)
       dist = -dist;
@@ -288,7 +261,6 @@ void updateBoss(struct Boss *boss, struct Player *player,
     if (boss->stateTimer >= BOSS_IDLE_DURATION) {
       enum BossState next = pickNextAttack(boss);
       if (next == BOSS_TELEPORT_OUT_STATE) {
-        // Random teleport
         boss->intendedNextState = BOSS_IDLE_STATE;
         bossTeleportTo(boss, randomTeleportX());
       } else if (next == BOSS_SPIKE_STATE) {
@@ -308,18 +280,15 @@ void updateBoss(struct Boss *boss, struct Player *player,
     break;
   }
 
-  // ─── WALK ────────────────────────────────────────────────
   case BOSS_WALK_STATE: {
     bossAnimTick(&boss->frame, &boss->animTimer, BOSS_WALK_FRAMES,
                  BOSS_ANIM_SPEED);
 
-    // Move towards player
     if (player->x < boss->x)
       boss->x -= BOSS_WALK_SPEED;
     else
       boss->x += BOSS_WALK_SPEED;
 
-    // Close enough → slash
     int dist = player->x - boss->x;
     if (dist < 0)
       dist = -dist;
@@ -329,12 +298,10 @@ void updateBoss(struct Boss *boss, struct Player *player,
     break;
   }
 
-  // ─── SLASH ───────────────────────────────────────────────
   case BOSS_SLASH_STATE: {
     int done = bossAnimTickOnce(&boss->frame, &boss->animTimer,
                                 BOSS_SLASH_FRAMES, BOSS_ANIM_SPEED);
 
-    // Hit player on frame 4 of slash
     if (boss->frame == 4) {
       int dist = player->x - boss->x;
       if (dist < 0)
@@ -355,24 +322,20 @@ void updateBoss(struct Boss *boss, struct Player *player,
     break;
   }
 
-  // ─── DASH ────────────────────────────────────────────────
   case BOSS_DASH_STATE: {
-    // Animate frames 4-6 (indices 3-5) in a loop while dashing
     boss->animTimer++;
     if (boss->animTimer >= BOSS_ANIM_SPEED) {
       boss->animTimer = 0;
       boss->frame++;
       if (boss->frame < 3)
-        boss->frame = 3; // start at frame 4 (index 3)
+        boss->frame = 3; 
       if (boss->frame > 5)
-        boss->frame = 3; // loop 4-6
+        boss->frame = 3; 
     }
 
-    // Dash towards player at high speed
     int dir = (player->x < boss->x) ? -1 : 1;
     boss->x += dir * BOSS_DASH_SPEED;
 
-    // Collision check
     if (bossRectsOverlap(boss->x, boss->y, BOSS_SIZE_W, BOSS_SIZE_H, player->x,
                          player->y, (int)(SPRITE_SIZE * SCALE),
                          (int)(SPRITE_SIZE * SCALE))) {
@@ -382,12 +345,10 @@ void updateBoss(struct Boss *boss, struct Player *player,
           player->health = 0;
         player->invincibilityTimer = 60;
       }
-      // Immediately slash after dash hit
       bossSetState(boss, BOSS_SLASH_STATE);
       break;
     }
 
-    // If we overshoot / reach player area without collision — slash anyway
     int dist = player->x - boss->x;
     if (dist < 0)
       dist = -dist;
@@ -395,7 +356,6 @@ void updateBoss(struct Boss *boss, struct Player *player,
       bossSetState(boss, BOSS_SLASH_STATE);
     }
 
-    // Clamp to map bounds
     if (boss->x < 100)
       boss->x = 100;
     if (boss->x > BOSS_SPAWN_X + 50)
@@ -403,7 +363,6 @@ void updateBoss(struct Boss *boss, struct Player *player,
     break;
   }
 
-  // ─── CAST (spawn FireBat) ────────────────────────────────
   case BOSS_CAST_STATE: {
     int done = bossAnimTickOnce(&boss->frame, &boss->animTimer,
                                 BOSS_CAST_FRAMES, BOSS_ANIM_SPEED);
@@ -414,7 +373,6 @@ void updateBoss(struct Boss *boss, struct Player *player,
     break;
   }
 
-  // ─── WAIT FOR MINION TO DIE ──────────────────────────────
   case BOSS_WAIT_MINION_STATE: {
     bossAnimTick(&boss->frame, &boss->animTimer, BOSS_IDLE_FRAMES,
                  BOSS_ANIM_SPEED);
@@ -424,52 +382,41 @@ void updateBoss(struct Boss *boss, struct Player *player,
     break;
   }
 
-  // ─── TELEPORT OUT ────────────────────────────────────────
   case BOSS_TELEPORT_OUT_STATE: {
     int done = bossAnimTickOnce(&boss->frame, &boss->animTimer,
                                 BOSS_TELEPORT_FRAMES, BOSS_ANIM_SPEED);
     if (done) {
-      // Actually relocate
       boss->x = boss->teleportTargetX;
       bossSetState(boss, BOSS_TELEPORT_IN_STATE);
     }
     break;
   }
 
-  // ─── TELEPORT IN ─────────────────────────────────────────
   case BOSS_TELEPORT_IN_STATE: {
     int done = bossAnimTickOnce(&boss->frame, &boss->animTimer,
                                 BOSS_TELEPORT_FRAMES, BOSS_ANIM_SPEED);
     if (done) {
-      // Determine what to do based on intended state
       if (boss->intendedNextState == BOSS_TRAP_STATE && boss->phase >= 3 &&
           !boss->hasUsedTrap) {
-        // Trap sequence: spawn trap on player, then walk
         spawnTrap(hazards, player->x);
         boss->hasUsedTrap = 1;
         bossSetState(boss, BOSS_TRAP_STATE);
       } else if (boss->intendedNextState == BOSS_SPIKE_STATE) {
-        // Spike sequence
         spawnSpikes(hazards);
         bossSetState(boss, BOSS_SPIKE_STATE);
       } else if (boss->intendedNextState == BOSS_CAST_STATE) {
-        // Cast FireBat
         bossSetState(boss, BOSS_CAST_STATE);
       } else {
-        // Default back to idle
         bossSetState(boss, BOSS_IDLE_STATE);
       }
     }
     break;
   }
 
-  // ─── SPIKE ───────────────────────────────────────────────
   case BOSS_SPIKE_STATE: {
     bossAnimTick(&boss->frame, &boss->animTimer, BOSS_IDLE_FRAMES,
                  BOSS_ANIM_SPEED);
-    // Wait for all spikes to finish animating
     if (!anyHazardActive(hazards)) {
-      // Short idle after spikes
       if (boss->stateTimer >= BOSS_POST_SPIKE_IDLE) {
         bossSetState(boss, BOSS_IDLE_STATE);
       }
@@ -477,9 +424,7 @@ void updateBoss(struct Boss *boss, struct Player *player,
     break;
   }
 
-  // ─── TRAP (one time, guaranteed hit) ─────────────────────
   case BOSS_TRAP_STATE: {
-    // Trap is already placed on player. Boss walks towards player.
     bossAnimTick(&boss->frame, &boss->animTimer, BOSS_WALK_FRAMES,
                  BOSS_ANIM_SPEED);
 
@@ -491,33 +436,27 @@ void updateBoss(struct Boss *boss, struct Player *player,
     int dist = player->x - boss->x;
     if (dist < 0)
       dist = -dist;
-    // Slash when in range
     if (dist <= BOSS_SLASH_RANGE) {
       bossSetState(boss, BOSS_SLASH_STATE);
-      // After slash, teleport out again (handled in SLASH's done → IDLE → picks
-      // next) We set a flag so after slash we teleport back to spawn and idle
     }
     break;
   }
 
-  // ─── DEATH RISE ──────────────────────────────────────────
   case BOSS_DEATH_RISE_STATE: {
     boss->y += BOSS_DEATH_RISE_SPEED;
     boss->riseY += BOSS_DEATH_RISE_SPEED;
     bossAnimTick(&boss->frame, &boss->animTimer, BOSS_IDLE_FRAMES,
-                 BOSS_ANIM_SPEED); // just idle while rising
+                 BOSS_ANIM_SPEED); 
     if (boss->riseY >= BOSS_DEATH_RISE_HEIGHT) {
       bossSetState(boss, BOSS_DEATH_ANIM_STATE);
     }
     break;
   }
 
-  // ─── DEATH ANIMATION ─────────────────────────────────────
   case BOSS_DEATH_ANIM_STATE: {
     int done = bossAnimTickOnce(&boss->frame, &boss->animTimer,
                                 BOSS_DEATH_FRAMES, BOSS_ANIM_SPEED);
     if (done) {
-      // Spawn 2 bats, deactivate boss
       spawnBats(minions, boss->x, boss->y, player->x);
       boss->active = 0;
     }
@@ -529,9 +468,6 @@ void updateBoss(struct Boss *boss, struct Player *player,
   }
 }
 
-// ============================================================
-// PLAYER ATTACKS BOSS
-// ============================================================
 
 void handlePlayerAttackBoss(struct Boss *boss, struct Player *player,
                             int isSlashwave) {
@@ -543,8 +479,6 @@ void handlePlayerAttackBoss(struct Boss *boss, struct Player *player,
   if (boss->invincibilityTimer > 0)
     return;
 
-  // Simple distance-based hit detection — GUARANTEED to work regardless of
-  // coordinates
   int dx = boss->x - player->x;
   int dy = boss->y - player->y;
   if (dx < 0)
@@ -554,7 +488,6 @@ void handlePlayerAttackBoss(struct Boss *boss, struct Player *player,
 
   int hitRange = isSlashwave ? 300 : 140;
 
-  // For normal slash, only hit if boss is roughly in front of player
   if (!isSlashwave) {
     int bossInFront = player->facingRight ? (boss->x >= player->x - 64)
                                           : (boss->x <= player->x + 192);
@@ -577,17 +510,12 @@ void handlePlayerAttackBoss(struct Boss *boss, struct Player *player,
   }
 }
 
-// ============================================================
-// UPDATE MINIONS (FireBats + Bats)
-// ============================================================
-
 void updateMinions(struct BossMinion minions[], struct Player *player) {
   for (int i = 0; i < MAX_BOSS_MINIONS; i++) {
     struct BossMinion *m = &minions[i];
     if (!m->active)
       continue;
 
-    // --- dying: play death anim then deactivate ---
     if (m->isDying) {
       m->deathTimer++;
       m->animTimer++;
@@ -601,28 +529,23 @@ void updateMinions(struct BossMinion minions[], struct Player *player) {
       continue;
     }
 
-    // Cool down invincibility
     if (m->invincibilityTimer > 0)
       m->invincibilityTimer--;
 
-    // Move towards player diagonally (like the bug enemy)
     int speed = (m->type == MINION_FIREBAT) ? FIREBAT_SPEED : BAT_SPEED;
     m->facingRight = (player->x > m->x) ? 1 : 0;
 
-    // Horizontal movement
     if (player->x < m->x)
       m->x -= speed;
     else if (player->x > m->x)
       m->x += speed;
 
-    // Vertical movement (fly toward player)
     int dy = player->y - m->y;
     if (dy > 5)
       m->y += speed / 2 + 1;
     else if (dy < -5)
       m->y -= speed / 2 + 1;
 
-    // Animate
     int animSpeed =
         (m->type == MINION_FIREBAT) ? FIREBAT_ANIM_SPEED : BAT_ANIM_SPEED;
     int frames = (m->type == MINION_FIREBAT) ? FIREBAT_FRAMES : BAT_FRAMES;
@@ -632,7 +555,6 @@ void updateMinions(struct BossMinion minions[], struct Player *player) {
       m->frame = (m->frame + 1) % frames;
     }
 
-    // Damage player on overlap
     int mw = (m->type == MINION_FIREBAT) ? FIREBAT_SIZE : BAT_SIZE;
     int dmg = (m->type == MINION_FIREBAT) ? FIREBAT_DAMAGE : BAT_DAMAGE;
     if (m->invincibilityTimer == 0 &&
@@ -649,7 +571,6 @@ void updateMinions(struct BossMinion minions[], struct Player *player) {
   }
 }
 
-// Player X-attack hits a minion
 void handlePlayerAttackMinion(struct BossMinion minions[],
                               struct Player *player, int isSlashwave) {
   for (int i = 0; i < MAX_BOSS_MINIONS; i++) {
@@ -691,10 +612,6 @@ void handlePlayerAttackMinion(struct BossMinion minions[],
   }
 }
 
-// ============================================================
-// UPDATE HAZARDS (Spikes + Traps)
-// ============================================================
-
 void updateHazards(struct BossHazard hazards[], struct Player *player) {
   for (int i = 0; i < MAX_BOSS_HAZARDS; i++) {
     struct BossHazard *h = &hazards[i];
@@ -709,19 +626,15 @@ void updateHazards(struct BossHazard hazards[], struct Player *player) {
     if (h->animTimer >= speed) {
       h->animTimer = 0;
       h->frame++;
-      // Spike loops? No — plays once then deactivates.
       if (h->type == HAZARD_SPIKE && h->frame >= totalFrames) {
         h->active = 0;
         continue;
       }
-      // Trap: loops (keeps player trapped until boss arrives)
       if (h->type == HAZARD_TRAP && h->frame >= totalFrames) {
-        h->frame = 0; // loop trap animation
+        h->frame = 0; 
       }
     }
 
-    // Damage player on overlap (only once for spike; trap allows repeat at
-    // intervals)
     if (!h->hasHit) {
       int hitW = (h->type == HAZARD_SPIKE) ? 64 : BOSS_SIZE_W;
       int hitX = (h->type == HAZARD_SPIKE) ? h->x + 32 : h->x;
@@ -744,7 +657,6 @@ void updateHazards(struct BossHazard hazards[], struct Player *player) {
   }
 }
 
-// Deactivate all traps (call after boss performs trap slash)
 void clearAllTraps(struct BossHazard hazards[]) {
   for (int i = 0; i < MAX_BOSS_HAZARDS; i++) {
     if (hazards[i].active && hazards[i].type == HAZARD_TRAP)
@@ -752,9 +664,6 @@ void clearAllTraps(struct BossHazard hazards[]) {
   }
 }
 
-// ============================================================
-// RENDER BOSS
-// ============================================================
 
 void renderBoss(struct Boss *boss, struct Camera *cam) {
   if (!boss->active)
@@ -814,13 +723,12 @@ void renderBoss(struct Boss *boss, struct Camera *cam) {
     frame = frameCount - 1;
 
   int drawX =
-      boss->x; // BOSS_STATE: camera is always at 0, use screen-space directly
+      boss->x; 
   int drawY = boss->y;
 
   if (frames[frame] != 0)
     iShowImage(drawX, drawY, BOSS_SIZE_W, BOSS_SIZE_H, frames[frame]);
 
-  // Health bar above boss
   int barW = BOSS_SIZE_W;
   int barH = 8;
   int barX = drawX;
@@ -834,9 +742,6 @@ void renderBoss(struct Boss *boss, struct Camera *cam) {
   iRectangle(barX, barY, barW, barH);
 }
 
-// ============================================================
-// RENDER MINIONS
-// ============================================================
 
 void renderMinions(struct BossMinion minions[], struct Camera *cam) {
   for (int i = 0; i < MAX_BOSS_MINIONS; i++) {
@@ -868,7 +773,7 @@ void renderMinions(struct BossMinion minions[], struct Camera *cam) {
     if (frame >= frameCount)
       frame = frameCount - 1;
 
-    int drawX = m->x; // screen-space
+    int drawX = m->x; 
     int drawY = m->y;
 
     if (frames[frame] != 0)
@@ -898,9 +803,6 @@ void renderMinions(struct BossMinion minions[], struct Camera *cam) {
   }
 }
 
-// ============================================================
-// RENDER HAZARDS
-// ============================================================
 
 void renderHazards(struct BossHazard hazards[], struct Camera *cam) {
   for (int i = 0; i < MAX_BOSS_HAZARDS; i++) {
@@ -925,7 +827,7 @@ void renderHazards(struct BossHazard hazards[], struct Camera *cam) {
     if (frame >= frameCount)
       frame = frameCount - 1;
 
-    int drawX = h->x; // screen-space
+    int drawX = h->x; 
     int drawY = h->y;
 
     int drawW = (h->type == HAZARD_SPIKE) ? 64 : BOSS_SIZE_W;
@@ -936,4 +838,4 @@ void renderHazards(struct BossHazard hazards[], struct Camera *cam) {
   }
 }
 
-#endif // BOSS_HPP
+#endif 

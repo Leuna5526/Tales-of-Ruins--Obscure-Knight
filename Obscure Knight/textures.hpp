@@ -149,7 +149,7 @@ unsigned int npcSummoning[NPC_SUMMONING_FRAMES];
 unsigned int npcRetreat[NPC_RETREAT_FRAMES];
 unsigned int dialogues[DIALOGUE_COUNT];
 
-void loadBossEntityTextures(); // forward declaration
+void loadBossEntityTextures(); 
 void loadSet(unsigned int *arr, int n, const char *fmt) {
   char name[128];
   for (int i = 0; i < n; i++) {
@@ -268,9 +268,6 @@ void loadNPCTextures() {
 }
 
 
-// ============================================================
-// BOSS ENTITY TEXTURES
-// ============================================================
 
 unsigned int bossIdle[BOSS_IDLE_FRAMES];
 unsigned int bossWalkL[BOSS_WALK_FRAMES];
@@ -319,9 +316,6 @@ void loadBossEntityTextures() {
   loadSet(batDeath, BAT_DEATH_FRAMES, "Assets/Boss/BatDeath/%d.png");
 }
 
-// ============================================================
-// TRADER NPC TEXTURES (Level 3)
-// ============================================================
 unsigned int traderIdle[TRADER_IDLE_FRAMES];
 unsigned int traderWalkL[TRADER_WALK_L_FRAMES];
 unsigned int traderWalkR[TRADER_WALK_R_FRAMES];
@@ -362,9 +356,6 @@ void loadDoorTextures() {
   loadSet(doorOpenTex, DOOR_OPEN_FRAMES, "Assets/Level 3/door/open/%d.png");
 }
 
-// ============================================================
-// GRIM MASTER TEXTURES (Level 3)
-// ============================================================
 unsigned int grimIdle[GRIM_IDLE_FRAMES];
 unsigned int grimTurnL[GRIM_TURN_L_FRAMES];
 unsigned int grimTurnR[GRIM_TURN_R_FRAMES];
@@ -507,7 +498,6 @@ void loadImages() {
   loadSet(gameEndingFrames, GAME_ENDING_FRAMES, "Assets/GameEnding/ezgif-frame-%03d.png");
   congratsTex = iLoadImage("Assets/CongratsScreen/congrats.png");
 
-  // Quit game menu
   quitBgTex = iLoadImage("Assets/Quit game/bg.png");
   quitYesTex = iLoadImage("Assets/Quit game/yes.png");
   quitNoTex = iLoadImage("Assets/Quit game/no.png");

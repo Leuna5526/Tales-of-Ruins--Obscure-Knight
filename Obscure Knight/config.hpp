@@ -54,9 +54,6 @@
 #define LEVEL2_END_X 4870
 #define LEVEL3_END_X 4870
 
-// ============================================================
-// GREETING NPC (end of Level 2)
-// ============================================================
 #define GREET_IDLE_FRAMES 1
 #define GREET_ANIM_FRAMES 8
 #define GREET_ANIM_SPEED 8
@@ -67,13 +64,11 @@
 #define GREET_TRIGGER_X_START 4750
 #define GREET_TRIGGER_X_END LEVEL2_END_X
 
-// Level 3 tiles
 #define LEVEL3_TILE_COUNT 5
 #define LEVEL3_TILE_W TILE_WIDTH
 #define LEVEL3_TILE_H TILE_HEIGHT
 #define LEVEL3_TILE_WIDE_W (int)(TILE_WIDTH * 1.5)
 #define LEVEL3_TILE_BASE_HEIGHT (LEVEL3_GROUND_Y + 125)
-// Tile positions (X, Y offset from base)
 #define LEVEL3_TILE_1_X 700
 #define LEVEL3_TILE_1_Y 0
 #define LEVEL3_TILE_2_X 1500
@@ -85,7 +80,6 @@
 #define LEVEL3_TILE_5_X 4200
 #define LEVEL3_TILE_5_Y 40
 
-// Trader key display size (shown during trade prompt)
 #define TRADER_KEY_DISPLAY_SIZE 85
 #define TRADER_KEY_PROMPT_Y 110
 #define TRADER_KEY_PROMPT_X_OFFSET (TRADER_SIZE / 2 - TRADER_KEY_DISPLAY_SIZE / 2)
@@ -250,12 +244,10 @@
 #define INVENTORY_X -10
 #define INVENTORY_Y 215
 
-// Crest Inventory (right top corner)
 #define CREST_INVENTORY_X 900
 #define CREST_INVENTORY_Y 370
 #define CREST_INVENTORY_W 80
 #define CREST_INVENTORY_H 150
-// Key inside crest inventory
 #define CREST_KEY_OFFSET_X 20
 #define CREST_KEY_OFFSET_Y 57
 #define CREST_KEY_SIZE 35
@@ -280,9 +272,6 @@
 #define GAIN_REGEN_INTERVAL 180
 #define GAIN_REGEN_AMOUNT 20
 
-// ============================================================
-// TRADER NPC (Level 3)
-// ============================================================
 #define TRADER_NPC_X 2900
 #define TRADER_NPC_Y LEVEL3_GROUND_Y+12
 #define TRADER_IDLE_FRAMES 8
@@ -296,9 +285,6 @@
 #define TRADER_ANIM_SPEED 6
 #define TRADER_SIZE 128
 
-// ============================================================
-// GRIM MASTER (Level 3 enemy)
-// ============================================================
 #define GRIM_MAX_HEALTH 250
 #define GRIM_IDLE_FRAMES 10
 #define GRIM_TURN_L_FRAMES 3
@@ -344,88 +330,71 @@
 #define GRIM_CONTACT_DAMAGE 10
 #define MAX_GRIM_FIREBALLS 6
 
-// Fireball spawn position offsets (relative to Grim's x,y)
-#define GRIM_FB_SPAWN_OFFSET_X_RIGHT 100  // X offset when facing right (center-front of grim)
-#define GRIM_FB_SPAWN_OFFSET_X_LEFT  100 // X offset when facing left (center-front of grim)
-#define GRIM_FB_SPAWN_OFFSET_Y       130  // Y offset from grim's y (staff height)
-// Fireball target offsets
-#define GRIM_FB_TARGET_PLAYER_OFFSET_X 300 // offset to center of player sprite
-#define GRIM_FB_TARGET_GROUND_OFFSET   30  // how far below ground level to target
+#define GRIM_FB_SPAWN_OFFSET_X_RIGHT 100  
+#define GRIM_FB_SPAWN_OFFSET_X_LEFT  100 
+#define GRIM_FB_SPAWN_OFFSET_Y       130  
+#define GRIM_FB_TARGET_PLAYER_OFFSET_X 300 
+#define GRIM_FB_TARGET_GROUND_OFFSET   30  
 
-// ============================================================
-// TRADE ITEM SYSTEM
-// ============================================================
 #define TRADE_ITEM_COST_SWIFTNESS 5
 #define TRADE_ITEM_COST_SOUL 5
-#define TRADE_ITEM_COST_KEY 5
+#define TRADE_ITEM_COST_KEY 0
 
-#define SWIFTNESS_SPEED_MULTIPLIER 1.5f
-#define SOUL_REGEN_ON_KILL 20  // 1 heart = 20 HP (out of 100)
+#define SWIFTNESS_SPEED_MULTIPLIER 1.4f
+#define SOUL_REGEN_ON_KILL 20  
 
-// Trade menu layout — list panel anchored to the right side of the screen
-// The list background occupies the right portion of the screen
 #define TRADE_LIST_X 180
 #define TRADE_LIST_Y 50
 #define TRADE_LIST_W 800
 #define TRADE_LIST_H 480
 
-// Fragment image and count display (on the list, upper area)
 #define TRADE_FRAGMENT_X (TRADE_LIST_X)
 #define TRADE_FRAGMENT_Y (TRADE_LIST_Y)
 #define TRADE_FRAGMENT_W 800
 #define TRADE_FRAGMENT_H 480
-#define TRADE_FRAGMENT_TEXT_OFFSET_X 88   // text X offset from TRADE_FRAGMENT_X
-#define TRADE_FRAGMENT_TEXT_OFFSET_Y 34   // text Y offset from TRADE_FRAGMENT_Y
+#define TRADE_FRAGMENT_TEXT_OFFSET_X 88   
+#define TRADE_FRAGMENT_TEXT_OFFSET_Y 34   
 
 #define TRADE_TOTAL_FRAGMENT_X 843
 #define TRADE_TOTAL_FRAGMENT_Y 456
 
-// Purchasable item image sizes
 #define TRADE_ITEM_W 175
 #define TRADE_ITEM_H 70
 
-// Swiftness item position
 #define TRADE_SWIFTNESS_X1 (TRADE_LIST_X + 150)
 #define TRADE_SWIFTNESS_Y1 (TRADE_LIST_Y + 311)
 #define TRADE_SWIFTNESS_X2 (TRADE_SWIFTNESS_X1 + TRADE_ITEM_W)
 #define TRADE_SWIFTNESS_Y2 (TRADE_SWIFTNESS_Y1 + TRADE_ITEM_H)
 
-// Soul item position
 #define TRADE_SOUL_X1 (TRADE_LIST_X + 150)
 #define TRADE_SOUL_Y1 (TRADE_LIST_Y + 209)
 #define TRADE_SOUL_X2 (TRADE_SOUL_X1 + TRADE_ITEM_W)
 #define TRADE_SOUL_Y2 (TRADE_SOUL_Y1 + TRADE_ITEM_H)
 
-// Key item position
 #define TRADE_KEY_X1 (TRADE_LIST_X + 150)
 #define TRADE_KEY_Y1 (TRADE_LIST_Y + 105)
 #define TRADE_KEY_X2 (TRADE_KEY_X1 + TRADE_ITEM_W)
 #define TRADE_KEY_Y2 (TRADE_KEY_Y1 + TRADE_ITEM_H)
 
-// Description popup size & offset (shown above the hovered item)
 #define TRADE_DESC_X 180
 #define TRADE_DESC_Y 50
 #define TRADE_DESC_W 800
 #define TRADE_DESC_H 480
-#define TRADE_DESC_Y_OFFSET 0  // gap between item top and desc bottom
+#define TRADE_DESC_Y_OFFSET 0  
 
-// Cost fragment icon (small fragment image shown below each item as cost)
 #define TRADE_COST_ICON_W 0
 #define TRADE_COST_ICON_H 0
-#define TRADE_COST_ICON_Y_OFFSET (-35)  // below the item Y1
-#define TRADE_COST_TEXT_X_OFFSET 34     // cost number text X offset from icon
-#define TRADE_COST_TEXT_Y_OFFSET 8      // cost number text Y offset from icon
+#define TRADE_COST_ICON_Y_OFFSET (-35)  
+#define TRADE_COST_TEXT_X_OFFSET 34     
+#define TRADE_COST_TEXT_Y_OFFSET 8     
 
-// Hover effect lift amount (like title buttons)
 #define TRADE_HOVER_OFFSET 12
 
-// Equipped item icons (top-right corner)
 #define EQUIPPED_ICON_SIZE 40
 #define EQUIPPED_ICON_X 910
 #define EQUIPPED_ICON_Y 550
 #define EQUIPPED_ICON_SPACING 50
 
-// Door at end of Level 3
 #define DOOR_LOCKED_FRAMES 3
 #define DOOR_OPEN_FRAMES 6
 #define DOOR_X 4850
@@ -434,45 +403,34 @@
 #define DOOR_H 180
 #define DOOR_ANIM_SPEED 6
 
-// ============================================================
-// FINAL BOSS CONFIGURATION
-// ============================================================
-
-// Boss health & hit values
 #define BOSS_MAX_HEALTH 100
-#define BOSS_NORMAL_HIT_DAMAGE 5     // % per X attack hit
-#define BOSS_SLASHWAVE_HIT_DAMAGE 7  // % per slashwave hit
-#define BOSS_INVINCIBILITY_FRAMES 30 // frames after being hit
+#define BOSS_NORMAL_HIT_DAMAGE 5    
+#define BOSS_SLASHWAVE_HIT_DAMAGE 7  
+#define BOSS_INVINCIBILITY_FRAMES 30 
 
-// Boss attack damage to player (in HP points, 20 = 1 heart)
 #define BOSS_SLASH_PLAYER_DAMAGE 20
 #define BOSS_DASH_PLAYER_DAMAGE 20
 #define BOSS_SPIKE_PLAYER_DAMAGE 20
 
-// Phase thresholds (% of max health)
-#define BOSS_PHASE2_THRESHOLD 50 // Spike unlocks below this
-#define BOSS_TRAP_THRESHOLD 25   // One-time Trap at this %
+#define BOSS_PHASE2_THRESHOLD 50 
+#define BOSS_TRAP_THRESHOLD 25   
 
-// Boss positioning & movement
-#define BOSS_SPAWN_X                                                           \
-  700 // screen-space (BOSS_STATE has static bg, no scrolling)
-#define BOSS_RAND_TELEPORT_MIN 100 // leftmost random teleport x
-#define BOSS_RAND_TELEPORT_MAX 700 // rightmost random teleport x
+#define BOSS_SPAWN_X 700 
+#define BOSS_RAND_TELEPORT_MIN 100 
+#define BOSS_RAND_TELEPORT_MAX 700 
 #define BOSS_SIZE_W 128
 #define BOSS_SIZE_H 128
 #define BOSS_WALK_SPEED 4
 #define BOSS_DASH_SPEED 10
-#define BOSS_DETECTION_RANGE 500 // Player proximity to activate
-#define BOSS_SLASH_RANGE 120     // Range to trigger slash
+#define BOSS_DETECTION_RANGE 500 
+#define BOSS_SLASH_RANGE 120     
 
-// Boss timing (in animation ticks ~50fps)
-#define BOSS_IDLE_DURATION 50     // ~2 seconds idle between actions
-#define BOSS_POST_SPIKE_IDLE 50    // ~1 second after spikes
-#define BOSS_DEATH_RISE_HEIGHT 120 // px to float up before death anim
-#define BOSS_DEATH_RISE_SPEED 2    // px per frame rising
-#define BOSS_ANIM_SPEED 6          // frames per animation tick
+#define BOSS_IDLE_DURATION 50     
+#define BOSS_POST_SPIKE_IDLE 50    
+#define BOSS_DEATH_RISE_HEIGHT 120 
+#define BOSS_DEATH_RISE_SPEED 2    
+#define BOSS_ANIM_SPEED 6         
 
-// Boss animation frame counts
 #define BOSS_IDLE_FRAMES 4
 #define BOSS_WALK_FRAMES 3
 #define BOSS_SLASH_FRAMES 8
@@ -484,41 +442,33 @@
 #define BOSS_TRAPOUT_FRAMES 3
 #define BOSS_DEATH_FRAMES 9
 
-// FireBat stats & animation
-#define FIREBAT_MAX_HEALTH 2 // hits to kill
+#define FIREBAT_MAX_HEALTH 2 
 #define FIREBAT_SPEED 4
-#define FIREBAT_DAMAGE 10 // 0.5 heart
+#define FIREBAT_DAMAGE 10 
 #define FIREBAT_FRAMES 5
 #define FIREBAT_SIZE 64
 #define FIREBAT_ANIM_SPEED 6
 #define FIREBAT_INVINCIBILITY 20
 
-// Bat stats & animation (spawns after boss death)
-#define BAT_MAX_HEALTH 2 // hits to kill
+#define BAT_MAX_HEALTH 2 
 #define BAT_SPEED 3
-#define BAT_DAMAGE 10 // 0.5 heart
+#define BAT_DAMAGE 10 
 #define BAT_FRAMES 3
 #define BAT_DEATH_FRAMES 2
 #define BAT_SIZE 48
 #define BAT_ANIM_SPEED 6
 #define BAT_INVINCIBILITY 20
 
-// Max entities
 #define MAX_BOSS_MINIONS 4
 #define MAX_BOSS_HAZARDS 4
 
-// ============================================================
-// QUIT GAME / PAUSE MENU
-// ============================================================
 #define PAUSED_STATE 11
 
-// Quit menu background (full overlay)
 #define QUIT_BG_X 0
 #define QUIT_BG_Y 0
 #define QUIT_BG_W SCREEN_W
 #define QUIT_BG_H SCREEN_H
 
-// Yes/No button sizes and positions (centered on screen)
 #define QUIT_BTN_W 90
 #define QUIT_BTN_H 50
 #define QUIT_YES_X 460
@@ -526,7 +476,6 @@
 #define QUIT_NO_X  464
 #define QUIT_NO_Y  220
 
-// Arrow images shown next to hovered button
 #define QUIT_ARROW_W 1000
 #define QUIT_ARROW_H 600
 #define QUIT_ARROW1_X 0
@@ -534,7 +483,6 @@
 #define QUIT_ARROW2_X 0
 #define QUIT_ARROW2_Y 0
 
-// Hover effect offset (same style as title screen buttons)
 #define QUIT_HOVER_OFFSET 4
 
 #endif

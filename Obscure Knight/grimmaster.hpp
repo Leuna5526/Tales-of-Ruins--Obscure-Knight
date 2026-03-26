@@ -115,21 +115,17 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
 
     struct GrimMaster *g = &grims[i];
 
-    // Check distance from initial spawn
     int sdx = player->x - g->spawnX;
     int sdy = player->y - g->spawnY;
     float distFromSpawn = sqrt((double)(sdx * sdx + sdy * sdy));
 
     if (distFromSpawn > 600) {
-      // Player left the range — Grim dashes back to initial position
       if (g->state != GRIM_RETURNING) {
         g->state = GRIM_RETURNING;
         g->frame = 0;
         g->stateTimer = 0;
         g->subStateTimer = 0;
-        // Face towards spawn
         g->facingRight = (g->spawnX > g->x) ? 1 : 0;
-        // Do NOT reset health
       }
     }
 
@@ -141,7 +137,6 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
     g->subStateTimer++;
     g->animTimer++;
 
-    // Animation tick
     if (g->animTimer >= GRIM_ANIM_SPEED) {
       g->animTimer = 0;
 
@@ -224,10 +219,8 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
       }
     }
 
-    // State logic
     switch (g->state) {
     case GRIM_IDLE_STATE: {
-      // Face player first
       int shouldFaceRight = (dx > 0) ? 1 : 0;
       if (shouldFaceRight != g->facingRight) {
         g->state = GRIM_TURN_STATE;
@@ -235,21 +228,15 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
         g->stateTimer = 0;
         g->subStateTimer = 0;
       } else if (distance <= 500) {
-        // Close combat range - pick an action
         int choice = rand() % 100;
         if (choice < 25) {
-          // Teleport from front to behind the player
           g->state = GRIM_TELEPORT_OUT_STATE;
           g->frame = 0;
           g->stateTimer = 0;
           g->subStateTimer = 0;
-          // Grim is currently in front of player; teleport to behind player
-          // "behind" = the opposite side from where Grim currently is
           if (g->x < player->x) {
-            // Grim is to the left (in front from left), teleport to right (behind)
             g->teleportTargetX = player->x + GRIM_TELEPORT_RADIUS - (rand() % 80);
           } else {
-            // Grim is to the right (in front from right), teleport to left (behind)
             g->teleportTargetX = player->x - GRIM_TELEPORT_RADIUS + (rand() % 80);
           }
           if (g->teleportTargetX < 50)
@@ -257,20 +244,17 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
           if (g->teleportTargetX > TOTAL_BG_WIDTH - 100)
             g->teleportTargetX = TOTAL_BG_WIDTH - 100;
         } else if (choice < 50 && distance > 160) {
-          // Dash towards player to get to ~150 radius
           g->state = GRIM_DASH_ANTICIPATE;
           g->frame = 0;
           g->stateTimer = 0;
           g->subStateTimer = 0;
         } else {
-          // Throw fireball
           g->state = GRIM_THROW_ANTICIPATE;
           g->frame = 0;
           g->stateTimer = 0;
           g->subStateTimer = 0;
         }
       } else if (g->stateTimer > 10) {
-        // Far away - dash, throw, or teleport behind player
         int choice = rand() % 100;
         if (choice < 30 && distance <= GRIM_ATTACK_RANGE) {
           g->state = GRIM_DASH_ANTICIPATE;
@@ -283,7 +267,6 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
           g->stateTimer = 0;
           g->subStateTimer = 0;
         } else if (choice < 85) {
-          // Teleport behind the player
           g->state = GRIM_TELEPORT_OUT_STATE;
           g->frame = 0;
           g->stateTimer = 0;
@@ -319,7 +302,7 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
     case GRIM_DASH_ANTICIPATE: {
       int anticFrames = g->facingRight ? GRIM_DASH_ANTIC_R_FRAMES
                                        : GRIM_DASH_ANTIC_L_FRAMES;
-      if (g->subStateTimer >= anticFrames * 2) { // Faster antic
+      if (g->subStateTimer >= anticFrames * 2) { 
         g->state = GRIM_DASHING;
         g->frame = 0;
         g->stateTimer = 0;
@@ -329,7 +312,6 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
     }
 
     case GRIM_DASHING:
-      // Dash toward the target radius of 150
       if (distance > 150) {
           if (player->x > g->x) { g->x += GRIM_DASH_SPEED; g->facingRight = 1; }
           else { g->x -= GRIM_DASH_SPEED; g->facingRight = 0; }
@@ -349,17 +331,15 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
     case GRIM_THROW_ANTICIPATE: {
       int anticFrames = g->facingRight ? GRIM_THROW_ANTIC_R_FRAMES
                                        : GRIM_THROW_ANTIC_L_FRAMES;
-      if (g->subStateTimer >= anticFrames * (GRIM_ANIM_SPEED/2)) { // Faster antic
+      if (g->subStateTimer >= anticFrames * (GRIM_ANIM_SPEED/2)) { 
         g->state = GRIM_THROWING;
         g->frame = 0;
         g->stateTimer = 0;
         g->subStateTimer = 0;
-        // Spawn fireball from the Grim's current position
         float fbX = g->facingRight
                   ? (float)(g->x + GRIM_FB_SPAWN_OFFSET_X_RIGHT)
                   : (float)(g->x + GRIM_SIZE - GRIM_FB_SPAWN_OFFSET_X_LEFT - GRIM_FIREBALL_SIZE);
         float fbY = (float)(g->y + GRIM_FB_SPAWN_OFFSET_Y);
-        // Target: player's actual center position for precise aiming, adjusted lower to not go over head
         int spriteSize = (int)(SPRITE_SIZE * SCALE);
         int targetFbX = player->x + spriteSize / 2 - 30;
         int targetFbY = player->y - GRIM_FB_TARGET_GROUND_OFFSET;
@@ -371,7 +351,7 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
     case GRIM_THROWING: {
       int throwFrames =
           g->facingRight ? GRIM_THROW_R_FRAMES : GRIM_THROW_L_FRAMES;
-      if (g->subStateTimer >= throwFrames * 2) { // Faster
+      if (g->subStateTimer >= throwFrames * 2) { 
         g->state = GRIM_IDLE_STATE;
         g->frame = 0;
         g->stateTimer = 0;
@@ -381,7 +361,7 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
     }
 
     case GRIM_TELEPORT_OUT_STATE:
-      if (g->subStateTimer >= GRIM_TELEPORT_OUT_FRAMES * 2) { // Faster
+      if (g->subStateTimer >= GRIM_TELEPORT_OUT_FRAMES * 2) { 
         g->state = GRIM_TELEPORT_OUT_PILLAR;
         g->frame = 0;
         g->subStateTimer = 0;
@@ -390,21 +370,18 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
 
     case GRIM_TELEPORT_OUT_PILLAR:
       if (g->subStateTimer >=
-          GRIM_TELEPORT_OUT_PILLAR_FRAMES * 2) { // Faster
-        // Move to teleport destination
+          GRIM_TELEPORT_OUT_PILLAR_FRAMES * 2) { 
         g->x = g->teleportTargetX;
-        // Now appear at new location
         g->state = GRIM_TELEPORT_IN_PILLAR;
         g->frame = 0;
         g->subStateTimer = 0;
-        // Face player after teleport
         g->facingRight = (player->x > g->x) ? 1 : 0;
       }
       break;
 
     case GRIM_TELEPORT_IN_PILLAR:
       if (g->subStateTimer >=
-          GRIM_TELEPORT_IN_PILLAR_FRAMES * 2) { // Faster
+          GRIM_TELEPORT_IN_PILLAR_FRAMES * 2) { 
         g->state = GRIM_TELEPORT_IN_STATE;
         g->frame = 0;
         g->subStateTimer = 0;
@@ -412,14 +389,11 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
       break;
 
     case GRIM_TELEPORT_IN_STATE:
-      if (g->subStateTimer >= GRIM_TELEPORT_IN_FRAMES * 2) { // Faster
-        // After teleporting behind the player, immediately follow up with attack
+      if (g->subStateTimer >= GRIM_TELEPORT_IN_FRAMES * 2) { 
         int followUp = rand() % 100;
         if (followUp < 60) {
-          // Throw fireball at player from behind
           g->state = GRIM_THROW_ANTICIPATE;
         } else {
-          // Dash attack from behind
           g->state = GRIM_DASH_ANTICIPATE;
         }
         g->frame = 0;
@@ -436,7 +410,6 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
       break;
 
     case GRIM_RETURNING:
-      // Dash back towards initial spawn position
       if (g->spawnX > g->x) {
         g->x += GRIM_DASH_SPEED;
         g->facingRight = 1;
@@ -444,7 +417,6 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
         g->x -= GRIM_DASH_SPEED;
         g->facingRight = 0;
       }
-      // Reached spawn position
       if (abs(g->x - g->spawnX) <= GRIM_DASH_SPEED) {
         g->x = g->spawnX;
         g->y = g->spawnY;
@@ -459,7 +431,6 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
       break;
     }
 
-    // Player collision damage (contact)
     if (g->state != GRIM_DYING && g->state != GRIM_DEAD &&
         g->state != GRIM_INACTIVE && g->state != GRIM_TELEPORT_OUT_STATE &&
         g->state != GRIM_TELEPORT_OUT_PILLAR && player->state != DEATH &&
@@ -485,7 +456,6 @@ void updateGrims(struct GrimMaster grims[], struct GrimFireball fireballs[],
       }
     }
 
-    // Player attack hit detection
     int isPlayerAttacking =
         (player->state == ATTACK_OVERHEAD_RECOVER ||
          player->state == ATTACK_OVERHEAD_SLASHING ||
@@ -567,39 +537,32 @@ void updateGrimFireballs(struct GrimFireball fireballs[],
       continue;
     }
 
-    // Move fireball using float for sub-pixel accuracy
     fireballs[i].x += fireballs[i].vx;
     fireballs[i].y += fireballs[i].vy;
 
-    // Animate fireball
     fireballs[i].animTimer++;
     if (fireballs[i].animTimer >= 4) {
       fireballs[i].animTimer = 0;
       fireballs[i].frame = (fireballs[i].frame + 1) % GRIM_FIREBALL_FRAMES;
     }
 
-    // Integer positions for collision checks
     int fbPosX = (int)fireballs[i].x;
     int fbPosY = (int)fireballs[i].y;
 
-    // Check collision with ground
     if (fbPosY <= LEVEL3_GROUND_Y) {
-      fireballs[i].y = LEVEL3_GROUND_Y; // Snap to ground
+      fireballs[i].y = LEVEL3_GROUND_Y; 
       fireballs[i].exploding = 1;
       fireballs[i].explodeFrame = 0;
       fireballs[i].explodeTimer = 0;
       continue;
     }
 
-    // Check collision with player
     if (player->invincibilityTimer == 0 && player->state != DEATH) {
-      // Use fireball center and config-defined hitbox size
       int fbCenterX = fbPosX + GRIM_FIREBALL_DISPLAY_SIZE / 2;
       int fbCenterY = fbPosY + GRIM_FIREBALL_DISPLAY_SIZE / 2;
       int fbHitX = fbCenterX - GRIM_FIREBALL_HIT_W / 2;
       int fbHitY = fbCenterY - GRIM_FIREBALL_HIT_H / 2;
 
-      // Player hitbox: inset from sprite edges for a tighter, fairer box
       int playerHitX = player->x + 24;
       int playerHitY = player->y + 10;
       int playerHitW = 80;
@@ -608,7 +571,6 @@ void updateGrimFireballs(struct GrimFireball fireballs[],
       if (checkCollisionGrim(playerHitX, playerHitY, playerHitW, playerHitH,
                              fbHitX, fbHitY,
                              GRIM_FIREBALL_HIT_W, GRIM_FIREBALL_HIT_H)) {
-        // Explode
         fireballs[i].exploding = 1;
         fireballs[i].explodeFrame = 0;
         fireballs[i].explodeTimer = 0;
@@ -629,7 +591,6 @@ void updateGrimFireballs(struct GrimFireball fireballs[],
       }
     }
 
-    // Out of bounds check - deactivate if fireball goes off-screen
     if (fbPosX < -200 || fbPosX > TOTAL_BG_WIDTH + 200 ||
         fbPosY < -200 || fbPosY > 800) {
       fireballs[i].active = 0;
@@ -711,7 +672,6 @@ void renderGrims(struct GrimMaster grims[], struct Camera *camera) {
       iShowImage(screenX, screenY, GRIM_SIZE, GRIM_SIZE, tex);
     }
 
-    // Health bar
     if (g->state != GRIM_DYING && g->state != GRIM_DEAD &&
         g->state != GRIM_INACTIVE && g->maxHealth > 0) {
       float screenX = getScreenX((float)g->x, camera);

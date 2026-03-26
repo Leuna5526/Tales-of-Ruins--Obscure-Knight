@@ -39,11 +39,9 @@ struct GrimFireball grimFireballs[MAX_GRIM_FIREBALLS];
 struct BossDoor bossDoor;
 struct GreetNPC greetNpc;
 
-// Quit/Pause menu state
 int prevState = PLAYING_STATE;
-int quitHovered = 0; // 0=none, 1=yes, 2=no
+int quitHovered = 0; 
 
-// Helper: render the gameplay scene for a given state (used for paused overlay)
 void renderGameplayForState(int st) {
   if (st == PLAYING_STATE) {
     renderBackgroundWithCamera(&camera, backgroundTextures);
@@ -154,7 +152,6 @@ void iDraw() {
     renderGlowProjectile(&glowProjectile, &camera);
     renderPlayer(&player, &camera);
     renderEquippedIcons(&player);
-    // Trade menu overlay on top of everything
     renderTradeMenu(&traderNpc, &player);
   } else if (gameState == BOSS_STATE) {
     if (bossBackgroundTexture != 0) {
@@ -181,49 +178,51 @@ void iDraw() {
     renderDialogue(&npc);
   } else if (gameState == BOSS_ENTRY_STATE) {
     if (bossEntryFrames[player.bossEntryFrame] != 0) {
-      iShowImage(0, 0, SCREEN_W, SCREEN_H, bossEntryFrames[player.bossEntryFrame]);
+      iShowImage(0, 0, SCREEN_W, SCREEN_H,
+                 bossEntryFrames[player.bossEntryFrame]);
     }
   } else if (gameState == GAME_OVER_STATE) {
     if (gameOverFrames[player.gameOverFrame] != 0) {
-      iShowImage(0, 0, SCREEN_W, SCREEN_H, gameOverFrames[player.gameOverFrame]);
+      iShowImage(0, 0, SCREEN_W, SCREEN_H,
+                 gameOverFrames[player.gameOverFrame]);
     }
   } else if (gameState == GAME_ENDING_STATE) {
     if (gameEndingFrames[player.gameEndingFrame] != 0) {
-      iShowImage(0, 0, SCREEN_W, SCREEN_H, gameEndingFrames[player.gameEndingFrame]);
+      iShowImage(0, 0, SCREEN_W, SCREEN_H,
+                 gameEndingFrames[player.gameEndingFrame]);
     }
   } else if (gameState == CONGRATS_STATE) {
     if (congratsTex != 0) {
       iShowImage(0, 0, SCREEN_W, SCREEN_H, congratsTex);
     }
   } else if (gameState == PAUSED_STATE) {
-    // Render the frozen gameplay underneath
     renderGameplayForState(prevState);
-    // Overlay quit menu
     if (quitBgTex != 0) {
       iShowImage(QUIT_BG_X, QUIT_BG_Y, QUIT_BG_W, QUIT_BG_H, quitBgTex);
     }
-    // Yes button with hover
     if (quitYesTex != 0) {
       int yOff = (quitHovered == 1) ? QUIT_HOVER_OFFSET : 0;
-      iShowImage(QUIT_YES_X, QUIT_YES_Y + yOff, QUIT_BTN_W, QUIT_BTN_H, quitYesTex);
+      iShowImage(QUIT_YES_X, QUIT_YES_Y + yOff, QUIT_BTN_W, QUIT_BTN_H,
+                 quitYesTex);
     }
-    // No button with hover
     if (quitNoTex != 0) {
       int yOff = (quitHovered == 2) ? QUIT_HOVER_OFFSET : 0;
-      iShowImage(QUIT_NO_X, QUIT_NO_Y + yOff, QUIT_BTN_W, QUIT_BTN_H, quitNoTex);
+      iShowImage(QUIT_NO_X, QUIT_NO_Y + yOff, QUIT_BTN_W, QUIT_BTN_H,
+                 quitNoTex);
     }
-    // Arrow indicators
     if (quitHovered == 1 && quitArrow1Tex != 0) {
-      iShowImage(QUIT_ARROW1_X, QUIT_ARROW1_Y, QUIT_ARROW_W, QUIT_ARROW_H, quitArrow1Tex);
+      iShowImage(QUIT_ARROW1_X, QUIT_ARROW1_Y, QUIT_ARROW_W, QUIT_ARROW_H,
+                 quitArrow1Tex);
     }
     if (quitHovered == 2 && quitArrow2Tex != 0) {
-      iShowImage(QUIT_ARROW2_X, QUIT_ARROW2_Y, QUIT_ARROW_W, QUIT_ARROW_H, quitArrow2Tex);
+      iShowImage(QUIT_ARROW2_X, QUIT_ARROW2_Y, QUIT_ARROW_W, QUIT_ARROW_H,
+                 quitArrow2Tex);
     }
   }
 
-  // Global cursor draw - always on top
   if (titleScreen.cursorTexture != 0) {
-    iShowImage(titleScreen.mouseX, titleScreen.mouseY - 32, 32, 32, titleScreen.cursorTexture);
+    iShowImage(titleScreen.mouseX, titleScreen.mouseY - 32, 32, 32,
+               titleScreen.cursorTexture);
   }
 }
 
@@ -274,7 +273,6 @@ void animate() {
         playBossEntryMusic();
       }
 
-      // Trader NPC keyboard interaction
       static int traderEKeyWas = 0;
       int traderEKey = (GetAsyncKeyState('E') & 0x8000);
       if (traderEKey && !traderEKeyWas) {
@@ -283,7 +281,6 @@ void animate() {
           traderNpc.frame = 0;
           traderNpc.stateTimer = 0;
         } else if (traderNpc.tradeMenuOpen) {
-          // Close trade menu with E
           traderNpc.tradeMenuOpen = 0;
           traderNpc.state = TRADER_WALK_BACK;
           traderNpc.facingRight = (traderNpc.initialX > traderNpc.x) ? 1 : 0;
@@ -298,34 +295,42 @@ void animate() {
       updateMinions(bossMinions, &player);
       updateHazards(bossHazards, &player);
 
-      // Stop boss music once boss death animation finishes
       static int bossWasActive = 1;
+      static int batsDeadWaiting = 0;
+      static int batsDeadTimer = 0;
       if (bossWasActive && !boss.active) {
         stopBossBGMusic();
         bossWasActive = 0;
-        
-        gameState = GAME_ENDING_STATE;
-        player.gameEndingFrame = 0;
-        player.gameEndingTimer = 0;
-        playGameEndingMusic();
+        batsDeadWaiting = 0;
+        batsDeadTimer = 0;
       }
       if (boss.active) {
         bossWasActive = 1;
       }
 
-      // Hook player attack into boss hit detection
-      // Normal overhead slash: trigger on active slashing frame
+      if (!boss.active && !batsDeadWaiting && !anyBatAlive(bossMinions)) {
+        batsDeadWaiting = 1;
+        batsDeadTimer = 0;
+      }
+      if (batsDeadWaiting) {
+        batsDeadTimer++;
+        if (batsDeadTimer >= 100) {
+          batsDeadWaiting = 0;
+          gameState = GAME_ENDING_STATE;
+          player.gameEndingFrame = 0;
+          player.gameEndingTimer = 0;
+          playGameEndingMusic();
+        }
+      }
+
       if (player.state == ATTACK_OVERHEAD_SLASHING && player.frame == 3) {
         handlePlayerAttackBoss(&boss, &player, 0);
         handlePlayerAttackMinion(bossMinions, &player, 0);
       }
-      // Slashwave: trigger while the state is active
       if (player.state == ATTACK_OVERHEAD_SLASHWAVE) {
         handlePlayerAttackBoss(&boss, &player, 1);
         handlePlayerAttackMinion(bossMinions, &player, 1);
       }
-      // Downstab: trigger exactly once per slam (on the first frame of the
-      // state)
       if (player.state == DOWNSTAB_ACTIVE && player.stateTimer == 1) {
         handlePlayerAttackBoss(&boss, &player, 0);
         handlePlayerAttackMinion(bossMinions, &player, 0);
@@ -342,18 +347,15 @@ void animate() {
     updateHealthSound(&player);
   } else if (gameState == GAME_OVER_STATE) {
     player.gameOverTimer++;
-    // roughly 60ms delay per frame (3 * 20ms)
     if (player.gameOverTimer >= 3) {
       player.gameOverTimer = 0;
-      // Index 61 is frame 62, which is the last image before the black screens
       if (player.gameOverFrame < 61) {
         player.gameOverFrame++;
       }
     }
   } else if (gameState == GAME_ENDING_STATE) {
     player.gameEndingTimer++;
-    // 40ms delay per frame (2 * 20ms)
-    if (player.gameEndingTimer >= 2) {
+    if (player.gameEndingTimer >= 4) {
       player.gameEndingTimer = 0;
       if (player.gameEndingFrame < GAME_ENDING_FRAMES - 1) {
         player.gameEndingFrame++;
@@ -366,7 +368,6 @@ void animate() {
     }
   } else if (gameState == BOSS_ENTRY_STATE) {
     player.bossEntryTimer++;
-    // 40ms delay per frame (2 * 20ms)
     if (player.bossEntryTimer >= 2) {
       player.bossEntryTimer = 0;
       if (player.bossEntryFrame < BOSS_ENTRY_FRAMES - 1) {
@@ -395,10 +396,12 @@ void animate() {
 void iKeyboard(unsigned char key) {
   printf("Key pressed: %d\n", key);
 
-  // Game Over / Game Ending / Congrats: any key returns to title screen (same as mouse click)
-  if (gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE || gameState == CONGRATS_STATE) {
-    if (gameState == GAME_ENDING_STATE) stopGameEndingMusic();
-    if (gameState == CONGRATS_STATE) stopCongratsMusic();
+  if (gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE ||
+      gameState == CONGRATS_STATE) {
+    if (gameState == GAME_ENDING_STATE)
+      stopGameEndingMusic();
+    if (gameState == CONGRATS_STATE)
+      stopCongratsMusic();
     gameState = TITLE_SCREEN_STATE;
     player.deaths = 0;
     player.hasPlayedBossEntry = 0;
@@ -424,11 +427,9 @@ void iKeyboard(unsigned char key) {
     camera.x = 0;
     camera.targetX = 0;
     bg.x = 0;
-    // Reset Level 1 tiles
     initMidground(&mg);
     loadMidgroundTextures(&mg);
     setupTiles(&mg);
-    // Reset music: stop gameplay tracks, restart title/bg music
     stopBG2Music();
     stopBossBGMusic();
     stopBossEntryMusic();
@@ -436,20 +437,17 @@ void iKeyboard(unsigned char key) {
     return;
   }
 
-  // Esc to pause during gameplay
   if (key == 27 && (gameState == PLAYING_STATE || gameState == LEVEL2_STATE ||
-      gameState == LEVEL3_STATE || gameState == BOSS_STATE)) {
+                    gameState == LEVEL3_STATE || gameState == BOSS_STATE)) {
     prevState = gameState;
     gameState = PAUSED_STATE;
     quitHovered = 0;
     return;
   }
-  // Esc or any key to resume from pause (No)
   if (gameState == PAUSED_STATE) {
     gameState = prevState;
     return;
   }
-
 
   if (gameState == TITLE_SCREEN_STATE) {
     if (key == ' ' || key == 13) {
@@ -468,9 +466,7 @@ void iKeyboard(unsigned char key) {
   }
 }
 
-
 void iMouseMove(int mx, int my) {
-  // Global cursor move tracking
   titleScreen.mouseX = mx;
   titleScreen.mouseY = my;
 
@@ -480,7 +476,6 @@ void iMouseMove(int mx, int my) {
 }
 
 void iPassiveMouseMove(int mx, int my) {
-  // Global cursor passive move tracking
   titleScreen.mouseX = mx;
   titleScreen.mouseY = my;
 
@@ -491,11 +486,9 @@ void iPassiveMouseMove(int mx, int my) {
   if (gameState == TITLE_SCREEN_STATE) {
     updateButtonHoverSound(mx, my);
   }
-  // Update trader mouse position for hover effects
-  // Quit menu hover tracking
   if (gameState == PAUSED_STATE) {
-    if (mx >= QUIT_YES_X && mx <= QUIT_YES_X + QUIT_BTN_W &&
-        my >= QUIT_YES_Y && my <= QUIT_YES_Y + QUIT_BTN_H) {
+    if (mx >= QUIT_YES_X && mx <= QUIT_YES_X + QUIT_BTN_W && my >= QUIT_YES_Y &&
+        my <= QUIT_YES_Y + QUIT_BTN_H) {
       quitHovered = 1;
     } else if (mx >= QUIT_NO_X && mx <= QUIT_NO_X + QUIT_BTN_W &&
                my >= QUIT_NO_Y && my <= QUIT_NO_Y + QUIT_BTN_H) {
@@ -515,22 +508,19 @@ void iMouse(int button, int state, int mx, int my) {
       gameState == CONTROLS_STATE) {
     handleTitleMouseClick(&titleScreen, button, state, mx, my, &gameState);
   }
-  // Trade menu click
   if (gameState == LEVEL3_STATE && traderNpc.tradeMenuOpen &&
       button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     handleTradeClick(&traderNpc, &player, mx, my);
   }
-  // Equipped icon click
   if ((gameState == LEVEL3_STATE || gameState == BOSS_STATE) &&
       button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     handleEquippedIconClick(&player, mx, my);
   }
 
-  // Quit menu click handling
-  if (gameState == PAUSED_STATE && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-    if (mx >= QUIT_YES_X && mx <= QUIT_YES_X + QUIT_BTN_W &&
-        my >= QUIT_YES_Y && my <= QUIT_YES_Y + QUIT_BTN_H) {
-      // Yes: full game reset (same as Game Over)
+  if (gameState == PAUSED_STATE && button == GLUT_LEFT_BUTTON &&
+      state == GLUT_DOWN) {
+    if (mx >= QUIT_YES_X && mx <= QUIT_YES_X + QUIT_BTN_W && my >= QUIT_YES_Y &&
+        my <= QUIT_YES_Y + QUIT_BTN_H) {
       gameState = TITLE_SCREEN_STATE;
       player.deaths = 0;
       player.hasPlayedBossEntry = 0;
@@ -565,14 +555,17 @@ void iMouse(int button, int state, int mx, int my) {
       restartBGMusic();
     } else if (mx >= QUIT_NO_X && mx <= QUIT_NO_X + QUIT_BTN_W &&
                my >= QUIT_NO_Y && my <= QUIT_NO_Y + QUIT_BTN_H) {
-      // No: resume game
       gameState = prevState;
     }
   }
-  
-  if ((gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE || gameState == CONGRATS_STATE) && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-    if (gameState == GAME_ENDING_STATE) stopGameEndingMusic();
-    if (gameState == CONGRATS_STATE) stopCongratsMusic();
+
+  if ((gameState == GAME_OVER_STATE || gameState == GAME_ENDING_STATE ||
+       gameState == CONGRATS_STATE) &&
+      button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    if (gameState == GAME_ENDING_STATE)
+      stopGameEndingMusic();
+    if (gameState == CONGRATS_STATE)
+      stopCongratsMusic();
     gameState = TITLE_SCREEN_STATE;
     player.deaths = 0;
     player.hasPlayedBossEntry = 0;
@@ -598,7 +591,6 @@ void iMouse(int button, int state, int mx, int my) {
     camera.x = 0;
     camera.targetX = 0;
     bg.x = 0;
-    // Reset Level 1 tiles
     initMidground(&mg);
     loadMidgroundTextures(&mg);
     setupTiles(&mg);

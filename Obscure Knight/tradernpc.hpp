@@ -29,7 +29,6 @@ void initTraderNPC(struct TraderNPC *t) {
   t->tradedKey = 0;
 }
 
-// Check which trade item the mouse is hovering over
 int getTradeHoveredItem(int mx, int my, struct TraderNPC *t) {
   if (!t->tradedSwiftness && mx >= TRADE_SWIFTNESS_X1 && mx <= TRADE_SWIFTNESS_X2 &&
       my >= TRADE_SWIFTNESS_Y1 && my <= TRADE_SWIFTNESS_Y2)
@@ -44,7 +43,6 @@ int getTradeHoveredItem(int mx, int my, struct TraderNPC *t) {
 }
 
 void handleTradeClick(struct TraderNPC *t, struct Player *player, int mx, int my) {
-  // If click is outside the list panel bounds, close the menu
   if (mx < TRADE_LIST_X || mx > TRADE_LIST_X + TRADE_LIST_W ||
       my < TRADE_LIST_Y || my > TRADE_LIST_Y + TRADE_LIST_H) {
     t->tradeMenuOpen = 0;
@@ -61,7 +59,7 @@ void handleTradeClick(struct TraderNPC *t, struct Player *player, int mx, int my
     case 3: cost = TRADE_ITEM_COST_KEY; break;
   }
 
-  if (player->fragments < cost) return; // Not enough fragments
+  if (player->fragments < cost) return; 
 
   player->fragments -= cost;
 
@@ -92,7 +90,6 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
   t->stateTimer++;
   t->animTimer++;
 
-  // Animation tick
   if (t->animTimer >= TRADER_ANIM_SPEED) {
     t->animTimer = 0;
 
@@ -128,10 +125,8 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
     }
   }
 
-  // State logic
   switch (t->state) {
   case TRADER_IDLE_STATE:
-    // Detect player within radius
     if (distance <= TRADER_DETECTION_RADIUS && !t->traded) {
       t->state = TRADER_WALK_TO_PLAYER;
       t->frame = 0;
@@ -157,8 +152,6 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
     break;
 
   case TRADER_PROMPT_INTERACT:
-    // Wait for E key (handled externally)
-    // Keep facing player
     break;
 
   case TRADER_TURN_STATE:
@@ -172,9 +165,7 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
     break;
 
   case TRADER_TRADE_MENU:
-    // Update hovered item based on mouse position
     t->hoveredItem = getTradeHoveredItem(t->mouseX, t->mouseY, t);
-    // If player moves too far away, close menu
     if (distance > TRADER_DETECTION_RADIUS + 100) {
       t->tradeMenuOpen = 0;
       t->state = TRADER_WALK_BACK;
@@ -194,7 +185,6 @@ void updateTraderNPC(struct TraderNPC *t, struct Player *player) {
     break;
 
   case TRADER_WALK_BACK:
-    // Walk back to initial position
     {
       int ddx = t->initialX - t->x;
       if (ddx > 0) {
@@ -276,7 +266,6 @@ void renderTraderNPC(struct TraderNPC *t, struct Camera *camera) {
     iShowImage(screenX, screenY, TRADER_SIZE, TRADER_SIZE, tex);
   }
 
-  // Render "Enter E to trade" prompt
   if (t->state == TRADER_PROMPT_INTERACT) {
     float screenX = getScreenX((float)t->x, camera);
     float screenY = getScreenY((float)t->y, camera);
@@ -286,65 +275,52 @@ void renderTraderNPC(struct TraderNPC *t, struct Camera *camera) {
   }
 }
 
-// Render the trade menu panel on the right side of the screen (no fullscreen overlay)
-// Render the trade menu panel on the right side of the screen (no fullscreen overlay)
 void renderTradeMenu(struct TraderNPC *t, struct Player *player) {
   if (!t->tradeMenuOpen) return;
 
-  // 1. Draw the list background
   if (tradeListTex != 0) {
     iShowImage(TRADE_LIST_X, TRADE_LIST_Y, TRADE_LIST_W, TRADE_LIST_H, tradeListTex);
   }
 
-  // 2. Draw the fragment image and player's fragment count
   if (tradeFragmentTex != 0) {
     iShowImage(TRADE_FRAGMENT_X, TRADE_FRAGMENT_Y, TRADE_FRAGMENT_W, TRADE_FRAGMENT_H, tradeFragmentTex);
   }
   char fragText[32];
   sprintf_s(fragText, "%d", player->fragments);
-  iSetColor(255, 255, 255); // White
-  // Use config defined total fragment display coordinates
+  iSetColor(255, 255, 255); 
   iText(TRADE_TOTAL_FRAGMENT_X, TRADE_TOTAL_FRAGMENT_Y, fragText, GLUT_BITMAP_TIMES_ROMAN_24);
 
-  // 3. Draw all three trade items simultaneously
 
-  // Swiftness
   if (!t->tradedSwiftness && tradeSwiftnessTex != 0) {
     int yOff = (t->hoveredItem == 1) ? TRADE_HOVER_OFFSET : 0;
     iShowImage(TRADE_SWIFTNESS_X1, TRADE_SWIFTNESS_Y1 + yOff,
                TRADE_ITEM_W, TRADE_ITEM_H, tradeSwiftnessTex);
-    // Cost: fragment icon only (text removed)
     if (tradeFragmentTex != 0 && TRADE_COST_ICON_W > 0) {
       iShowImage(TRADE_SWIFTNESS_X1 + 20, TRADE_SWIFTNESS_Y1 + TRADE_COST_ICON_Y_OFFSET,
                  TRADE_COST_ICON_W, TRADE_COST_ICON_H, tradeFragmentTex);
     }
   }
 
-  // Soul
   if (!t->tradedSoul && tradeSoulTex != 0) {
     int yOff = (t->hoveredItem == 2) ? TRADE_HOVER_OFFSET : 0;
     iShowImage(TRADE_SOUL_X1, TRADE_SOUL_Y1 + yOff,
                TRADE_ITEM_W, TRADE_ITEM_H, tradeSoulTex);
-    // Cost: fragment icon only (text removed)
     if (tradeFragmentTex != 0 && TRADE_COST_ICON_W > 0) {
       iShowImage(TRADE_SOUL_X1 + 20, TRADE_SOUL_Y1 + TRADE_COST_ICON_Y_OFFSET,
                  TRADE_COST_ICON_W, TRADE_COST_ICON_H, tradeFragmentTex);
     }
   }
 
-  // Key
   if (!t->tradedKey && tradeKeyImageTex != 0) {
     int yOff = (t->hoveredItem == 3) ? TRADE_HOVER_OFFSET : 0;
     iShowImage(TRADE_KEY_X1, TRADE_KEY_Y1 + yOff,
                TRADE_ITEM_W, TRADE_ITEM_H, tradeKeyImageTex);
-    // Cost: fragment icon only (text removed)
     if (tradeFragmentTex != 0 && TRADE_COST_ICON_W > 0) {
       iShowImage(TRADE_KEY_X1 + 20, TRADE_KEY_Y1 + TRADE_COST_ICON_Y_OFFSET,
                  TRADE_COST_ICON_W, TRADE_COST_ICON_H, tradeFragmentTex);
     }
   }
 
-  // 4. Description popups (using fixed config coordinates)
   if (t->hoveredItem == 1 && tradeDesc1Tex != 0) {
     iShowImage(TRADE_DESC_X, TRADE_DESC_Y, TRADE_DESC_W, TRADE_DESC_H, tradeDesc1Tex);
   }
@@ -356,7 +332,6 @@ void renderTradeMenu(struct TraderNPC *t, struct Player *player) {
   }
 }
 
-// Render equipped item icons at top-right corner
 void renderEquippedIcons(struct Player *player) {
   int iconIdx = 0;
 
@@ -382,7 +357,6 @@ void renderEquippedIcons(struct Player *player) {
   }
 }
 
-// Check if player clicked on an equipped icon to use it
 void handleEquippedIconClick(struct Player *player, int mx, int my) {
   int iconIdx = 0;
 
@@ -417,14 +391,13 @@ void handleEquippedIconClick(struct Player *player, int mx, int my) {
     if (mx >= ix && mx <= ix + EQUIPPED_ICON_SIZE &&
         my >= iy && my <= iy + EQUIPPED_ICON_SIZE) {
       player->keyUsed = 1;
-      player->hasUsedKey = 1; // compatibility with existing door logic
+      player->hasUsedKey = 1; 
       printf("Key used! Door unlocked\n");
     }
     iconIdx++;
   }
 }
 
-// Initialize the boss door
 void initBossDoor(struct BossDoor *door) {
   door->x = DOOR_X;
   door->y = DOOR_Y;
@@ -435,9 +408,7 @@ void initBossDoor(struct BossDoor *door) {
   door->opened = 0;
 }
 
-// Update the boss door animation
 void updateBossDoor(struct BossDoor *door, struct Player *player) {
-  // Only animate when the door is actively opening
   if (door->opening) {
     door->animTimer++;
     if (door->animTimer >= DOOR_ANIM_SPEED) {
@@ -450,9 +421,7 @@ void updateBossDoor(struct BossDoor *door, struct Player *player) {
       }
     }
   }
-  // While locked: stay static at frame 0 (no animation)
 
-  // Check if player is near and has used the key
   if (door->locked && player->keyUsed) {
     int ddx = player->x - door->x;
     if (abs(ddx) < 120) {
@@ -464,7 +433,6 @@ void updateBossDoor(struct BossDoor *door, struct Player *player) {
   }
 }
 
-// Render the boss door
 void renderBossDoor(struct BossDoor *door, struct Camera *camera) {
   float screenX = getScreenX((float)door->x, camera);
   float screenY = getScreenY((float)door->y, camera);

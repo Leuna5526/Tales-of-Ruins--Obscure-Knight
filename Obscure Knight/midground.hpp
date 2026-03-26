@@ -98,7 +98,6 @@ void renderMidground(struct Midground *mg, struct Camera *camera, int gameState)
 
 int checkMidgroundCollision(struct Player *player, struct Midground *mg,
                             int *platformY, int jumpDownActive) {
-  // BOSS_STATE has no tile collisions
   if (gameState == BOSS_STATE) return 0;
 
   int playerLeft = player->x;
@@ -167,7 +166,6 @@ int checkMidgroundCollision(struct Player *player, struct Midground *mg,
 
 int checkMidgroundCeilingCollision(struct Player *player,
                                    struct Midground *mg) {
-  // BOSS_STATE has no tile collisions
   if (gameState == BOSS_STATE) return -1;
 
   int spriteW = SPRITE_SIZE * SCALE;

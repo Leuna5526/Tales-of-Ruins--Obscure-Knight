@@ -193,7 +193,6 @@ void renderTitleScreen(struct TitleScreen *title) {
     }
   }
 
-  // cursor removed - now handled globally in iMain.cpp
 }
 
 void renderCredits(struct TitleScreen *title) {

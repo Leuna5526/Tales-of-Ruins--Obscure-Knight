@@ -95,11 +95,11 @@ struct Player {
   int hasSwiftness;
   int hasSoul;
   int hasKeyItem;
-  int swiftnessUsed;   // 1 = used (activated), permanent
-  int soulUsed;        // 1 = used (activated), permanent
-  int keyUsed;         // 1 = used at door
-  int swiftnessActive; // effect active
-  int soulActive;      // effect active
+  int swiftnessUsed;   
+  int soulUsed;        
+  int keyUsed;        
+  int swiftnessActive; 
+  int soulActive;      
   float speedMultiplier;
 
   int hasPlayedBossEntry;
@@ -262,9 +262,6 @@ struct NPC {
   int initialized;
 };
 
-// ============================================================
-// FINAL BOSS
-// ============================================================
 enum BossState {
   BOSS_IDLE_STATE,
   BOSS_WALK_STATE,
@@ -277,7 +274,7 @@ enum BossState {
   BOSS_TRAP_STATE,
   BOSS_DEATH_RISE_STATE,
   BOSS_DEATH_ANIM_STATE,
-  BOSS_WAIT_MINION_STATE // waiting for FireBat to die
+  BOSS_WAIT_MINION_STATE 
 };
 
 struct Boss {
@@ -292,8 +289,8 @@ struct Boss {
   int maxHealth;
   int hasUsedTrap;
   int teleportTargetX;
-  int phase; // 1 = full, 2 = <50% HP, 3 = <=25% HP
-  int riseY; // tracks how far boss has risen on death
+  int phase; 
+  int riseY; 
   int invincibilityTimer;
   enum BossState intendedNextState;
 };
@@ -308,7 +305,7 @@ struct BossMinion {
   int facingRight;
   int health;
   int invincibilityTimer;
-  int isDying; // playing death animation
+  int isDying; 
   int deathTimer;
   enum MinionType type;
 };
@@ -320,13 +317,10 @@ struct BossHazard {
   int active;
   int frame;
   int animTimer;
-  int hasHit; // already damaged the player
+  int hasHit; 
   enum HazardType type;
 };
 
-// ============================================================
-// TRADER NPC (Level 3)
-// ============================================================
 enum TraderState {
   TRADER_IDLE_STATE,
   TRADER_WALK_TO_PLAYER,
@@ -350,28 +344,23 @@ struct TraderNPC {
   int active;
   int traded;
   int initialX;
-  // Trade menu
   int tradeMenuOpen;
   int mouseX, mouseY;
-  int hoveredItem;    // 0=none, 1=swiftness, 2=soul, 3=key
+  int hoveredItem;    
   int tradedSwiftness;
   int tradedSoul;
   int tradedKey;
 };
 
-// Boss door at end of Level 3
 struct BossDoor {
   int x, y;
   int frame;
   int animTimer;
-  int locked;       // 1 = locked, 0 = unlocked
-  int opening;      // 1 = playing open animation
-  int opened;       // 1 = fully open (player can pass)
+  int locked;       
+  int opening;      
+  int opened;      
 };
 
-// ============================================================
-// GRIM MASTER (Level 3 enemy)
-// ============================================================
 enum GrimState {
   GRIM_INACTIVE,
   GRIM_IDLE_STATE,
@@ -419,9 +408,6 @@ struct GrimFireball {
   int explodeTimer;
 };
 
-// ============================================================
-// GREETING NPC (end of Level 2)
-// ============================================================
 enum GreetState {
   GREET_IDLE,
   GREET_ANIMATING,
@@ -433,8 +419,8 @@ struct GreetNPC {
   int frame;
   int animTimer;
   enum GreetState state;
-  int active;   // 1 = visible on screen
-  int done;     // 1 = animation finished, trigger level transition
+  int active;   
+  int done;     
 };
 
 #endif
